@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="2DGeometry">
+      <UniqueIdentifier>{b96110b0-29f1-4bf7-8e62-8af5b9866fd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{bbdecd4f-9f31-41a0-bc68-d2ba2640951f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{76b67d30-6dd6-45d6-8020-7206c6dfa8f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IMGUI">
+      <UniqueIdentifier>{7609b48f-31da-4da3-9dff-39c94e10eec9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Demo">
+      <UniqueIdentifier>{5def0da9-b65e-48c3-9214-1857ca9035f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{18d1eb16-319c-4259-8ae1-0cc4b9640861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{3f562000-ae3b-4141-9e0b-0b54ed905757}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{d241adf9-2027-4c00-8a7e-c651b83a0133}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D2DApp.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="MagicTowerApp.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Rect.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureRect.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultBuffer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexTypes.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="IShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\imgui\imgui.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\imgui\backends\imgui_impl_win32.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\imgui\imgui_demo.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\imgui\imgui_draw.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\imgui\imgui_tables.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\imgui\imgui_widgets.cpp">
+      <Filter>IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureDemo.cpp">
+      <Filter>Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="UIRect.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="UIalphabet.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Path.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="String.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectHelper.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="States.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="PControl.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Animator.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="UITextureRect.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D2DApp.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="MagicTowerApp.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureRect.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexTypes.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="IShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="IGameObj.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonBase.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\imgui\imgui.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\imgui\backends\imgui_impl_dx11.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\imgui\backends\imgui_impl_win32.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\imgui\imconfig.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\imgui\imgui_internal.h">
+      <Filter>IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureDemo.h">
+      <Filter>Demo</Filter>
+    </ClInclude>
+    <ClInclude Include="UIRect.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="UIalphabet.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Path.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectHelper.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="States.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="PControl.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Animator.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="UITextureRect.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="XMFLOAT_Helper.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>System</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
