@@ -34,8 +34,8 @@ UI::~UI()
 
 void UI::init_startUI()
 {
-	start = new UITextureRect(mDevice, mDeviceContext, position, size, 0.0f, TexturePath + L"GameStart.png");
-	how = new UITextureRect(mDevice, mDeviceContext, position - DirectX::XMFLOAT3(0, (1.3) * size.y, 0), size, 0.0f, TexturePath + L"howtoplay.png");
+	//start = new UITextureRect(mDevice, mDeviceContext, position, size, 0.0f, TexturePath + L"GameStart.png");
+	//how = new UITextureRect(mDevice, mDeviceContext, position - DirectX::XMFLOAT3(0, (1.3) * size.y, 0), size, 0.0f, TexturePath + L"howtoplay.png");
 
 	howto = new TextureRect(mDevice, mDeviceContext, DirectX::XMFLOAT3(640, 360, 0), DirectX::XMFLOAT3(800, 600, 1), 0.0f, TexturePath + L"howto.png");
 
@@ -50,9 +50,9 @@ void UI::init_levelupUI()
 {
 	Levelup = new TextureRect(mDevice, mDeviceContext, DirectX::XMFLOAT3(640, 360, 0), DirectX::XMFLOAT3(800, 600, 1), 0.0f, TexturePath + L"LEVELUP.png");
 
-	HPup = new UITextureRect(mDevice, mDeviceContext, position, size, 0.0f, TexturePath + L"healing.png");
+	/*HPup = new UITextureRect(mDevice, mDeviceContext, position, size, 0.0f, TexturePath + L"healing.png");
 	attackup = new UITextureRect(mDevice, mDeviceContext, position - DirectX::XMFLOAT3(0, (1.3) * size.y, 0), size, 0.0f, TexturePath + L"attackincrease.png");
-	attackspeedup = new UITextureRect(mDevice, mDeviceContext, position - DirectX::XMFLOAT3(0, (2.6) * size.y, 0), size, 0.0f, TexturePath + L"attackspeed.png");
+	attackspeedup = new UITextureRect(mDevice, mDeviceContext, position - DirectX::XMFLOAT3(0, (2.6) * size.y, 0), size, 0.0f, TexturePath + L"attackspeed.png");*/
 }
 
 void UI::init_time()

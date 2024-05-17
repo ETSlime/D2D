@@ -3,12 +3,11 @@
 
 Camera::~Camera()
 {
-	std::cout << "camera des" << std::endl;
+
 }
 
 Camera::Camera()
 {
-	std::cout << "camera cons" << std::endl;
 }
 
 DirectX::XMFLOAT4X4 Camera::GetView4x4f() const

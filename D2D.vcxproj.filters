@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
@@ -25,9 +21,6 @@
     <Filter Include="IMGUI">
       <UniqueIdentifier>{7609b48f-31da-4da3-9dff-39c94e10eec9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Demo">
-      <UniqueIdentifier>{5def0da9-b65e-48c3-9214-1857ca9035f3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Utilities">
       <UniqueIdentifier>{18d1eb16-319c-4259-8ae1-0cc4b9640861}</UniqueIdentifier>
     </Filter>
@@ -36,6 +29,13 @@
     </Filter>
     <Filter Include="Game">
       <UniqueIdentifier>{d241adf9-2027-4c00-8a7e-c651b83a0133}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Game Objects">
+      <UniqueIdentifier>{5def0da9-b65e-48c3-9214-1857ca9035f3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,11 +99,8 @@
     <ClCompile Include="ThirdParty\imgui\imgui_widgets.cpp">
       <Filter>IMGUI</Filter>
     </ClCompile>
-    <ClCompile Include="TextureDemo.cpp">
-      <Filter>Demo</Filter>
-    </ClCompile>
-    <ClCompile Include="UIRect.cpp">
-      <Filter>2DGeometry</Filter>
+    <ClCompile Include="StartMenuGO.cpp">
+      <Filter>Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="UIalphabet.cpp">
       <Filter>Utilities</Filter>
@@ -123,7 +120,7 @@
     <ClCompile Include="States.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="PControl.cpp">
+    <ClCompile Include="PlayerControl.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="Animator.cpp">
@@ -138,22 +135,55 @@
     <ClCompile Include="Keyboard.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
     <ClCompile Include="UITextureRect.cpp">
       <Filter>2DGeometry</Filter>
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="GameUI.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="RectBase.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectorTextureRect.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="TileSet.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="TMap.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="FloorGO.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationRect.cpp">
+      <Filter>2DGeometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerGO.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Collisionengine.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DApp.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="MagicTowerApp.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ソース ファイル\ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Rect.h">
       <Filter>2DGeometry</Filter>
@@ -212,11 +242,8 @@
     <ClInclude Include="ThirdParty\imgui\imgui_internal.h">
       <Filter>IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="TextureDemo.h">
-      <Filter>Demo</Filter>
-    </ClInclude>
-    <ClInclude Include="UIRect.h">
-      <Filter>2DGeometry</Filter>
+    <ClInclude Include="StartMenuGO.h">
+      <Filter>Game Objects</Filter>
     </ClInclude>
     <ClInclude Include="UIalphabet.h">
       <Filter>Utilities</Filter>
@@ -236,7 +263,7 @@
     <ClInclude Include="States.h">
       <Filter>Render</Filter>
     </ClInclude>
-    <ClInclude Include="PControl.h">
+    <ClInclude Include="PlayerControl.h">
       <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Animator.h">
@@ -251,9 +278,6 @@
     <ClInclude Include="Keyboard.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="UI.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="UITextureRect.h">
       <Filter>2DGeometry</Filter>
     </ClInclude>
@@ -265,6 +289,48 @@
     </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="GameUI.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="RectBase.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectorTextureRect.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="TileSet.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="TMap.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="FloorGO.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationRect.h">
+      <Filter>2DGeometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerGO.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Collisionengine.h">
+      <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,10 +2,12 @@
 
 bool Timer::isTimerStopped = true;
 float Timer::timeElapsed = 0.0f;
+float Timer::runningTime = 1.0f;
+float Timer::framePerSecond = 0.0f;
 
 Timer::Timer(void):
 	ticksPerSecond(0), currentTime(0), lastTime(0), lastFPSUpdate(0), fpsUpdateInterval(0),
-	frameCount(0), runningTime(0), framePerSecond(0)
+	frameCount(0)
 {
 	QueryPerformanceFrequency((LARGE_INTEGER*)&ticksPerSecond);
 	fpsUpdateInterval = ticksPerSecond >> 1;

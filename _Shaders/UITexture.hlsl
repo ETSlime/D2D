@@ -23,10 +23,6 @@ cbuffer VPBuffer : register(b1)
 	matrix _projection;
 }
 
-cbuffer ShadedBuffer : register(b0)
-{
-	int Selection;
-}
 
 PixelInput VS(VertexInput input)
 {
@@ -48,18 +44,8 @@ float4 PS(PixelInput input) : SV_Target
 {
 	float4 color = _sourceTex.Sample(_samp, input.uv);
 
-	float4 redColor = { 0.01f, 0.1f, 0.1f, 0.5f };
-
-	if (Selection == 0)
-	{
-		return color;
-	}
-	else if (Selection == 1)
-	{
-		if (input.uv.x < 0.02f || input.uv.x > 0.98f || input.uv.y < 0.05f || input.uv.y > 0.95f)
-			color = float4(1, 1, 1, 1);
-		
-	}
+    if (color.a < 0.1)
+        discard;
 
 	return color;
 

@@ -7,9 +7,11 @@ class UploadBuffer
 {
 public:
     UploadBuffer(ID3D11Device* device, ID3D11DeviceContext* deviceContext, UINT elementCount, 
-        D3D11_BIND_FLAG bindFlags, const D3D11_USAGE& usage) :
-        mElementByteSize(sizeof(T))
+        D3D11_BIND_FLAG bindFlags, const D3D11_USAGE& usage)
     {
+        mElementByteSize = sizeof(T);
+        if (bindFlags & D3D11_BIND_CONSTANT_BUFFER)
+            mElementByteSize = (sizeof(T) + 255) & ~255;
 
         desc.Usage = usage;
         desc.ByteWidth = mElementByteSize * elementCount;

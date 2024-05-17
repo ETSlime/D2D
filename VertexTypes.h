@@ -48,17 +48,16 @@ struct VertexTextureColor
 
 struct VertexTile
 {
-	VertexTile() : position(0, 0, 0), uv(0, 0), color(0, 0, 0, 0) {}
+	VertexTile() : position(0, 0, 0), uv(0, 0){}
 	VertexTile(DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 uv, DirectX::XMFLOAT2 uv2, 
 		DirectX::XMFLOAT4 color, UINT index, bool bWalkalbe = true)
-		: position(position), uv(uv), uv2(uv2), color(color), index(index), bWalkable(bWalkable)
+		: position(position), uv(uv), uv2(uv2), index(index), bWalkable(bWalkable)
 	{
 
 	}
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT2 uv;
 	DirectX::XMFLOAT2 uv2;
-	DirectX::XMFLOAT4 color;
 	UINT index;
 	bool bWalkable;
 	static D3D11_INPUT_ELEMENT_DESC descs[];

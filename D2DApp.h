@@ -1,8 +1,5 @@
 #include "Util.h"
 
-
-
-
 class D3DEnumOutputInfo
 {
 public:
@@ -64,9 +61,13 @@ protected:
         UINT height
     );
     
-protected:
+public:
 
     static D2DApp* mApp;
+    ID3D11Device* mDevice = nullptr;
+    ID3D11DeviceContext* mDeviceContext = nullptr;
+
+protected:
 
     HWND m_hwnd = nullptr; // main window handle
     HINSTANCE mhAppInst = nullptr; // application instance handle
@@ -76,13 +77,20 @@ protected:
     bool mResizing = false;   // are the resize bars being dragged?
     bool mFullscreenState = false;// fullscreen enabled
 
-    ID3D11Device* mDevice = nullptr;
-    ID3D11DeviceContext* mDeviceContext = nullptr;
+    // Direct3D
     IDXGIFactory1* mdxgiFactory = nullptr;
     IDXGISwapChain* mSwapChain = nullptr;
     ID3D11RenderTargetView* rtv = nullptr;
     D3D11_VIEWPORT mScreenViewport;
-    D3DXCOLOR clearColor = 0xff555566;
+
+    // Direct2D
+    ID2D1Factory* pD2DFactory = nullptr;
+    IDWriteFactory* pD2DWriteFactory = nullptr;
+    D2DResource mD2DResource;
+    float baseFontSize = 32.0f;
+    float aspectRatio = 1.0f;
+    WinSize curWindowSize = { WinMaxWidth, WinMaxHeight };
+
 
     bool bVsync = true;
     std::wstring gpuName;

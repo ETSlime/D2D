@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Util.h"
+#include "MagicTowerApp.h"
 
 struct TextureDesc
 {
@@ -24,8 +25,7 @@ struct TextureDesc
 class Texture2D
 {
 public:
-	Texture2D(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
-		std::wstring filePath);
+	Texture2D(std::wstring filePath);
 
 	void ReadPixel(std::vector<D3DXCOLOR>* pixels);
 	static void ReadPixel(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
@@ -42,8 +42,8 @@ private:
 	std::wstring filePath = L"";
 	ID3D11ShaderResourceView* srv = nullptr;
 	DirectX::TexMetadata metaData;
-	ID3D11Device* mDevice = nullptr;
-	ID3D11DeviceContext* mDeviceContext = nullptr;
+	ID3D11Device* mDevice = MagicTowerApp::get_instance().mDevice;
+	ID3D11DeviceContext* mDeviceContext = MagicTowerApp::get_instance().mDeviceContext;
 };
 
 class Textures

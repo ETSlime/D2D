@@ -153,7 +153,7 @@ void Rect::UpdateWorld()
 	R = DirectX::XMMatrixRotationZ((float)D3DXToRadian(rotation));
 
 	W = S * R * T;
-	XMStoreFloat4x4(&world, W);
+	XMStoreFloat4x4(&world, DirectX::XMMatrixTranspose(W));
 	//wb->SetWorld(world);
 
 	//D3DXVec3TransformCoord(&edge->LT, &vertices[1].position, &world);

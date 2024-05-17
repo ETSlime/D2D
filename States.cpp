@@ -33,27 +33,27 @@ void States::GetBlendDesc(D3D11_BLEND_DESC* desc)
 	memcpy(desc, &blDesc, sizeof(D3D11_BLEND_DESC));
 }
 
-void States::CreateRasterizer(ID3D11Device* device, D3D11_RASTERIZER_DESC* desc, ID3D11RasterizerState** state)
+void States::CreateRasterizer(D3D11_RASTERIZER_DESC* desc, ID3D11RasterizerState** state)
 {
-	HRESULT hr = device->CreateRasterizerState(desc, state);
+	HRESULT hr = MagicTowerApp::get_instance().mDevice->CreateRasterizerState(desc, state);
 	Assert(SUCCEEDED(hr));
 }
 
-void States::CreateDepthStencil(ID3D11Device* device, D3D11_DEPTH_STENCIL_DESC* desc, ID3D11DepthStencilState** state)
+void States::CreateDepthStencil(D3D11_DEPTH_STENCIL_DESC* desc, ID3D11DepthStencilState** state)
 {
-	HRESULT hr = device->CreateDepthStencilState(desc, state);
+	HRESULT hr = MagicTowerApp::get_instance().mDevice->CreateDepthStencilState(desc, state);
 	Assert(SUCCEEDED(hr));
 }
 
-void States::CreateSampler(ID3D11Device* device, D3D11_SAMPLER_DESC* desc, ID3D11SamplerState** state)
+void States::CreateSampler(D3D11_SAMPLER_DESC* desc, ID3D11SamplerState** state)
 {
-	HRESULT hr = device->CreateSamplerState(desc, state);
+	HRESULT hr = MagicTowerApp::get_instance().mDevice->CreateSamplerState(desc, state);
 	Assert(SUCCEEDED(hr));
 }
 
-void States::CreateBlend(ID3D11Device* device, D3D11_BLEND_DESC* desc, ID3D11BlendState** state)
+void States::CreateBlend(D3D11_BLEND_DESC* desc, ID3D11BlendState** state)
 {
-	HRESULT hr = device->CreateBlendState(desc, state);
+	HRESULT hr = MagicTowerApp::get_instance().mDevice->CreateBlendState(desc, state);
 	Assert(SUCCEEDED(hr));
 }
 

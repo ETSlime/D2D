@@ -5,10 +5,10 @@
 UIClip::UIClip(std::wstring clipName, Texture2D* srcTex, DirectX::XMFLOAT2 startPos, DirectX::XMFLOAT2 endPos)
 	:clipName(clipName)
 {
-	srv = srcTex->GetSRV();  //ﾀﾌｹﾌﾁ・ｼﾒｽｺｸｦ ｰ｡ﾁｮｿﾍｼｭ ｴ・ﾔ
+	srv = srcTex->GetSRV();  //ﾀﾌｹﾌﾁ・ｼﾒｽｺｸｦ ｰ｡ﾁｮｿﾍｼｭ ｴ・?
 
-	float imageWidth = srcTex->GetWidth();		//ﾇ・ｻ鄙・ﾏｴﾂ ﾀﾌｹﾌﾁﾇ ｰ｡ｷﾎﾅｩｱ・ｱｸﾇﾏｱ・
-	float imageHeight = srcTex->GetHeight();	//ﾇ・ｻ鄙・ﾏｴﾂ ﾀﾌｹﾌﾁﾇ ｼｼｷﾎﾅｩｱ・ｱｸﾇﾏｱ・
+	float imageWidth = srcTex->GetWidth();		//ﾇ・ｻ鄙・ﾏｴ?ﾀﾌｹﾌﾁﾇ ｰ｡ｷﾎﾅｩｱ・ｱｸﾇﾏｱ・
+	float imageHeight = srcTex->GetHeight();	//ﾇ・ｻ鄙・ﾏｴ?ﾀﾌｹﾌﾁﾇ ｼｼｷﾎﾅｩｱ・ｱｸﾇﾏｱ・
 	DirectX::XMFLOAT2 clipSize = DirectX::XMFLOAT2(endPos.x - startPos.x, endPos.y - startPos.y);
 	DirectX::XMFLOAT2 frameSize;
 	frameSize.x = clipSize.x;		//ﾇﾑﾇﾁｷｹﾀﾓﾀﾇ ｻ鄲ﾌﾁ鋕ｦ ｱｸﾇﾏｱ・

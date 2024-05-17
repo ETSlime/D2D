@@ -46,7 +46,7 @@ private:
 	~Mouse();
 
 	HWND handle;
-	DirectX::XMFLOAT3 position; //마퓖E� 위치
+	DirectX::XMFLOAT3 position; //마퓖E?위치
 
 	byte buttonStatus[MAX_INPUT_MOUSE];
 	byte buttonOldStatus[MAX_INPUT_MOUSE];

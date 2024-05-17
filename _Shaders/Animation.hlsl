@@ -48,16 +48,8 @@ float4 PS(PixelInput input) : SV_Target
 {
 	float4 color = _sourceTex.Sample(_samp, input.uv);
 
-	float4 redColor = { 0.01f, 0.1f, 0.1f, 0.5f };
-
-	if (Selection == 0)
-	{
-		return color;
-	}
-	else if (Selection == 1)
-	{
-		return dot(color, redColor);
-	}
+    if (color.a < 0.1)
+        discard;
 
     return color;
  

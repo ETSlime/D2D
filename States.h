@@ -1,5 +1,7 @@
 #pragma once
+
 #include "Util.h"
+#include "MagicTowerApp.h"
 
 class States
 {
@@ -11,10 +13,10 @@ public:
 	static void GetSamplerDesc(D3D11_SAMPLER_DESC* desc);
 	static void GetBlendDesc(D3D11_BLEND_DESC* desc);
 
-	static void CreateRasterizer(ID3D11Device* device, D3D11_RASTERIZER_DESC* desc, ID3D11RasterizerState** state);
-	static void CreateDepthStencil(ID3D11Device* device, D3D11_DEPTH_STENCIL_DESC* desc, ID3D11DepthStencilState** state);
-	static void CreateSampler(ID3D11Device* device, D3D11_SAMPLER_DESC* desc, ID3D11SamplerState** state);
-	static void CreateBlend(ID3D11Device* device, D3D11_BLEND_DESC* desc, ID3D11BlendState** state);
+	static void CreateRasterizer(D3D11_RASTERIZER_DESC* desc, ID3D11RasterizerState** state);
+	static void CreateDepthStencil(D3D11_DEPTH_STENCIL_DESC* desc, ID3D11DepthStencilState** state);
+	static void CreateSampler(D3D11_SAMPLER_DESC* desc, ID3D11SamplerState** state);
+	static void CreateBlend(D3D11_BLEND_DESC* desc, ID3D11BlendState** state);
 
 private:
 	static void CreateRasterizerDesc();

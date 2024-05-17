@@ -10,31 +10,32 @@ public:
 
 	static bool Stopped() { return isTimerStopped; }
 	static float Delta() { return isTimerStopped ? 0.0f : timeElapsed; }
+	static float TotalTime() { return runningTime; }
 
 	void Update();
 
 	void Start();
 	void Stop();
 
-	float FPS() const { return framePerSecond; }
+	static float FPS() { return framePerSecond; }
 	float Running() const { return runningTime; }
 
 private:
 	Timer(void);
 	~Timer(void);
 
-	static bool isTimerStopped;///< ﾅｸﾀﾌｸﾓ ﾁﾟﾁ・
-	static float timeElapsed;///< ﾀﾌﾀ・ﾇﾁｷｹﾀﾓﾀｸｷﾎｺﾎﾅﾍ ｰ豌悅ﾃｰ｣
+	static bool isTimerStopped;
+	static float timeElapsed;
 
 
-	INT64 ticksPerSecond;///< ﾃﾊｴ・ﾆｽﾄｫｿ鏆ｮ
-	INT64 currentTime;///< ﾇ・ｽﾃｰ｣
-	INT64 lastTime;///< ﾀﾌﾀ・ﾃｰ｣
-	INT64 lastFPSUpdate;///< ｸｶﾁｷ FPS ｾ･ﾀﾌﾆｮ ｽﾃｰ｣
-	INT64 fpsUpdateInterval;///< fps ｾ･ﾀﾌﾆｮ ｰ｣ｰﾝ
+	INT64 ticksPerSecond;
+	INT64 currentTime;
+	INT64 lastTime;
+	INT64 lastFPSUpdate;
+	INT64 fpsUpdateInterval;
 
-	UINT frameCount;///< ﾇﾁｷｹﾀﾓ ｼ・
-	float runningTime;///< ﾁ・ｽﾃｰ｣
-	float framePerSecond;///< FPS
+	UINT frameCount;
+	static float runningTime;
+	static float framePerSecond;
 
 };

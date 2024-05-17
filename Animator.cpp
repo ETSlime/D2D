@@ -4,21 +4,21 @@
 AnimationClip::AnimationClip(std::wstring clipName, Texture2D* srcTex, UINT frameCount, DirectX::XMFLOAT2 startPos, DirectX::XMFLOAT2 endPos, float playRate, bool bReversed)
 	:clipName(clipName), frameCount(frameCount), playRate(playRate), bReversed(bReversed)
 {
-	srv = srcTex->GetSRV();  //ﾀﾌｹﾌﾁ・ｼﾒｽｺｸｦ ｰ｡ﾁｮｿﾍｼｭ ｴ・ﾔ
+	srv = srcTex->GetSRV();  
 
-	float imageWidth = srcTex->GetWidth();		//ﾇ・ｻ鄙・ﾏｴﾂ ﾀﾌｹﾌﾁﾇ ｰ｡ｷﾎﾅｩｱ・ｱｸﾇﾏｱ・
-	float imageHeight = srcTex->GetHeight();	//ﾇ・ｻ鄙・ﾏｴﾂ ﾀﾌｹﾌﾁﾇ ｼｼｷﾎﾅｩｱ・ｱｸﾇﾏｱ・
+	float imageWidth = srcTex->GetWidth();		
+	float imageHeight = srcTex->GetHeight();	
 
-	DirectX::XMFLOAT2 clipSize = DirectX::XMFLOAT2(endPos.x - startPos.x, endPos.y - startPos.y);		//ﾇ・ｻ鄙・ﾒ ﾅｬｸｳﾀﾇ ｻ鄲ﾌﾁ・ｱｸﾇﾏｱ・
+	DirectX::XMFLOAT2 clipSize = DirectX::XMFLOAT2(endPos.x - startPos.x, endPos.y - startPos.y);		
 	DirectX::XMFLOAT2 frameSize;
-	frameSize.x = clipSize.x / frameCount;		//ﾇﾑﾇﾁｷｹﾀﾓﾀﾇ ｻ鄲ﾌﾁ鋕ｦ ｱｸﾇﾏｱ・
+	frameSize.x = clipSize.x / frameCount;		
 	frameSize.y = clipSize.y;
 
-	texelFrameSize.x = frameSize.x / imageWidth;	//ﾇﾏｳｪﾀﾇ ﾅﾘｼｿ ﾅｩｱ篋ｦ ｱｸﾇﾏｱ・
+	texelFrameSize.x = frameSize.x / imageWidth;	
 	texelFrameSize.y = frameSize.y / imageHeight;
 
 	DirectX::XMFLOAT2 texelStartPos;
-	texelStartPos.x = startPos.x / imageWidth;		//ﾇﾏｳｪﾀﾇ ﾅﾘｼｿﾀﾇ ｽﾃﾀﾛﾁ｡ﾀｻ ｱｸﾇﾏｱ・
+	texelStartPos.x = startPos.x / imageWidth;		
 	texelStartPos.y = startPos.y / imageHeight;
 
 	DirectX::XMFLOAT2 keyframe;
@@ -104,9 +104,5 @@ void Animator::SetCurrentAnimClip(std::wstring clipName)
 
 void Animator::SetAnim(AnimationClip* clip)
 {
-
-
 	AddAnimClip(clip);
-
-
 }

@@ -9,7 +9,7 @@ class UI
 {
 public:
 	/*
-	mode 0 ﾀｺ ｰﾔﾀﾓｽﾃﾀﾛ 1 ﾀｺ ui ｽﾃｰ｣ｰ・ﾃﾇﾔｼ・2 ｴﾂ pauseｰ・ﾃ 3ﾀｺ ｷｹｺｧｾ・ｰ・ﾃ 4ｴﾂ ｽﾂｸｮ ｹﾗ ﾆﾐｹ隹・ﾃ 5ｴﾂ ｰﾔﾀﾓｳｻｺﾎ ui
+	mode 0 ﾀｺ ｰﾔﾀﾓｽﾃﾀﾛ 1 ﾀｺ ui ｽﾃｰ｣ｰ・ﾃﾇﾔｼ・2 ｴﾂ pauseｰ・?3ﾀｺ ｷｹｺｧｾ・ｰ・?4ｴﾂ ｽﾂｸｮ ｹﾗ ﾆﾐｹ隹・?5ｴﾂ ｰﾔﾀﾓｳｻｺﾎ ui
 	*/
 	UI(ID3D11Device* device,ID3D11DeviceContext* deviceContext, 
 		DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, int mode);
@@ -68,16 +68,16 @@ private:
 
 	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 size;
-	int mode = 0;  // mode 0 ﾀｺ ｰﾔﾀﾓｽﾃﾀﾛ 1 ﾀｺ ui ｽﾃｰ｣ｰ・ﾃﾇﾔｼ・2 ｴﾂ pauseｰ・ﾃ 3ﾀｺ ｷｹｺｧｾ・ｰ・ﾃ 4ｴﾂ ｽﾂｸｮ ｹﾗ ﾆﾐｹ隹・ﾃ
+	int mode = 0;  // mode 0 ﾀｺ ｰﾔﾀﾓｽﾃﾀﾛ 1 ﾀｺ ui ｽﾃｰ｣ｰ・ﾃﾇﾔｼ・2 ｴﾂ pauseｰ・?3ﾀｺ ｷｹｺｧｾ・ｰ・?4ｴﾂ ｽﾂｸｮ ｹﾗ ﾆﾐｹ隹・?
 
 
-	//ｽﾃｰ｣ ｰ・ﾃ 
+	//ｽﾃｰ｣ ｰ・?
 	class UIRect* Time1 = nullptr;
 	class UIRect* Time2 = nullptr;
 	class UIRect* Time3 = nullptr;
 	class UIRect* Time4 = nullptr;
 
-	//ｷｹｺｧｾ・ﾃ｢ ｰ・ﾃ
+	//ｷｹｺｧｾ・ﾃ｢ ｰ・?
 	class TextureRect* Levelup = nullptr;
 
 	class UITextureRect* attackup = nullptr;
@@ -87,16 +87,16 @@ private:
 
 
 
-	//ｰﾔﾀﾓ ｽﾃﾀﾛ ｰ・ﾃ
+	//ｰﾔﾀﾓ ｽﾃﾀﾛ ｰ・?
 	class UITextureRect* start = nullptr;
 	class UITextureRect* how = nullptr;
 	class TextureRect* howto = nullptr;
 
-	//ｽﾂｸｮ ﾆﾐｹ・UI ｰ・ﾃ
+	//ｽﾂｸｮ ﾆﾐｹ・UI ｰ・?
 	class TextureRect* winUI = nullptr;
 	class TextureRect* LoseUI = nullptr;
 
-	//ｰﾔﾀﾓUI ｰ・ﾃ
+	//ｰﾔﾀﾓUI ｰ・?
 	class TextureRect* gameUI = nullptr;
 	class UIRect* levelupcount = nullptr;
 	class UIRect* levelupcount2 = nullptr;
@@ -127,13 +127,13 @@ private:
 
 	int pressWhat = 0;
 	/*
-	ｰ｢ｰ｢ﾀﾇ UI ｰ｡ ｹｫｾｻ ｹﾞｾﾆｵ鯀ｴｴﾂﾁ・ｸﾞｽﾃﾁｦ ｺｸｳｻｴﾂｵ･ ｾｲｴﾂ ｺｯｼ・ｰ｢ｰ｢ ｴﾙｸ･ｿ・ｵｷﾎ ｾｲﾀﾎｴﾙ
+	ｰ｢ｰ｢ﾀﾇ UI ｰ｡ ｹｫｾｻ ｹﾞｾﾆｵ鯀ｴｴﾂﾁ・ｸﾞｽﾃﾁｦ ｺｸｳｻｴﾂｵ･ ｾｲｴﾂ ｺｯｼ・ｰ｢ｰ｢ ｴﾙｸ･ｿ・ｵｷ?ｾｲﾀﾎｴﾙ
 
 	time UI : nothing (ｾﾈｾｲﾀﾓ)
 
-	startUI : demoﾆﾄﾀﾏｿ｡ ｴﾙﾀｽﾀｸｷﾎ ｳﾑﾁ愠・ｾﾈｳﾑｱ戝｡ ｴ・ﾘ ｻ鄙・ﾏｴﾂ ｿ・ｵ (1: ｳﾑｱ・0: ｾﾈｳﾑｱ・
+	startUI : demoﾆﾄﾀﾏｿ｡ ｴﾙﾀｽﾀｸｷﾎ ｳﾑﾁ愠・ｾﾈｳﾑｱ戝｡ ｴ・?ｻ鄙・ﾏｴ?ｿ・?(1: ｳﾑｱ・0: ｾﾈｳﾑｱ・
 
-	levelupUI : ｰﾔﾀﾓｿ｡ｰﾔ ﾀﾌｻ邯ﾌ ｷｹｺｧｾｸｷﾎ ｹｫｽｼ ｴﾉｷﾂﾄ｡ｸｦ ｻ鄙・ﾏｿｴｴﾂﾁ・ｾﾋｷﾁﾁﾖｴﾂ ｺｯｼ・0: ｱﾗｴ・ﾎ , 1 : hpup 2: attackup 3: attackspeedUP
+	levelupUI : ｰﾔﾀﾓｿ｡ｰﾔ ﾀﾌｻ邯ﾌ ｷｹｺｧｾｸｷﾎ ｹｫｽｼ ｴﾉｷﾂﾄ｡ｸｦ ｻ鄙・ﾏｿｴｴﾂﾁ・ｾﾋｷﾁﾁﾖｴﾂ ｺｯｼ・0: ｱﾗｴ・?, 1 : hpup 2: attackup 3: attackspeedUP
 	*/
 
 

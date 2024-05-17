@@ -7,9 +7,6 @@ class SingletonBase
 public:
 
     virtual ~SingletonBase() {
-        std::cout << "singleton des" << std::endl;
-        //delete instance;
-        //instance = nullptr;
     }
 
     SingletonBase(const SingletonBase&) = delete;
@@ -26,9 +23,5 @@ protected:
 
     
     SingletonBase() {
-        std::cout << "singleton cons" << std::endl;
     }
 };
-
-//template<typename T>
-//T* SingletonBase<T>::instance = nullptr;

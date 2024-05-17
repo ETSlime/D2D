@@ -3,7 +3,6 @@
 #include "Util.h"
 #include "Texture2D.h"
 #include "DirectHelper.h"
-#include <unordered_map>
 
 class AnimationClip
 {

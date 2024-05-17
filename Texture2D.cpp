@@ -3,10 +3,9 @@
 
 std::vector<TextureDesc> Textures::descs;
 
-Texture2D::Texture2D(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
-	std::wstring filePath):mDevice(device), mDeviceContext(deviceContext), filePath(filePath)
+Texture2D::Texture2D(std::wstring filePath):filePath(filePath)
 {
-	Textures::Load(device, this);
+	Textures::Load(mDevice, this);
 }
 
 void Texture2D::ReadPixel(std::vector<D3DXCOLOR>* pixels)
