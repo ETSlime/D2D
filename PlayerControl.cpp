@@ -2,6 +2,7 @@
 #include "PlayerControl.h"
 #include "Timer.h"
 #include "Keyboard.h"
+#include "Player.h"
 
 PlayerControl::PlayerControl()
 {
@@ -71,7 +72,7 @@ void PlayerControl::SetMovement(DWORD key, DirectX::XMFLOAT3& position)
 	default:
 		break;
 	}
-
+	UpdatePlayerCoord(key);
 	prevPosition = position;
 }
 
@@ -102,19 +103,22 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 				targetPosition = DirectX::XMFLOAT3(position.x + TileWidth, position.y, position.z);
 				break;
 			}
+			UpdatePlayerCoord(key);
 			prevPosition = position;
 		}
 		else
 		{
+			player->UpdatePositionByCoord(player->GetCoord());
 			moveDir = false;
 		}
 	}
 }
 
-void PlayerControl::UpdatePosition(DirectX::XMFLOAT3& position)
+void PlayerControl::UpdatePlayerPosition(DirectX::XMFLOAT3& position)
 {
 	if (keyboard.Down(VK_UP) && CHECKMOVE)
 	{
+		player->aaa();
 		SetMovement(VK_UP, position);
 	}
 	else if (keyboard.Down(VK_LEFT) && CHECKMOVE)
@@ -173,6 +177,25 @@ void PlayerControl::collision(DirectX::XMFLOAT3* position, float speedx, float s
 	(*position).x += speedx * Timer::Delta();
 }
 
+void PlayerControl::UpdatePlayerCoord(DWORD key)
+{
+	Coord coord = player->GetCoord();
+	switch (key)
+	{
+	case VK_UP:
+		player->SetCoord(Coord(coord.x, coord.y + 1));
+		break;
+	case VK_DOWN:
+		player->SetCoord(Coord(coord.x, coord.y - 1));
+		break;
+	case VK_LEFT:
+		player->SetCoord(Coord(coord.x - 1, coord.y));
+		break;
+	case VK_RIGHT:
+		player->SetCoord(Coord(coord.x + 1, coord.y));
+		break;
+	}
+}
 
 DirectX::XMFLOAT3 PlayerControl::Lerp(const DirectX::XMFLOAT3& startPoint, const DirectX::XMFLOAT3& endPoint, float t)
 {

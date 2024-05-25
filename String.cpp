@@ -99,7 +99,7 @@ void String::Replace(std::wstring* str, std::wstring comp, std::wstring rep)
 	*str = temp;
 }
 //sstream
-std::string String::ToString(D3DXVECTOR3 vec3, int precision)
+std::string String::ToString(DirectX::XMFLOAT3 vec3, int precision)
 {
 	std::string temp;
 	std::stringstream stream1, stream2, stream3;
@@ -111,7 +111,7 @@ std::string String::ToString(D3DXVECTOR3 vec3, int precision)
 	return temp;
 }
 
-std::wstring String::ToWstring(D3DXVECTOR3 vec3, int precision)
+std::wstring String::ToWstring(DirectX::XMFLOAT3 vec3, int precision)
 {
 	std::wstring temp;
 	std::wstringstream stream1, stream2, stream3;

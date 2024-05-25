@@ -2,6 +2,7 @@
 
 #include "Map.h"
 #include "IGameObj.h"
+#include "Tile.h"
 
 Map::Map()
 {
@@ -19,7 +20,11 @@ Map::Map()
 
 Map::~Map()
 {
-	map.clear();
+	// release tile resource
+	for (auto& tile : curMap)
+		SAFE_DELETE(tile.second);
+
+	curMap.clear();
 }
 
 void Map::GenerateMap(int floor)
@@ -30,7 +35,7 @@ void Map::GenerateMap(int floor)
 
 // define here to prevent link error
 std::unordered_map<Coord, UINT> MapStatic::baseFloor[Map::numFloor];
-std::unordered_map<Coord, IGameObj*> MapStatic::EventFloor[Map::numFloor];
+std::unordered_map<Coord, IGameObj*> MapStatic::eventFloor[Map::numFloor];
 
 void MapStatic::GenerateTileMap(UINT floor)
 {
@@ -38,7 +43,7 @@ void MapStatic::GenerateTileMap(UINT floor)
 	{
 		for (UINT j = 0; j < Map::gameHeight; j++)
 		{
-			Map::get_instance().map[Coord(i, j)] = new Tile(baseFloor[floor].at(Coord(i, j)), Coord(i, j));
+			Map::get_instance().curMap[Coord(i, j)] = new Tile(baseFloor[floor].at(Coord(i, j)), Coord(i, j));
 		}
 	}
 }
@@ -49,7 +54,7 @@ void MapStatic::BuildFloor0()
 	{
 		for (UINT j = 0; j < Map::gameHeight; j++)
 		{
-			baseFloor[0].insert({ Coord(i, j), 11});
+			baseFloor[0].insert({ Coord(i, j), i + j});
 		}
 	}
 

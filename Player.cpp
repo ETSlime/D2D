@@ -1,10 +1,10 @@
-
 #include "Player.h"
 
-Player::Player(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, std::wstring playerTexture)
-	:Character(position, size)
+
+Player::Player(Coord coord, DirectX::XMFLOAT3 size, std::wstring playerTexture)
+	:GameEvent(coord, size, EventType::PLAYER)
 {
-	Texture2D* playerTex = new Texture2D(CharactersPath + playerTexture);
+	Texture2D* playerTex = new Texture2D(GameEventsPath + playerTexture);
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(playerTex->GetWidth(), playerTex->GetHeight());
 
 	// idle Anim
@@ -38,7 +38,7 @@ Player::Player(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, std::wstring 
 
 
 	animRect->SetAnimation(animator);
-
+	animRect->SetEvent(this);
 
 
 	//collision edge

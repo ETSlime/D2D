@@ -96,7 +96,7 @@ void RectBase<VertexTexture>::UpdateWorld()
 	DirectX::XMFLOAT4X4 world;
 	T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
 	S = DirectX::XMMatrixScaling(size.x, size.y, size.z);
-	R = DirectX::XMMatrixRotationZ((float)D3DXToRadian(rotation));
+	R = DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(rotation));
 
 	W = S * R * T;
 

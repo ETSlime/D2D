@@ -412,11 +412,11 @@ void D2DApp::OnResize(UINT width, UINT height)
     // Adjust windows size according to aspect ratio
     if (width / height > aspectRatio) 
     {
-        height = width / aspectRatio;
+        height = static_cast<UINT>(width / aspectRatio);
     }
     else 
     {
-        width = height * aspectRatio;
+        width = static_cast<UINT>(height * aspectRatio);
     }
     float winScale = width  / 1280.0f;
 

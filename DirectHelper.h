@@ -94,7 +94,7 @@ public:
 	static DirectX::XMFLOAT4X4 RotationInDegree(const float& rotation)
 	{
 		DirectX::XMFLOAT4X4 m;
-		XMStoreFloat4x4(&m, DirectX::XMMatrixRotationZ((float)D3DXToRadian(rotation)));
+		XMStoreFloat4x4(&m, DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(rotation)));
 		return m;
 	}
 

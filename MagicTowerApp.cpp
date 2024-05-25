@@ -52,7 +52,7 @@ HRESULT MagicTowerApp::Initialize()
         mCamera.OffCenterLH(0.0f, (float)mClientWidth, 0.0f, (float)mClientHeight, 0, 1);
 
         // Init GUI
-        mGui.Init(m_hwnd, mDevice, mDeviceContext);
+        //mGui.Init(m_hwnd, mDevice, mDeviceContext);
 
         BuildResources();
 
@@ -77,8 +77,8 @@ void MagicTowerApp::Update()
 
     UpdateMainPassCB();
 
-    // Update GUI
-    mGui.Update();
+    //// Update GUI
+    //mGui.Update();
 
     // Update Game Objs
     for (auto it = mGOs.begin(); it != mGOs.end();)
@@ -181,13 +181,13 @@ void MagicTowerApp::DrawRenderItems()
     }
 
     // GUI
-    for (const auto& GO : mGOs)
-    {
-        if (GO.second->IsValid() == true)
-            GO.second->GUI();
-    }
+    //for (const auto& GO : mGOs)
+    //{
+    //    if (GO.second->IsValid() == true)
+    //        GO.second->GUI();
+    //}
 
-    mGui.Render();
+    //mGui.Render();
 
     // For Direct2D
     mD2DResource.pD2DRenderTarget->EndDraw();
@@ -201,6 +201,6 @@ void MagicTowerApp::DestroyGO(std::wstring name)
 void MagicTowerApp::LoadFloor(int floorNumber)
 {
     
-    Push(L"PlayerGO", new PlayerGO());
-    Push(L"FloorGO", new FloorGO(floorNumber));
+    //Push(L"FloorGO", new FloorGO(floorNumber));
+    Push(L"PlayerGO", new PlayerGO(Coord(10,10)));
 }

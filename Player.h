@@ -1,19 +1,20 @@
 #pragma once
 
-#include "Character.h"
+#include "GameEvent.h"
+#include "AnimationRect.h"
 
-
-class Player : public Character
+class Player : public GameEvent
 {
 public:
-	Player(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, std::wstring PlayerTexture);
+	Player(Coord coord, DirectX::XMFLOAT3 size, std::wstring PlayerTexture);
 	~Player();
 
 	virtual void Update() override;
 	virtual void Render() override;
 	AnimationRect* GetanimRect() { return animRect; }
 
-private:
+	void aaa() { std::cout << animRect->position.x << " " << animRect->position.y; }
 
+private:
 
 };

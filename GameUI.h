@@ -7,7 +7,7 @@
 #include "Mouse.h"
 #include "UITextureRect.h"
 #include "TextureRect.h"
-#include "SelectorTextureRect.h"
+#include "CursorTextureRect.h"
 #include "Button.h"
 #include "MagicTowerApp.h"
 
@@ -41,9 +41,9 @@ public:
 
 private:
 
-	struct Selector
+	struct Cursor
 	{
-		SelectorTextureRect* textureRect = nullptr;
+		CursorTextureRect* textureRect = nullptr;
 		DirectX::XMFLOAT3 position = {};
 		DirectX::XMFLOAT3 size = {};
 		float baseX = 0;
@@ -51,7 +51,7 @@ private:
 		int curIdx = 0;
 		bool moveDirection = 0;
 		bool isPressed = false;
-		float selectorMoveTimeInterval = 0.35f;
+		float cursorMoveTimeInterval = 0.35f;
 
 		enum
 		{
@@ -61,7 +61,7 @@ private:
 
 		void Update(short curIdx)
 		{
-			position.y = (baseY - curIdx * 0.1) * WinMaxHeight;
+			position.y = (baseY - curIdx * 0.1f) * WinMaxHeight;
 			textureRect->UpdatePosition(position);
 		}
 
@@ -87,7 +87,7 @@ private:
 		}
 	};
 
-	Selector startSelector;
+	Cursor startCursor;
 	float curTime = 0, lastTime = 0;
 	std::vector<Button*> startButtons;
 	UITextureRect* base = nullptr;

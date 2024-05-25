@@ -1,8 +1,9 @@
 #include "AnimationRect.h"
 #include "States.h"
+#include "Player.h"
 
-AnimationRect::AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size)
-	:TextureRect(position, size, 0.0f)
+AnimationRect::AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, EventType type)
+	:TextureRect(position, size, 0.0f, true)
 {
 	SetShader(ShaderPath + L"Animation.hlsl");
 
@@ -25,7 +26,8 @@ AnimationRect::AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size)
 		States::CreateBlend(&desc, &bPoint[1]);
 	}
 
-	control = new PlayerControl();
+	if (type == EventType::PLAYER)
+		control = new PlayerControl();
 
 }
 
@@ -35,7 +37,12 @@ AnimationRect::~AnimationRect()
 
 void AnimationRect::Update()
 {
-	control->SetAnimator(&animator);
+	if (control)
+	{
+		control->SetAnimator(&animator);
+		control->SetPlayer(static_cast<Player*>(currentEvent));
+	}
+
 
 	MapVertexBuffer();
 	{
@@ -63,11 +70,11 @@ void AnimationRect::Render()
 	srv = animator->GetCurrentSRV();
 
 
-	mDeviceContext->PSSetSamplers(0, 1, &point[1]);
-	mDeviceContext->OMSetBlendState(bPoint[1], nullptr, (UINT)0xFFFFFFFFFF);
+	//mDeviceContext->PSSetSamplers(0, 1, &point[1]);
+	//mDeviceContext->OMSetBlendState(bPoint[1], nullptr, (UINT)0xFFFFFFFFFF);
 	__super::Render();
-	mDeviceContext->PSSetSamplers(0, 1, &point[0]);
-	mDeviceContext->OMSetBlendState(bPoint[0], nullptr, (UINT)0xFFFFFFFFFF);
+	//mDeviceContext->PSSetSamplers(0, 1, &point[0]);
+	//mDeviceContext->OMSetBlendState(bPoint[0], nullptr, (UINT)0xFFFFFFFFFF);
 }
 
 void AnimationRect::Move()
@@ -76,8 +83,8 @@ void AnimationRect::Move()
 	//control->Move(VK_RIGHT, position, L"WalkR");
 	//control->Move(VK_UP, position, L"WalkU");
 	//control->Move(VK_DOWN, position, L"WalkD");
-
-	control->UpdatePosition(position);
+	if (control)
+		control->UpdatePlayerPosition(position);
 }
 
 bool AnimationRect::AABB(BoundingBox* other)

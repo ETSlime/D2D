@@ -8,7 +8,7 @@
 #include "Camera.h"
 #include "UploadBuffer.h"
 #include "IGameObj.h"
-#include "GUI.h"
+//#include "GUI.h"
 #include "Keyboard.h"
 #include "Timer.h"
 
@@ -16,6 +16,8 @@ struct PassConstants
 {
     DirectX::XMFLOAT4X4 View;
     DirectX::XMFLOAT4X4 Proj;
+
+    PassConstants() {};
     
 };
 
@@ -27,7 +29,7 @@ private:
 
     Camera& mCamera = Camera::get_instance();
     Keyboard& mKeyboard = Keyboard::get_instance();
-    GUI& mGui = GUI::get_instance();
+    //GUI& mGui = GUI::get_instance();
     Timer& mTimer = Timer::get_instance();
 
     PassConstants mMainPassCB;
@@ -64,7 +66,7 @@ private:
     // GameObject
 private:
     std::unordered_map<int, std::wstring> order;
-    std::unordered_map<std::wstring, IGameObj*> mGOs;
+    std::map<std::wstring, IGameObj*> mGOs;
     int count = 0;
 
     // public methods for other class

@@ -18,8 +18,8 @@ public:
 	static void Replace(std::string* str, std::string comp, std::string rep);
 	static void Replace(std::wstring* str, std::wstring comp, std::wstring rep);
 
-	static std::string ToString(D3DXVECTOR3 vec3, int precision = 5);
-	static std::wstring ToWstring(D3DXVECTOR3 vec3, int precision = 5);
+	static std::string ToString(DirectX::XMFLOAT3 vec3, int precision = 5);
+	static std::wstring ToWstring(DirectX::XMFLOAT3 vec3, int precision = 5);
 
 	static std::wstring ToWstring(std::string str);
 	static std::string ToString(std::wstring str);

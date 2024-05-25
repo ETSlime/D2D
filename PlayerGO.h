@@ -10,6 +10,9 @@
 class PlayerGO : public IGameObj
 {
 public:
+
+	PlayerGO(Coord coord, std::wstring name = L"Default") : playerCoord(coord), name(name) {};
+
 	virtual void Init() override;
 	virtual void Destroy() override;
 	virtual void Update() override;
@@ -29,18 +32,10 @@ private:
 
 	//class Collisionengine* engine = nullptr;
 
-	int play = 0;
-	float time = 0.0f;
-	float timechecker = 0.0f;
-	float arrowtime = 2.0f;
-	int PauseCount = 0;
-
-	bool Valid = true;
-
-	int PoolCount = 0;
-	int deathCount = 0;
-
 	bool valid = true;
 	bool destroy = false;
+
+	Coord playerCoord;
+	std::wstring name;
 
 };
