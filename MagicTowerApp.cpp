@@ -201,6 +201,6 @@ void MagicTowerApp::DestroyGO(std::wstring name)
 void MagicTowerApp::LoadFloor(int floorNumber)
 {
     
-    //Push(L"FloorGO", new FloorGO(floorNumber));
+    Push(L"FloorGO", new FloorGO(floorNumber));
     Push(L"PlayerGO", new PlayerGO(Coord(10,10)));
 }

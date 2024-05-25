@@ -32,6 +32,22 @@ void Map::GenerateMap(int floor)
 	mapBuilder[floor]();
 }
 
+DirectX::XMFLOAT3 Map::GetPositionFromCoord(Coord coord)
+{
+	return mapStartPosition + DirectX::XMFLOAT3(coord.x * TileWidth, coord.y * TileHeight, 0.0f);
+}
+
+void Map::UpdateUnwalkableTiles()
+{
+	unwalkableTiles.clear();
+	for (const auto& tile : curMap)
+	{
+		if (!tile.second->GetIsWalkable())
+		{
+			unwalkableTiles.push_back(tile.second->GetBoundingBox());
+		}
+	}
+}
 
 // define here to prevent link error
 std::unordered_map<Coord, UINT> MapStatic::baseFloor[Map::numFloor];

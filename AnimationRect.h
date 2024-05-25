@@ -20,11 +20,11 @@ public:
 
 	void SetAnimation(Animator* animator) { this->animator = animator; }
 	void SetEvent(GameEvent* event) { this->currentEvent = event; }
-
+	void UpdateBoundingBox();
 	DirectX::XMFLOAT3 targetpostiont = { 0,0,0 };
 
 
-	BoundingBox* GetBox() { return box; }
+	BoundingBox* GetBox() { return boundingBox; }
 	bool AABB(BoundingBox* other);
 
 	int GetDirection() { return control->GetFacingWhere(); }

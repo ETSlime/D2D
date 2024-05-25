@@ -13,8 +13,10 @@ public:
 	virtual void Render() override;
 	AnimationRect* GetanimRect() { return animRect; }
 
-	void aaa() { std::cout << animRect->position.x << " " << animRect->position.y; }
+	bool CanMove(const DirectX::XMFLOAT3& move);
 
 private:
+
+	const std::vector<BoundingBox*>* unwalkableTiles = Map::get_instance().GetUnwalkableTiles();
 
 };

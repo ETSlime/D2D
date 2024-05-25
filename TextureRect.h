@@ -42,8 +42,7 @@ protected:
 
 	D3D11_MAPPED_SUBRESOURCE subResource;
 
-	RectEdge* edge = nullptr;
-	BoundingBox* box = nullptr;
+	BoundingBox* boundingBox = nullptr;
 
 
 	DirectX::XMFLOAT2 CollisionEdge_LT = { 0,0 };

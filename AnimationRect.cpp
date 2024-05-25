@@ -3,7 +3,7 @@
 #include "Player.h"
 
 AnimationRect::AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, EventType type)
-	:TextureRect(position, size, 0.0f, true)
+	:TextureRect(position, size, 0.0f, false)
 {
 	SetShader(ShaderPath + L"Animation.hlsl");
 
@@ -61,6 +61,8 @@ void AnimationRect::Update()
 	}
 	UnmapVertexBuffer();
 
+	UpdateBoundingBox();
+
 	__super::Update();
 
 }
@@ -79,17 +81,13 @@ void AnimationRect::Render()
 
 void AnimationRect::Move()
 {
-	//control->Move(VK_LEFT, position, L"WalkL");
-	//control->Move(VK_RIGHT, position, L"WalkR");
-	//control->Move(VK_UP, position, L"WalkU");
-	//control->Move(VK_DOWN, position, L"WalkD");
 	if (control)
 		control->UpdatePlayerPosition(position);
 }
 
 bool AnimationRect::AABB(BoundingBox* other)
 {
-	if (box->AABB(other) == true)
+	if (boundingBox->AABB(other) == true)
 	{
 		isCollid = true;
 		return true;
@@ -106,4 +104,11 @@ void AnimationRect::SetclipName(std::wstring clipname1, std::wstring clipname2)
 {
 	this->clipNameL = clipname1;
 	this->clipNameR = clipname2;
+}
+
+void AnimationRect::UpdateBoundingBox()
+{
+	boundingBox = new BoundingBox(new RectEdge(
+		DirectX::XMFLOAT3(position.x, position.y + TileHeight, 0.0f),
+		DirectX::XMFLOAT3(position.x + TileWidth, position.y, 0.0f)));
 }

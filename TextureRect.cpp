@@ -9,8 +9,6 @@ TextureRect::TextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, flo
 	SetIndices();
 	CreateRenderResource(vertices, indices, ShaderPath + L"VertexTexture.hlsl");
 
-	edge = new RectEdge();
-	box = new BoundingBox(edge);
 }
 
 void TextureRect::SetVertices()
@@ -53,8 +51,7 @@ TextureRect::~TextureRect()
 	SAFE_DELETE(mWorldBuffer);
 	SafeRelease(&srv);
 
-	SAFE_DELETE(edge);
-	SAFE_DELETE(box);
+	SAFE_DELETE(boundingBox);
 }
 
 

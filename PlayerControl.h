@@ -29,7 +29,7 @@ public:
 
 	DirectX::XMFLOAT3 targetPosition;
 	DirectX::XMFLOAT3 prevPosition;
-	float stepDuration = 0.2f;
+	float stepDuration = 0.3f;
 	std::wstring clipName;
 
 	enum Direction

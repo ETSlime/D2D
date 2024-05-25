@@ -68,9 +68,9 @@ public:
 	void UpdatePosition(DirectX::XMFLOAT3 newPosition);
 	void UpdateSize(DirectX::XMFLOAT3 newScale);
 	void UpdateRotation(float newRotation);
-	DirectX::XMFLOAT3 position;
-protected:
 	
+protected:
+	DirectX::XMFLOAT3 position;
 	DirectX::XMFLOAT3 size;
 	float rotation;
 	ID3D11ShaderResourceView* srv = nullptr;

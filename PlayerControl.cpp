@@ -43,31 +43,56 @@ void PlayerControl::Idle()
 
 void PlayerControl::SetMovement(DWORD key, DirectX::XMFLOAT3& position)
 {
+	DirectX::XMFLOAT3 move;
 	switch (key)
 	{
 	case VK_UP:
-		movingUp = true;
+		move = DirectX::XMFLOAT3(0.0f, TileHeight, 0.0f);
 		movingWhere = Up;
+		if (!player->CanMove(move))
+		{
+			Idle();
+			return;
+		}
+		movingUp = true;
 		clipName = L"WalkU";
-		targetPosition = DirectX::XMFLOAT3(position.x, position.y + TileHeight, position.z);
+		targetPosition = position + move;
 		break;
 	case VK_DOWN:
-		movingDown = true;
+		move = DirectX::XMFLOAT3(0.0f, 0.0f - TileHeight, 0.0f);
 		movingWhere = Down;
+		if (!player->CanMove(move))
+		{
+			Idle();
+			return;
+		}
+		movingDown = true;
 		clipName = L"WalkD";
-		targetPosition = DirectX::XMFLOAT3(position.x, position.y - TileHeight, position.z);
+		targetPosition = position + move;
 		break;
 	case VK_LEFT:
-		movingLeft = true;
+		move = DirectX::XMFLOAT3(0.0f - TileWidth, 0.0f, 0.0f);
 		movingWhere = Left;
+		if (!player->CanMove(move))
+		{
+			Idle();
+			return;
+		}
+		movingLeft = true;
 		clipName = L"WalkL";
-		targetPosition = DirectX::XMFLOAT3(position.x - TileWidth, position.y, position.z);
+		targetPosition = position + move;
 		break;
 	case VK_RIGHT:
-		movingRight = true;
+		move = DirectX::XMFLOAT3(TileWidth, 0.0f, 0.0f);
 		movingWhere = Right;
+		if (!player->CanMove(move))
+		{
+			Idle();
+			return;
+		}
+		movingRight = true;
 		clipName = L"WalkR";
-		targetPosition = DirectX::XMFLOAT3(position.x + TileWidth, position.y, position.z);
+		targetPosition = position + move;
 		break;
 	default:
 		break;
@@ -88,19 +113,52 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 		elapsedTime = 0;
 		if (keyboard.Press(key))
 		{
+			DirectX::XMFLOAT3 move;
 			switch (key)
 			{
 			case VK_UP:
-				targetPosition = DirectX::XMFLOAT3(position.x, position.y + TileHeight, position.z);
+				move = DirectX::XMFLOAT3(0.0f, TileHeight, 0.0f);
+				if (!player->CanMove(move))
+				{
+					moveDir = false;
+					player->UpdatePositionByCoord(player->GetCoord());
+					Idle();
+					return;
+				}
+				targetPosition = position + move;
 				break;
 			case VK_DOWN:
-				targetPosition = DirectX::XMFLOAT3(position.x, position.y - TileHeight, position.z);
+				move = DirectX::XMFLOAT3(0.0f, 0.0f - TileHeight, 0.0f);
+				if (!player->CanMove(move))
+				{
+					moveDir = false;
+					player->UpdatePositionByCoord(player->GetCoord());
+					Idle();
+					return;
+				}
+				targetPosition = position + move;
 				break;
 			case VK_LEFT:
-				targetPosition = DirectX::XMFLOAT3(position.x - TileWidth, position.y, position.z);
+				move = DirectX::XMFLOAT3(0.0f - TileWidth, 0.0f, 0.0f);
+				if (!player->CanMove(move))
+				{
+					moveDir = false;
+					player->UpdatePositionByCoord(player->GetCoord());
+					Idle();
+					return;
+				}
+				targetPosition = position + move;
 				break;
 			case VK_RIGHT:
-				targetPosition = DirectX::XMFLOAT3(position.x + TileWidth, position.y, position.z);
+				move = DirectX::XMFLOAT3(TileWidth, 0.0f, 0.0f);
+				if (!player->CanMove(move))
+				{
+					moveDir = false;
+					player->UpdatePositionByCoord(player->GetCoord());
+					Idle();
+					return;
+				}
+				targetPosition = position + move;
 				break;
 			}
 			UpdatePlayerCoord(key);
@@ -118,7 +176,6 @@ void PlayerControl::UpdatePlayerPosition(DirectX::XMFLOAT3& position)
 {
 	if (keyboard.Down(VK_UP) && CHECKMOVE)
 	{
-		player->aaa();
 		SetMovement(VK_UP, position);
 	}
 	else if (keyboard.Down(VK_LEFT) && CHECKMOVE)

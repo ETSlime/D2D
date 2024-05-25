@@ -3,6 +3,7 @@
 #include "Util.h"
 #include "DirectHelper.h"
 #include "Map.h"
+#include "BoundingBox.h"
 
 class Tile
 {
@@ -26,7 +27,12 @@ public:
 
 		DirectX::XMFLOAT3 startPosition = Map::get_instance().GetMapStartPosition();
 		
-		// position
+		// AABB
+		boundingBox = new BoundingBox(new RectEdge(
+			DirectX::XMFLOAT3(startPosition.x + coord.x * TileWidth, startPosition.y + (coord.y + 1) * TileHeight, 0),
+			DirectX::XMFLOAT3(startPosition.x + (coord.x + 1) * TileWidth, startPosition.y + coord.y * TileHeight, 0)));
+
+		isWalkable = false;
 		//position = DirectX::XMFLOAT3(startPosition.x + tileSize.x * coord.x, startPosition.y + tileSize.y * coord.y, 0);
 	};
 
@@ -62,12 +68,13 @@ public:
 	std::string GetSpriteName() { return spritename; }
 	void SetSpriteName(std::string spriteName) { this->spritename = spritename; }
 
-
+	BoundingBox* GetBoundingBox() { return boundingBox; }
 
 private:
 	//DirectX::XMFLOAT3 position = Values::ZeroVec3;
 	DirectX::XMFLOAT2 startUV = Values::ZeroVec2;
 	DirectX::XMFLOAT2 endUV = Values::ZeroVec2;
+	BoundingBox* boundingBox;
 
 	ID3D11ShaderResourceView* srv = nullptr;
 

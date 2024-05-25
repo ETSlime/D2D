@@ -98,7 +98,7 @@ const std::wstring TilesetsPath = L"Graphics/Tilesets/";
 const std::wstring PicturesPath = L"Graphics/Pictures/";
 const std::wstring IconsPath = L"Graphics/Icons/";
 const std::wstring GameoversPath = L"Graphics/Gameovers/";
-const std::wstring GameEventsPath = L"Graphics/GameEvents/";
+const std::wstring GameEventsPath = L"Graphics/Events/";
 const std::wstring BattlersPath = L"Graphics/Battlers/";
 const std::wstring AutotilesPath = L"Graphics/Autotiles/";
 const std::wstring AnimationsPath = L"Graphics/Animations/";
@@ -164,10 +164,10 @@ struct WinSize
 
 struct Coord
 {
-    UINT x;
-    UINT y;
+    int x;
+    int y;
 
-    Coord(UINT x, UINT y) :x(x), y(y) {}
+    Coord(int x, int y) :x(x), y(y) {}
 
     bool operator==(const Coord& other) const {
         return x == other.x && y == other.y;

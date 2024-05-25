@@ -9,7 +9,7 @@ Player::Player(Coord coord, DirectX::XMFLOAT3 size, std::wstring playerTexture)
 
 	// idle Anim
 	AnimationClip* IdleD = new AnimationClip(L"IdleD", playerTex, 1, DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(texSize.x * 0.25f, texSize.y * 0.25f), 1.0f / 10.0f);
-	AnimationClip* IdleL = new AnimationClip(L"IdleL", playerTex, 1, DirectX::XMFLOAT2(0, texSize.y * 0.25f), DirectX::XMFLOAT2(texSize.x * 0.2f, texSize.y * 0.5f), 1.0f / 10.0f);
+	AnimationClip* IdleL = new AnimationClip(L"IdleL", playerTex, 1, DirectX::XMFLOAT2(0, texSize.y * 0.25f), DirectX::XMFLOAT2(texSize.x * 0.25f, texSize.y * 0.5f), 1.0f / 10.0f);
 	AnimationClip* IdleR = new AnimationClip(L"IdleR", playerTex, 1, DirectX::XMFLOAT2(0, texSize.x * 0.5f), DirectX::XMFLOAT2(texSize.x * 0.25f, texSize.y * 0.75f), 1.0f / 10.f);
 	AnimationClip* IdleU = new AnimationClip(L"IdleU", playerTex, 1, DirectX::XMFLOAT2(0, texSize.y * 0.75f), DirectX::XMFLOAT2(texSize.x * 0.25f, texSize.y), 1.0f / 10.0f);
 
@@ -61,10 +61,7 @@ void Player::Update()
 	animRect->Update();
 	animRect->Move();
 
-	DirectX::XMFLOAT3 tmp = *(animRect->GetPos());
-	tmp.y -= 30;
-
-
+	Map::get_instance().UpdateUnwalkableTiles();
 }
 
 void Player::Render()
@@ -72,4 +69,25 @@ void Player::Render()
 	animRect->Render();
 }
 
+bool Player::CanMove(const DirectX::XMFLOAT3& move)
+{
+	if (Keyboard::get_instance().Press(VK_CONTROL))
+		return true;
+	BoundingBox* predictedBox = new BoundingBox(*animRect->GetBox());
+	predictedBox->SetEdge(new RectEdge(
+		predictedBox->GetEdge()->LT + move,
+		predictedBox->GetEdge()->RB + move
+		));
+	for (const auto& unwalkableTile : *(unwalkableTiles)) 
+	{
+		if (unwalkableTile->AABB(predictedBox))
+		{
+			SAFE_DELETE(predictedBox);
+			return false;
+			break;
+		}
+	}
+	SAFE_DELETE(predictedBox);
+	return true;
+}
 

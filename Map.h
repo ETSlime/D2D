@@ -3,6 +3,7 @@
 #include "Util.h"
 #include "SingletonBase.h"
 #include "IGameObj.h"
+#include "BoundingBox.h"
 
 typedef void (*BuildMap)();
 
@@ -23,13 +24,14 @@ public:
 	Tile* GetTile(Coord coord) { return curMap[coord]; }
 	UINT GetNumOfTile() { return curMap.size(); }
 	DirectX::XMFLOAT3 GetMapStartPosition() { return mapStartPosition; }
-	DirectX::XMFLOAT3 GetPositionFromCoord(Coord coord) 
-	{
-		return mapStartPosition + DirectX::XMFLOAT3(coord.x * TileWidth, coord.y * TileHeight, 0.0f);
-	}
+	DirectX::XMFLOAT3 GetPositionFromCoord(Coord coord);
 
-	static const UINT gameWidth = 13;
-	static const UINT gameHeight = 13;
+	void UpdateUnwalkableTiles();
+
+	const std::vector<BoundingBox*>* GetUnwalkableTiles() { return &unwalkableTiles; }
+
+	static const UINT gameWidth = 9;
+	static const UINT gameHeight = 9;
 
 	static const UINT numFloor = 100;
 
@@ -38,6 +40,10 @@ private:
 	std::unordered_map<int, BuildMap> mapBuilder;
 
 	DirectX::XMFLOAT3 mapStartPosition = DirectX::XMFLOAT3(340, 50, 0);
+
+	std::vector<BoundingBox*> unwalkableTiles;
+
+	
 };
 
 class MapStatic

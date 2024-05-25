@@ -59,6 +59,7 @@ void TMap::Update()
 	UpdateVertices();
 	MapVertexBuffer();
 	UnmapVertexBuffer();
+	map.UpdateUnwalkableTiles();
 
 	// update wolrd
 	DirectX::XMFLOAT3 position = map.GetMapStartPosition();

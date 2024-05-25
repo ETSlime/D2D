@@ -50,7 +50,7 @@ float4 PS(PixelInput input) : SV_Target
 
     if (color.a < 0.1)
         discard;
-    color = float4(1, 1, 1, 1);
+    
     return color;
  
 }
