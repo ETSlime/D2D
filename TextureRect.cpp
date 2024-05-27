@@ -49,9 +49,8 @@ TextureRect::~TextureRect()
 	SAFE_DELETE(mPixelShader);
 	SAFE_DELETE(mInputLayout);
 	SAFE_DELETE(mWorldBuffer);
-	SafeRelease(&srv);
-
 	SAFE_DELETE(boundingBox);
+	SafeRelease(&srv);
 }
 
 

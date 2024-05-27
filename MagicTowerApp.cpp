@@ -56,7 +56,7 @@ HRESULT MagicTowerApp::Initialize()
 
         BuildResources();
 
-        Push(L"StartMenuGO", new StartMenuGO(&mD2DResource, &curWindowSize));
+        Push(L"StartMenuGO", std::make_unique<StartMenuGO>(&mD2DResource, &curWindowSize));
     }
     return hr;
 }
@@ -132,11 +132,10 @@ void MagicTowerApp::UpdateMainPassCB()
 
 }
 
-void MagicTowerApp::Push(std::wstring name, IGameObj* GO)
+void MagicTowerApp::Push(std::wstring name, std::unique_ptr<IGameObj> GO)
 {
-    mGOs[name] = GO;
-    //order[count] = name;
     GO->Init();
+    mGOs[name] = std::move(GO);
 }
 
 void MagicTowerApp::DrawRenderItems()
@@ -180,15 +179,6 @@ void MagicTowerApp::DrawRenderItems()
             GO.second->PostRender();
     }
 
-    // GUI
-    //for (const auto& GO : mGOs)
-    //{
-    //    if (GO.second->IsValid() == true)
-    //        GO.second->GUI();
-    //}
-
-    //mGui.Render();
-
     // For Direct2D
     mD2DResource.pD2DRenderTarget->EndDraw();
 }
@@ -201,6 +191,6 @@ void MagicTowerApp::DestroyGO(std::wstring name)
 void MagicTowerApp::LoadFloor(int floorNumber)
 {
     
-    Push(L"FloorGO", new FloorGO(floorNumber));
-    Push(L"PlayerGO", new PlayerGO(Coord(10,10)));
+    Push(L"FloorGO", std::make_unique<FloorGO>(floorNumber));
+    Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(10,10)));
 }

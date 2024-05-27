@@ -108,7 +108,7 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 	position = Lerp(prevPosition, targetPosition, t);
 	(*animator)->SetCurrentAnimClip(clipName);
 
-	if (t >= 1.0f)
+	if (t >= 0.99f)
 	{
 		elapsedTime = 0;
 		if (keyboard.Press(key))

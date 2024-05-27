@@ -1,11 +1,25 @@
 #pragma once
 
 #include "Map.h"
-#include "IGameObj.h"
+#include "MapStatic.h"
 #include "Tile.h"
+#include "EventFactory.h"
+
+void Map::UpdateEventsHandler(std::shared_ptr<Message> event)
+{
+	auto updateEvent = std::dynamic_pointer_cast<MessageEventUpdate>(event);
+	if (updateEvent)
+	{
+		curEvents.erase(updateEvent->eventName);
+
+	}
+}
 
 Map::Map()
 {
+	dispatcher.registerHandler("UpdateEvents", static_cast<MessageHandler>(
+		std::bind(&Map::UpdateEventsHandler, this, std::placeholders::_1)));
+
 	mapBuilder[0] = MapStatic::BuildFloor0;
 	//mapBuilder[1] = MapStatic::BuildFloor1;
 	//mapBuilder[2] = MapStatic::BuildFloor2;
@@ -20,16 +34,31 @@ Map::Map()
 
 Map::~Map()
 {
+	ClearCurrentMap();
+}
+
+void Map::ClearCurrentMap()
+{
 	// release tile resource
 	for (auto& tile : curMap)
 		SAFE_DELETE(tile.second);
 
 	curMap.clear();
+	curEvents.clear();
 }
 
 void Map::GenerateMap(int floor)
 {
 	mapBuilder[floor]();
+}
+
+void Map::GenerateEvent(int floor)
+{
+	for (auto& eventDesc : MapStatic::eventFloor[floor])
+	{
+		curEvents[eventDesc.get()->eventName] = (EventFactory::CreateGameEvent(*(eventDesc.get())));
+	}
+	
 }
 
 DirectX::XMFLOAT3 Map::GetPositionFromCoord(Coord coord)
@@ -49,41 +78,11 @@ void Map::UpdateUnwalkableTiles()
 	}
 }
 
-// define here to prevent link error
-std::unordered_map<Coord, UINT> MapStatic::baseFloor[Map::numFloor];
-std::unordered_map<Coord, IGameObj*> MapStatic::eventFloor[Map::numFloor];
-
-void MapStatic::GenerateTileMap(UINT floor)
+void Map::UpdateCollisionBoxes()
 {
-	for (UINT i = 0; i < Map::gameWidth; i++)
+	collisionBoxes.clear();
+	for (const auto& event : curEvents)
 	{
-		for (UINT j = 0; j < Map::gameHeight; j++)
-		{
-			Map::get_instance().curMap[Coord(i, j)] = new Tile(baseFloor[floor].at(Coord(i, j)), Coord(i, j));
-		}
+		collisionBoxes.push_back(event.second.get()->GetBoundingBox());
 	}
 }
-
-void MapStatic::BuildFloor0()
-{
-	for (UINT i = 0; i < Map::gameWidth; i++)
-	{
-		for (UINT j = 0; j < Map::gameHeight; j++)
-		{
-			baseFloor[0].insert({ Coord(i, j), i + j});
-		}
-	}
-
-	GenerateTileMap(0);
-}
-
-void MapStatic::BuildFloor1()
-{
-	baseFloor[0] =
-	{
-		{Coord(0,0), 0},
-		{Coord(1,1), 1},
-	};
-	GenerateTileMap(1);
-}
-

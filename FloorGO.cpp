@@ -1,27 +1,35 @@
 #include "FloorGO.h"
-
+#include "EventGO.h"
 
 FloorGO::FloorGO(int floor):floor(floor){}
 
 void FloorGO::Init()
 {
-	map = new TMap(floor);
+	tileMap = new TMap(floor);
+	map.GenerateEvent(floor);
+	UINT eventGOID = 0;
+	for (auto& event : map.curEvents)
+	{
+		std::wstring EventGOName = L"EventGO" + std::to_wstring(eventGOID++);
+		mApp.Push(EventGOName, std::make_unique<EventGO>(event.second));
+	}
+	
 }
 
 void FloorGO::Destroy()
 {
-	SAFE_DELETE(map);
+	SAFE_DELETE(tileMap);
 
 }
 
 void FloorGO::Update()
 {
-	map->Update();
+	tileMap->Update();
 }
 
 void FloorGO::Render()
 {
-	map->Render();
+	tileMap->Render();
 }
 
 void FloorGO::PostRender()

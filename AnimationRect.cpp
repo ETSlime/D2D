@@ -82,7 +82,11 @@ void AnimationRect::Render()
 void AnimationRect::Move()
 {
 	if (control)
+	{
+		Map::get_instance().UpdateCollisionBoxes();
 		control->UpdatePlayerPosition(position);
+	}
+		
 }
 
 bool AnimationRect::AABB(BoundingBox* other)
@@ -108,7 +112,27 @@ void AnimationRect::SetclipName(std::wstring clipname1, std::wstring clipname2)
 
 void AnimationRect::UpdateBoundingBox()
 {
-	boundingBox = new BoundingBox(new RectEdge(
-		DirectX::XMFLOAT3(position.x, position.y + TileHeight, 0.0f),
-		DirectX::XMFLOAT3(position.x + TileWidth, position.y, 0.0f)));
+	if (boundingBox)
+	{
+		boundingBox->SetEdge(
+			DirectX::XMFLOAT3(position.x, position.y + TileHeight, 0.0f),
+			DirectX::XMFLOAT3(position.x + TileWidth, position.y, 0.0f));
+	}
+	else
+	{
+		boundingBox = new BoundingBox(new RectEdge(
+			DirectX::XMFLOAT3(position.x, position.y + TileHeight, 0.0f),
+			DirectX::XMFLOAT3(position.x + TileWidth, position.y, 0.0f)));
+	}
+
+}
+
+void AnimationRect::SetBoundingBoxType(ColliderType type)
+{
+	boundingBox->colliderType = type;
+}
+
+void AnimationRect::SetOnCollision(CollisionCallback onCollision)
+{
+	boundingBox->onCollision = onCollision;
 }

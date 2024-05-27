@@ -5,7 +5,7 @@
 
 void PlayerGO::Init()
 {
-	player = new Player(playerCoord, { TileWidth, TileHeight, 1 }, L"002-Braver01.png");
+	player = new Player(playerCoord, L"002-Braver01.png");
 }
 
 void PlayerGO::Update()

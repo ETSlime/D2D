@@ -101,9 +101,9 @@ void TMap::UpdateVertices()
 
 	std::vector<VertexTile> tileVertices;
 	tileVertices.assign(NUM_VERTEX_PER_TILE, VertexTile());
-	for (UINT y = 0; y < Map::gameHeight; y++)
+	for (UINT y = 0; y < MapStatic::gameHeight; y++)
 	{
-		for (UINT x = 0; x < Map::gameWidth; x++)
+		for (UINT x = 0; x < MapStatic::gameWidth; x++)
 		{
 			Tile* tile = map.GetTile(Coord(x, y));
 			for (VertexTile& v : tileVertices)

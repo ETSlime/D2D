@@ -63,25 +63,16 @@
     <ClCompile Include="InputLayout.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="Util.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="VertexShader.cpp">
       <Filter>Shaders</Filter>
     </ClCompile>
     <ClCompile Include="StartMenuGO.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
-    <ClCompile Include="UIalphabet.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="Texture2D.cpp">
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="Path.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="String.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
     <ClCompile Include="DirectHelper.cpp">
@@ -144,6 +135,24 @@
     <ClCompile Include="Collisionengine.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="MapStatic.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="EventGO.cpp">
+      <Filter>Game Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Door.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="String.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageDispatcher.h">
+      <Filter>Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DApp.h">
@@ -191,16 +200,10 @@
     <ClInclude Include="StartMenuGO.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
-    <ClInclude Include="UIalphabet.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Path.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="String.h">
       <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="DirectHelper.h">
@@ -273,6 +276,24 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Collisionengine.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="MapStatic.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="EventFactory.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="EventGO.h">
+      <Filter>Game Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
       <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,12 @@
 #pragma once
 #include "Util.h"
 
+enum class ColliderType
+{
+	BLOCKING, 
+	TRIGGER
+};
+
 struct RectEdge
 {
 	DirectX::XMFLOAT3 LT;
@@ -10,15 +16,22 @@ struct RectEdge
 	RectEdge() = default;
 };
 
+// function pointer for collison
+using CollisionCallback = std::function<void()>;
+
 class BoundingBox
 {
 public:
-	BoundingBox(RectEdge* edge);
+	BoundingBox(RectEdge* edge, ColliderType type = ColliderType::BLOCKING);
 	~BoundingBox();
 
 	bool AABB(BoundingBox* ohter);
 	RectEdge* GetEdge() { return edge; }
-	void SetEdge(RectEdge* newEdge) { edge = newEdge; }
+	void SetEdge(DirectX::XMFLOAT3 newLT, DirectX::XMFLOAT3 newRB);
+	void handleCollision();
+
+	ColliderType colliderType;
+	CollisionCallback onCollision;
 
 private:
 	RectEdge* edge = nullptr;

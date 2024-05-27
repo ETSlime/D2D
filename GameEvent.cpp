@@ -1,8 +1,8 @@
 #include "GameEvent.h"
 #include "AnimationRect.h"
 
-GameEvent::GameEvent(Coord coord, DirectX::XMFLOAT3 size, EventType type)
-	:eventCoord(coord), eventType(type)
+GameEvent::GameEvent(Coord coord, DirectX::XMFLOAT3 size, EventType type, std::wstring name)
+	:eventCoord(coord), eventType(type), eventName(name)
 {
 	DirectX::XMFLOAT3 position = Map::get_instance().GetPositionFromCoord(eventCoord);
 	animRect = new AnimationRect(position, size, eventType);
@@ -35,4 +35,9 @@ void GameEvent::SetCollision(float LT_x, float LT_y, float RB_x, float RB_y)
 DirectX::XMFLOAT3* GameEvent::GetPosition()
 {
 	return animRect->GetPos();
+}
+
+BoundingBox* GameEvent::GetBoundingBox()
+{
+	return animRect->GetBox();
 }

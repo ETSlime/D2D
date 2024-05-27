@@ -1,13 +1,15 @@
 #pragma once
 
-#include "IGameObj.h"
-#include "MagicTowerApp.h"
-#include "TMap.h"
 #include "Util.h"
+#include "IGameObj.h"
+#include "GameEvent.h"
 
-class FloorGO : public IGameObj
+class EventGO : public IGameObj
 {
 public:
+
+	EventGO(std::shared_ptr<GameEvent>(event));
+
 	virtual void Init() override;
 	virtual void Destroy() override;
 	virtual void Update() override;
@@ -19,17 +21,10 @@ public:
 	virtual void SetIsDestroyed(bool _destroy) override;
 	virtual void SetIsValid(bool _valid) override;
 
-	FloorGO(int floor);
 
 private:
 
-	class TMap* tileMap = nullptr;
-
+	std::shared_ptr<GameEvent> event;
 	bool valid = true;
 	bool destroy = false;
-
-	int floor;
-
-	Map& map = Map::get_instance();
-	MagicTowerApp& mApp = MagicTowerApp::get_instance();
 };

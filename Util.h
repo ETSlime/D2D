@@ -15,29 +15,26 @@
 #include <string>
 #include <cassert>
 #include <unordered_map>
+#include <unordered_set>
 #include <map>
+#include <set>
 
 
 //DirectX
 #include <d3dcompiler.h>
 #include <d3d11.h>
-//#include <D3DX10math.h>
 #include <DirectXMath.h>
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
-//#pragma comment(lib, "d3dx11.lib")
-//#pragma comment(lib, "d3dx10.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dwrite.lib")
 
 //DirectTex
 #include "ThirdParty/DirectXTex/DirectXTex.h"
-//#include "D3DX11tex.h"
 #include <d2d1.h>
 #include <d2d1helper.h>
 #include <dwrite.h>
-//#include <wincodec.h>
 
 //ImGui
 //#include "ThirdParty/imgui/imgui.h"
@@ -168,7 +165,7 @@ struct Coord
     int y;
 
     Coord(int x, int y) :x(x), y(y) {}
-
+    Coord() = default;
     bool operator==(const Coord& other) const {
         return x == other.x && y == other.y;
     }

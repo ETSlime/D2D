@@ -138,6 +138,8 @@
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Door.cpp" />
+    <ClCompile Include="EventGO.cpp" />
     <ClCompile Include="GameEvent.cpp" />
     <ClCompile Include="Collisionengine.cpp" />
     <ClCompile Include="D2DApp.cpp" />
@@ -150,6 +152,9 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="MagicTowerApp.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MapStatic.cpp" />
+    <ClCompile Include="MessageDispatcher.h" />
+    <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PlayerControl.cpp" />
@@ -165,9 +170,7 @@
     <ClCompile Include="TextureRect.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TMap.cpp" />
-    <ClCompile Include="UIalphabet.cpp" />
     <ClCompile Include="UITextureRect.cpp" />
-    <ClCompile Include="Util.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="VertexTypes.cpp" />
   </ItemGroup>
@@ -177,6 +180,9 @@
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Door.h" />
+    <ClInclude Include="EventFactory.h" />
+    <ClInclude Include="EventGO.h" />
     <ClInclude Include="GameEvent.h" />
     <ClInclude Include="Collisionengine.h" />
     <ClInclude Include="D2DApp.h" />
@@ -189,7 +195,9 @@
     <ClInclude Include="IShader.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="MapStatic.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="Monster.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PlayerControl.h" />
@@ -208,7 +216,6 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TMap.h" />
-    <ClInclude Include="UIalphabet.h" />
     <ClInclude Include="UITextureRect.h" />
     <ClInclude Include="UploadBuffer.h" />
     <ClInclude Include="Util.h" />

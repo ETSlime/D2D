@@ -6,7 +6,7 @@
 class Player : public GameEvent
 {
 public:
-	Player(Coord coord, DirectX::XMFLOAT3 size, std::wstring PlayerTexture);
+	Player(Coord coord, std::wstring PlayerTexture, DirectX::XMFLOAT3 size = { TileWidth, TileHeight, 1 });
 	~Player();
 
 	virtual void Update() override;
@@ -18,5 +18,6 @@ public:
 private:
 
 	const std::vector<BoundingBox*>* unwalkableTiles = Map::get_instance().GetUnwalkableTiles();
+	const std::vector<BoundingBox*>* collisionBoxes = Map::get_instance().GetCollisionBoxes();
 
 };

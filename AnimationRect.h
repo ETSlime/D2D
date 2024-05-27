@@ -5,6 +5,7 @@
 #include "PlayerControl.h"
 #include "GameEvent.h"
 
+
 class GameEvent;
 
 class AnimationRect : public TextureRect
@@ -21,6 +22,9 @@ public:
 	void SetAnimation(Animator* animator) { this->animator = animator; }
 	void SetEvent(GameEvent* event) { this->currentEvent = event; }
 	void UpdateBoundingBox();
+	void SetBoundingBoxType(ColliderType type);
+	void SetOnCollision(CollisionCallback onCollision);
+
 	DirectX::XMFLOAT3 targetpostiont = { 0,0,0 };
 
 

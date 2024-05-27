@@ -4,6 +4,7 @@
 #include "DirectHelper.h"
 #include "Map.h"
 #include "BoundingBox.h"
+#include "MapStatic.h"
 
 class Tile
 {
@@ -32,8 +33,7 @@ public:
 			DirectX::XMFLOAT3(startPosition.x + coord.x * TileWidth, startPosition.y + (coord.y + 1) * TileHeight, 0),
 			DirectX::XMFLOAT3(startPosition.x + (coord.x + 1) * TileWidth, startPosition.y + coord.y * TileHeight, 0)));
 
-		isWalkable = false;
-		//position = DirectX::XMFLOAT3(startPosition.x + tileSize.x * coord.x, startPosition.y + tileSize.y * coord.y, 0);
+		isWalkable = MapStatic::walkableTiles.find(index) == MapStatic::walkableTiles.end() ? false : true;
 	};
 
 	//DirectX::XMFLOAT3 GetPosition() { return position; }

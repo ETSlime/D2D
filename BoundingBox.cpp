@@ -1,12 +1,26 @@
 #include "BoundingBox.h"
 
-BoundingBox::BoundingBox(RectEdge* edge)
-	:edge(edge)
+BoundingBox::BoundingBox(RectEdge* edge, ColliderType type)
+	:edge(edge), colliderType(type), onCollision(nullptr)
 {
 }
 
 BoundingBox::~BoundingBox()
 {
+}
+
+void BoundingBox::SetEdge(DirectX::XMFLOAT3 newLT, DirectX::XMFLOAT3 newRB)
+{
+	edge->LT = newLT;
+	edge->RB = newRB;
+}
+
+void BoundingBox::handleCollision()
+{
+	if (onCollision) 
+	{
+		onCollision();
+	}
 }
 
 bool BoundingBox::AABB(BoundingBox* ohter)
@@ -19,7 +33,17 @@ bool BoundingBox::AABB(BoundingBox* ohter)
 		edge->LT.x < otherEdge->RB.x &&
 		edge->RB.y < otherEdge->LT.y &&
 		edge->LT.y > otherEdge->RB.y)
+	{
 		return true;
+	}
+		
+	if (edge->RB.x == otherEdge->RB.x &&
+		edge->LT.x == otherEdge->LT.x &&
+		edge->RB.y == otherEdge->RB.y &&
+		edge->LT.y == otherEdge->LT.y)
+	{
+		return true;
+	}
 
 	return false;
 }
