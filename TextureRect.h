@@ -7,7 +7,7 @@
 class TextureRect:public RectBase<VertexTexture>
 {
 public:
-	TextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, float rotation);
+	TextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, float rotation, bool isCentered = false);
 
 	virtual ~TextureRect();
 
@@ -42,11 +42,11 @@ protected:
 
 	D3D11_MAPPED_SUBRESOURCE subResource;
 
-	RectEdge* edge = nullptr;
-	BoundingBox* box = nullptr;
+	BoundingBox* boundingBox = nullptr;
 
 
 	DirectX::XMFLOAT2 CollisionEdge_LT = { 0,0 };
 	DirectX::XMFLOAT2 CollisionEdge_RB = { 0,0 };
 
+	bool centered;
 };

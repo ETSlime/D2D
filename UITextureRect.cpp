@@ -8,15 +8,23 @@ UITextureRect::UITextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size,
 	CreateRenderResource(vertices, indices, ShaderPath + L"UITexture.hlsl");
 
 	// SRV
-	HRESULT hr = D3DX11CreateShaderResourceViewFromFile
-	(
-		mDevice,
-		texturePath.c_str(),
-		nullptr,
-		nullptr,
-		&srv,
-		nullptr
-	);
+	// Load texture from file using DirectXTex
+	DirectX::ScratchImage image;
+	HRESULT hr = LoadFromWICFile(texturePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, image);
+	// Create texture resource
+	ID3D11Texture2D* texture = nullptr;
+	hr = CreateTexture(mDevice, image.GetImages(), image.GetImageCount(), image.GetMetadata(), (ID3D11Resource**)&texture);
+	// Create shader resource view
+	hr = mDevice->CreateShaderResourceView(texture, nullptr, &srv);
+	//HRESULT hr = D3DX11CreateShaderResourceViewFromFile
+	//(
+	//	mDevice,
+	//	texturePath.c_str(),
+	//	nullptr,
+	//	nullptr,
+	//	&srv,
+	//	nullptr
+	//);
 	Assert(SUCCEEDED(hr));
 }
 
@@ -80,69 +88,69 @@ void UITextureRect::SetVertices()
 	vertices.assign(20, VertexTexture());
 
 	vertices[0].position = DirectX::XMFLOAT3(-0.5f, -0.5f, 1.0f);
-	vertices[0].uv = DirectX::XMFLOAT2(0.667, 0.5);
+	vertices[0].uv = DirectX::XMFLOAT2(0.667f, 0.5f);
 
-	vertices[1].position = DirectX::XMFLOAT3(-0.5 + edgeScaleX, -0.5 + edgeScaleY, 0.0f);//DirectX::XMFLOAT3(-0.4f, -0.4f, 0.0f);
-	vertices[1].uv = DirectX::XMFLOAT2(0.733, 0.45);
+	vertices[1].position = DirectX::XMFLOAT3(-0.5f + edgeScaleX, -0.5f + edgeScaleY, 0.0f);//DirectX::XMFLOAT3(-0.4f, -0.4f, 0.0f);
+	vertices[1].uv = DirectX::XMFLOAT2(0.733f, 0.45f);
 
-	vertices[2].position = DirectX::XMFLOAT3(-0.5 + edgeScaleX, -0.5f, 0.0f);
-	vertices[2].uv = DirectX::XMFLOAT2(0.733, 0.5);
+	vertices[2].position = DirectX::XMFLOAT3(-0.5f + edgeScaleX, -0.5f, 0.0f);
+	vertices[2].uv = DirectX::XMFLOAT2(0.733f, 0.5f);
 
-	vertices[3].position = DirectX::XMFLOAT3(-0.5f, -0.5 + edgeScaleY, 0.0f);
-	vertices[3].uv = DirectX::XMFLOAT2(0.667, 0.45);
+	vertices[3].position = DirectX::XMFLOAT3(-0.5f, -0.5f + edgeScaleY, 0.0f);
+	vertices[3].uv = DirectX::XMFLOAT2(0.667f, 0.45f);
 
 
 	vertices[4].position = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.0f);
-	vertices[4].uv = DirectX::XMFLOAT2(0.667, 0);
+	vertices[4].uv = DirectX::XMFLOAT2(0.667f, 0.0f);
 
-	vertices[5].position = DirectX::XMFLOAT3(-0.5 + edgeScaleX, 0.5f, 0.0f);
-	vertices[5].uv = DirectX::XMFLOAT2(0.733, 0);
+	vertices[5].position = DirectX::XMFLOAT3(-0.5f + edgeScaleX, 0.5f, 0.0f);
+	vertices[5].uv = DirectX::XMFLOAT2(0.733f, 0.0f);
 
-	vertices[6].position = DirectX::XMFLOAT3(-0.5 + edgeScaleX, 0.5 - edgeScaleY, 0.0f);
-	vertices[6].uv = DirectX::XMFLOAT2(0.733, 0.05);
+	vertices[6].position = DirectX::XMFLOAT3(-0.5f + edgeScaleX, 0.5f - edgeScaleY, 0.0f);
+	vertices[6].uv = DirectX::XMFLOAT2(0.733f, 0.05f);
 
-	vertices[7].position = DirectX::XMFLOAT3(-0.5f, 0.5 - edgeScaleY, 0.0f);
-	vertices[7].uv = DirectX::XMFLOAT2(0.667, 0.05);
+	vertices[7].position = DirectX::XMFLOAT3(-0.5f, 0.5f - edgeScaleY, 0.0f);
+	vertices[7].uv = DirectX::XMFLOAT2(0.667f, 0.05f);
 
 
-	vertices[8].position = DirectX::XMFLOAT3(0.5 - edgeScaleX, 0.5f, 0.0f);
-	vertices[8].uv = DirectX::XMFLOAT2(0.933, 0);
+	vertices[8].position = DirectX::XMFLOAT3(0.5f - edgeScaleX, 0.5f, 0.0f);
+	vertices[8].uv = DirectX::XMFLOAT2(0.933f, 0.0f);
 
 	vertices[9].position = DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f);
-	vertices[9].uv = DirectX::XMFLOAT2(1, 0);
+	vertices[9].uv = DirectX::XMFLOAT2(1.0f, 0.0f);
 
-	vertices[10].position = DirectX::XMFLOAT3(0.5f, 0.5 - edgeScaleY, 0.0f);
-	vertices[10].uv = DirectX::XMFLOAT2(1, 0.05);
+	vertices[10].position = DirectX::XMFLOAT3(0.5f, 0.5f - edgeScaleY, 0.0f);
+	vertices[10].uv = DirectX::XMFLOAT2(1.0f, 0.05f);
 
-	vertices[11].position = DirectX::XMFLOAT3(0.5 - edgeScaleX, 0.5 - edgeScaleY, 0.0f);
-	vertices[11].uv = DirectX::XMFLOAT2(0.933, 0.05);
+	vertices[11].position = DirectX::XMFLOAT3(0.5f - edgeScaleX, 0.5f - edgeScaleY, 0.0f);
+	vertices[11].uv = DirectX::XMFLOAT2(0.933f, 0.05f);
 
 
-	vertices[12].position = DirectX::XMFLOAT3(0.5 - edgeScaleX, -0.5 + edgeScaleY, 0.0f);
-	vertices[12].uv = DirectX::XMFLOAT2(0.933, 0.45);
+	vertices[12].position = DirectX::XMFLOAT3(0.5f - edgeScaleX, -0.5f + edgeScaleY, 0.0f);
+	vertices[12].uv = DirectX::XMFLOAT2(0.933f, 0.45f);
 
-	vertices[13].position = DirectX::XMFLOAT3(0.5f, -0.5 + edgeScaleY, 0.0f);
-	vertices[13].uv = DirectX::XMFLOAT2(1, 0.45);
+	vertices[13].position = DirectX::XMFLOAT3(0.5f, -0.5f + edgeScaleY, 0.0f);
+	vertices[13].uv = DirectX::XMFLOAT2(1.0f, 0.45f);
 
 	vertices[14].position = DirectX::XMFLOAT3(0.5f, -0.5f, 0.0f);
-	vertices[14].uv = DirectX::XMFLOAT2(1, 0.5);
+	vertices[14].uv = DirectX::XMFLOAT2(1.0f, 0.5f);
 
-	vertices[15].position = DirectX::XMFLOAT3(0.5 - edgeScaleX, -0.5f, 0.0f);
-	vertices[15].uv = DirectX::XMFLOAT2(0.933, 0.5);
+	vertices[15].position = DirectX::XMFLOAT3(0.5f - edgeScaleX, -0.5f, 0.0f);
+	vertices[15].uv = DirectX::XMFLOAT2(0.933f, 0.5f);
 
 
 	vertices[16].position = DirectX::XMFLOAT3(-0.5f, -0.5f, -0.0f);
-	vertices[16].uv = DirectX::XMFLOAT2(0, 1);
+	vertices[16].uv = DirectX::XMFLOAT2(0.0f, 1.0f);
 
 
 	vertices[17].position = DirectX::XMFLOAT3(0.5f, 0.5f, -0.0f);
-	vertices[17].uv = DirectX::XMFLOAT2(0.667, 0);
+	vertices[17].uv = DirectX::XMFLOAT2(0.667f, 0.0f);
 
 	vertices[18].position = DirectX::XMFLOAT3(0.5f, -0.5f, -0.0f);
-	vertices[18].uv = DirectX::XMFLOAT2(0.667, 1);
+	vertices[18].uv = DirectX::XMFLOAT2(0.667f, 1.0f);
 
 	vertices[19].position = DirectX::XMFLOAT3(-0.5f, 0.5f, -0.0f);
-	vertices[19].uv = DirectX::XMFLOAT2(0, 0);
+	vertices[19].uv = DirectX::XMFLOAT2(0.0f, 0.0f);
 }
 
 void UITextureRect::SetIndices()

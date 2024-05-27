@@ -8,7 +8,6 @@
 #include "Camera.h"
 #include "UploadBuffer.h"
 #include "IGameObj.h"
-#include "GUI.h"
 #include "Keyboard.h"
 #include "Timer.h"
 
@@ -16,7 +15,35 @@ struct PassConstants
 {
     DirectX::XMFLOAT4X4 View;
     DirectX::XMFLOAT4X4 Proj;
+
+    PassConstants() = default;
     
+};
+
+// Custom comparison for drawing game objects
+struct DrawingOrder 
+{
+    bool operator()(const std::wstring& lhs, const std::wstring& rhs) const 
+    {
+        // Check if lhs and rhs start with "Player"
+        bool lhs_is_player = lhs.compare(0, 6, L"Player") == 0;
+        bool rhs_is_player = rhs.compare(0, 6, L"Player") == 0;
+
+        // Check if lhs and rhs start with "Event"
+        bool lhs_is_event = lhs.compare(0, 5, L"Event") == 0;
+        bool rhs_is_event = rhs.compare(0, 5, L"Event") == 0;
+
+        // Prioritize "Player" to be at the end
+        if (lhs_is_player && !rhs_is_player) return false;
+        if (!lhs_is_player && rhs_is_player) return true;
+
+        // "Event" should be after other strings but before "Player"
+        if (lhs_is_event && !rhs_is_event) return false;
+        if (!lhs_is_event && rhs_is_event) return true;
+
+        // For other cases, sort alphabetically
+        return lhs < rhs;
+    }
 };
 
 class MagicTowerApp :public D2DApp, public SingletonBase<MagicTowerApp>
@@ -27,7 +54,6 @@ private:
 
     Camera& mCamera = Camera::get_instance();
     Keyboard& mKeyboard = Keyboard::get_instance();
-    GUI& mGui = GUI::get_instance();
     Timer& mTimer = Timer::get_instance();
 
     PassConstants mMainPassCB;
@@ -63,13 +89,11 @@ private:
 
     // GameObject
 private:
-    std::unordered_map<int, std::wstring> order;
-    std::unordered_map<std::wstring, IGameObj*> mGOs;
-    int count = 0;
+    std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
 
     // public methods for other class
 public:
     void DestroyGO(std::wstring name);
-    void Push(std::wstring name, IGameObj* GO);
+    void Push(std::wstring name, std::unique_ptr<IGameObj> GO);
     void LoadFloor(int floorNum);
 };

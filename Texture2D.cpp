@@ -8,7 +8,7 @@ Texture2D::Texture2D(std::wstring filePath):filePath(filePath)
 	Textures::Load(mDevice, this);
 }
 
-void Texture2D::ReadPixel(std::vector<D3DXCOLOR>* pixels)
+void Texture2D::ReadPixel(std::vector<DirectX::XMFLOAT4>* pixels)
 {
 	ID3D11Texture2D* texture;
 	srv->GetResource((ID3D11Resource**)&texture);
@@ -17,62 +17,63 @@ void Texture2D::ReadPixel(std::vector<D3DXCOLOR>* pixels)
 }
 
 void Texture2D::ReadPixel(ID3D11Device* device, ID3D11DeviceContext* deviceContext, 
-	ID3D11Texture2D* texture, std::vector<D3DXCOLOR>* pixels)
+	ID3D11Texture2D* texture, std::vector<DirectX::XMFLOAT4>* pixels)
 {
-	D3D11_TEXTURE2D_DESC srcDesc;
-	texture->GetDesc(&srcDesc);
+	//D3D11_TEXTURE2D_DESC srcDesc;
+	//texture->GetDesc(&srcDesc);
 
-	D3D11_TEXTURE2D_DESC destDesc;
-	ZERO(destDesc);
+	//D3D11_TEXTURE2D_DESC destDesc;
+	//ZERO(destDesc);
 
-	destDesc.Usage = D3D11_USAGE_STAGING;
-	destDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-	destDesc.Width = srcDesc.Width;
-	destDesc.Height = srcDesc.Height;
-	destDesc.MipLevels = 1;
-	destDesc.ArraySize = 1;
-	destDesc.Format = srcDesc.Format;
-	destDesc.SampleDesc = srcDesc.SampleDesc;
+	//destDesc.Usage = D3D11_USAGE_STAGING;
+	//destDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	//destDesc.Width = srcDesc.Width;
+	//destDesc.Height = srcDesc.Height;
+	//destDesc.MipLevels = 1;
+	//destDesc.ArraySize = 1;
+	//destDesc.Format = srcDesc.Format;
+	//destDesc.SampleDesc = srcDesc.SampleDesc;
 
-	ID3D11Texture2D* destTex = nullptr;
+	//ID3D11Texture2D* destTex = nullptr;
 
-	HRESULT hr = device->CreateTexture2D(&destDesc, nullptr, &destTex);
-	Assert(SUCCEEDED(hr));
-	D3DX11LoadTextureFromTexture(deviceContext, texture, nullptr, destTex);
+	//HRESULT hr = device->CreateTexture2D(&destDesc, nullptr, &destTex);
+	//Assert(SUCCEEDED(hr));
 
-	UINT* colors = new UINT[destDesc.Width * destDesc.Height];
+	////D3DX11LoadTextureFromTexture(deviceContext, texture, nullptr, destTex);
 
-	D3D11_MAPPED_SUBRESOURCE subResource;
-	deviceContext->Map(destTex, 0, D3D11_MAP_READ, 0, &subResource);
-	{
-		memcpy(colors, subResource.pData, sizeof(UINT) * destDesc.Width * destDesc.Height);
-	}
-	deviceContext->Unmap(destTex, 0);
+	//UINT* colors = new UINT[destDesc.Width * destDesc.Height];
 
-	int pixelNum = destDesc.Width * destDesc.Height;
+	//D3D11_MAPPED_SUBRESOURCE subResource;
+	//deviceContext->Map(destTex, 0, D3D11_MAP_READ, 0, &subResource);
+	//{
+	//	memcpy(colors, subResource.pData, sizeof(UINT) * destDesc.Width * destDesc.Height);
+	//}
+	//deviceContext->Unmap(destTex, 0);
 
-	UINT* colors1 = new UINT[destDesc.Width * destDesc.Height];
-	UINT* colors2 = new UINT[destDesc.Width * destDesc.Height];
-	UINT* colors3 = new UINT[destDesc.Width * destDesc.Height];
-	UINT* colors4 = new UINT[destDesc.Width * destDesc.Height];
+	//int pixelNum = destDesc.Width * destDesc.Height;
 
-	for (int i = 0; i < pixelNum; i++)
-	{
-		colors1[i] = (colors[i] & 0xFF000000);
-		colors2[i] = (colors[i] & 0x00FF0000);
-		colors3[i] = (colors[i] & 0x0000FF00);
-		colors4[i] = (colors[i] & 0x000000FF);
+	//UINT* colors1 = new UINT[destDesc.Width * destDesc.Height];
+	//UINT* colors2 = new UINT[destDesc.Width * destDesc.Height];
+	//UINT* colors3 = new UINT[destDesc.Width * destDesc.Height];
+	//UINT* colors4 = new UINT[destDesc.Width * destDesc.Height];
 
-		colors2[i] = colors[i] >> 16;
-		colors4[i] = colors[i] << 16;
+	//for (int i = 0; i < pixelNum; i++)
+	//{
+	//	colors1[i] = (colors[i] & 0xFF000000);
+	//	colors2[i] = (colors[i] & 0x00FF0000);
+	//	colors3[i] = (colors[i] & 0x0000FF00);
+	//	colors4[i] = (colors[i] & 0x000000FF);
 
-		colors[i] = colors1[i] | colors2[i] | colors3[i] | colors4[i];
-	}
+	//	colors2[i] = colors[i] >> 16;
+	//	colors4[i] = colors[i] << 16;
 
-	pixels->assign(&colors[0], &colors[destDesc.Width * destDesc.Height - 1]);
+	//	colors[i] = colors1[i] | colors2[i] | colors3[i] | colors4[i];
+	//}
 
-	SAFE_DELETE_ARRAY(colors);
-	SafeRelease(&destTex);
+	//pixels->assign(&colors[0], &colors[destDesc.Width * destDesc.Height - 1]);
+
+	//SAFE_DELETE_ARRAY(colors);
+	//SafeRelease(&destTex);
 
 
 }
@@ -105,8 +106,8 @@ void Textures::Load(ID3D11Device* device, Texture2D* texture)
 		Assert(SUCCEEDED(hr));
 	}
 
-	UINT width = metaData.width;
-	UINT height = metaData.height;
+	UINT width = static_cast<UINT>(metaData.width);
+	UINT height = static_cast<UINT>(metaData.height);
 
 	TextureDesc desc;
 	desc.filePath = texture->filePath;

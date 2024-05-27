@@ -27,9 +27,9 @@ class Texture2D
 public:
 	Texture2D(std::wstring filePath);
 
-	void ReadPixel(std::vector<D3DXCOLOR>* pixels);
+	void ReadPixel(std::vector<DirectX::XMFLOAT4>* pixels);
 	static void ReadPixel(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
-		ID3D11Texture2D* texture, std::vector<D3DXCOLOR>* pixels);
+		ID3D11Texture2D* texture, std::vector<DirectX::XMFLOAT4>* pixels);
 
 	ID3D11ShaderResourceView* GetSRV() { return srv; }
 	float GetWidth() { return (float)metaData.width; }

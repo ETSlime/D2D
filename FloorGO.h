@@ -23,15 +23,13 @@ public:
 
 private:
 
-	class TMap* map = nullptr;
+	class TMap* tileMap = nullptr;
 
 	bool valid = true;
 	bool destroy = false;
 
 	int floor;
 
-	ID3D11Device* mDevice = MagicTowerApp::get_instance().mDevice;
-	ID3D11DeviceContext* mDeviceContext = MagicTowerApp::get_instance().mDeviceContext;
-	const D2DResource* mD2DResource = nullptr;
-	const WinSize* curWinSize = nullptr;
+	Map& map = Map::get_instance();
+	MagicTowerApp& mApp = MagicTowerApp::get_instance();
 };

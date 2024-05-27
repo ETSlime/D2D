@@ -2,12 +2,15 @@
 
 #include "Util.h"
 #include "DirectHelper.h"
+#include "Map.h"
+#include "BoundingBox.h"
+#include "MapStatic.h"
 
 class Tile
 {
 public:
 
-	Tile(UINT index, const Coord& coord):tileIndex(index), tilePosition(coord)
+	Tile(UINT index, const Coord& coord):tileIndex(index), tileCoord(coord)
 	{
 		if (index > tileXCount * tileYCount - 1)
 			assert(false);
@@ -23,12 +26,18 @@ public:
 		startUV = DirectX::XMFLOAT2(startX, startY);
 		endUV = startUV + texTileSize;
 
-		// position
-		position = DirectX::XMFLOAT3(startPosition.x + tileSize.x * coord.x, startPosition.y + tileSize.y * coord.y, 0);
+		DirectX::XMFLOAT3 startPosition = Map::get_instance().GetMapStartPosition();
+		
+		// AABB
+		boundingBox = new BoundingBox(new RectEdge(
+			DirectX::XMFLOAT3(startPosition.x + coord.x * TileWidth, startPosition.y + (coord.y + 1) * TileHeight, 0),
+			DirectX::XMFLOAT3(startPosition.x + (coord.x + 1) * TileWidth, startPosition.y + coord.y * TileHeight, 0)));
+
+		isWalkable = MapStatic::walkableTiles.find(index) == MapStatic::walkableTiles.end() ? false : true;
 	};
 
-	DirectX::XMFLOAT3 GetPosition() { return position; }
-	void SetPosition(DirectX::XMFLOAT3 position) { this->position = position; }
+	//DirectX::XMFLOAT3 GetPosition() { return position; }
+	//void SetPosition(DirectX::XMFLOAT3 position) { this->position = position; }
 
 	DirectX::XMFLOAT2 GetStartUV() { return startUV; }
 	void SetStartUV(DirectX::XMFLOAT2 startUV) { this->startUV = startUV; }
@@ -36,12 +45,14 @@ public:
 	DirectX::XMFLOAT2 GetEndUV() { return endUV; }
 	void SetEndUV(DirectX::XMFLOAT2 endUV) { this->endUV = endUV; }
 
-	float GetDistance(Tile* node)
-	{
-		float distX = abs(position.x - node->position.x);
-		float distY = abs(position.y - node->position.y);
-		return distX + distY;
-	}
+	Coord GetCoord() { return tileCoord; }
+
+	//float GetDistance(Tile* node)
+	//{
+	//	float distX = abs(position.x - node->position.x);
+	//	float distY = abs(position.y - node->position.y);
+	//	return distX + distY;
+	//}
 
 	bool GetIsWalkable() { return isWalkable; }
 	void SetIsWalkable(bool isWalkable) { this->isWalkable = isWalkable; }
@@ -57,13 +68,13 @@ public:
 	std::string GetSpriteName() { return spritename; }
 	void SetSpriteName(std::string spriteName) { this->spritename = spritename; }
 
-
+	BoundingBox* GetBoundingBox() { return boundingBox; }
 
 private:
-	DirectX::XMFLOAT3 position = Values::ZeroVec3;
-	DirectX::XMFLOAT4 color = Values::Black;
+	//DirectX::XMFLOAT3 position = Values::ZeroVec3;
 	DirectX::XMFLOAT2 startUV = Values::ZeroVec2;
 	DirectX::XMFLOAT2 endUV = Values::ZeroVec2;
+	BoundingBox* boundingBox;
 
 	ID3D11ShaderResourceView* srv = nullptr;
 
@@ -76,10 +87,9 @@ private:
 	UINT tileXCount = 8;
 	UINT tileYCount = 38;
 
-	DirectX::XMFLOAT3 startPosition = DirectX::XMFLOAT3(340, 0, 0);
 	DirectX::XMFLOAT3 tileSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
 
-	Coord tilePosition;
+	Coord tileCoord;
 
 	DirectX::XMFLOAT2 texTileSize = DirectX::XMFLOAT2(1 / (float)tileXCount, 1 / (float)tileYCount);
 };

@@ -4,6 +4,8 @@
 #include "Keyboard.h"
 #include "Util.h"
 
+class Player;
+
 #define CHECKMOVE movingUp == false && movingLeft == false && movingRight == false && movingDown == false
 
 static int* checker;
@@ -18,15 +20,16 @@ public:
 
 	void Idle();
 	
-	// character control
-	void UpdatePosition(DirectX::XMFLOAT3& position);
+	// Player control
+	void UpdatePlayerPosition(DirectX::XMFLOAT3& position);
+	void UpdatePlayerCoord(DWORD key);
 	void SetMovement(DWORD key, DirectX::XMFLOAT3& position);
 	void Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position);
 
 
 	DirectX::XMFLOAT3 targetPosition;
 	DirectX::XMFLOAT3 prevPosition;
-	float stepDuration = 0.2f;
+	float stepDuration = 0.15f;
 	std::wstring clipName;
 
 	enum Direction
@@ -44,12 +47,12 @@ public:
 	void collision(DirectX::XMFLOAT3* position, float speedx, float speedy);
 
 	void SetAnimator(Animator** animator) { this->animator = animator; }
-
+	void SetPlayer(Player* player) { this->player = player; }
 
 
 private:
-	class Animator** animator = nullptr;
-
+	Animator** animator = nullptr;
+	Player* player = nullptr;
 	Keyboard& keyboard = Keyboard::get_instance();
 
 	bool movingUp = false;

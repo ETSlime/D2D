@@ -4,13 +4,13 @@
 GameUI::GameUI(const D2DResource* D2DResource, const WinSize* winSize, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, UIMode mode)
 	:mD2DResource(D2DResource), curWinSize(winSize), position(position), size(size), mode(mode)
 {
-	startSelector.baseX = 0.48;
-	startSelector.baseY = 0.435;
-	startSelector.position = DirectX::XMFLOAT3(startSelector.baseX * curWinSize->width, startSelector.baseY * curWinSize->height, 0.0f);
-	startSelector.size = DirectX::XMFLOAT3(250, 50, 1.0f);
-	startSelector.curIdx = 0;
-	startSelector.textureRect = new SelectorTextureRect(startSelector.position, 
-		startSelector.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	startCursor.baseX = 0.48f;
+	startCursor.baseY = 0.435f;
+	startCursor.position = DirectX::XMFLOAT3(startCursor.baseX * curWinSize->width, startCursor.baseY * curWinSize->height, 0.0f);
+	startCursor.size = DirectX::XMFLOAT3(250, 50, 1.0f);
+	startCursor.curIdx = 0;
+	startCursor.textureRect = new CursorTextureRect(startCursor.position, 
+		startCursor.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 
 	switch (mode)
 	{
@@ -26,10 +26,10 @@ GameUI::~GameUI(){}
 
 void GameUI::init_startUI()
 {
-	startButtons.push_back(new Button(L"Žn‚ß‚©‚ç", DirectX::XMFLOAT3(0.4, 0.535, 0), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::startGame, true));
-	startButtons.push_back(new Button(L"‘±‚«‚©‚ç", DirectX::XMFLOAT3(0.4, 0.635, 0), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
-	startButtons.push_back(new Button(L"ƒQ[ƒ€I—¹", DirectX::XMFLOAT3(0.4, 0.735, 0), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
-	startButtons.push_back(new Button(L"—V‚Ô•û–@à–¾", DirectX::XMFLOAT3(0.4, 0.835, 0), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
+	startButtons.push_back(new Button(L"Žn‚ß‚©‚ç", DirectX::XMFLOAT3(0.4f, 0.535f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::startGame, true));
+	startButtons.push_back(new Button(L"‘±‚«‚©‚ç", DirectX::XMFLOAT3(0.4f, 0.635f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
+	startButtons.push_back(new Button(L"ƒQ[ƒ€I—¹", DirectX::XMFLOAT3(0.4f, 0.735f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
+	startButtons.push_back(new Button(L"—V‚Ô•û–@à–¾", DirectX::XMFLOAT3(0.4f, 0.835f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
 
 
 	base = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
@@ -53,7 +53,7 @@ void GameUI::Render()
 				mD2DResource->pSolidColorBrush);
 		}
 		base->Render();
-		startSelector.textureRect->Render();
+		startCursor.textureRect->Render();
 		break;
 	}	
 }
@@ -64,44 +64,44 @@ void GameUI::Update()
 	{
 	case StartMenu:
 		curTime = Timer::TotalTime();
-		if (startSelector.isPressed)
+		if (startCursor.isPressed)
 		{
 			// wait for key up
 			if (Keyboard::get_instance().Up(VK_UP))
 			{
-				startSelector.MoveUp(startButtons);
-				startSelector.isPressed = false;
+				startCursor.MoveUp(startButtons);
+				startCursor.isPressed = false;
 			}
 			else if (Keyboard::get_instance().Up(VK_DOWN))
 			{
-				startSelector.MoveDown(startButtons);
-				startSelector.isPressed = false;
+				startCursor.MoveDown(startButtons);
+				startCursor.isPressed = false;
 			}
 
-			// if still pressed, move selector
+			// if still pressed, move cursor
 			curTime = Timer::TotalTime();
-			if (curTime - lastTime > startSelector.selectorMoveTimeInterval)
+			if (curTime - lastTime > startCursor.cursorMoveTimeInterval)
 			{
 				lastTime = curTime;
-				if (startSelector.moveDirection == Selector::UP)
-					startSelector.MoveUp(startButtons);
+				if (startCursor.moveDirection == Cursor::UP)
+					startCursor.MoveUp(startButtons);
 				else
-					startSelector.MoveDown(startButtons);
+					startCursor.MoveDown(startButtons);
 			}
 		}
 		else if (Keyboard::get_instance().Press(VK_UP))
 		{
-			startSelector.moveDirection = Selector::UP;
-			startSelector.isPressed = true;
+			startCursor.moveDirection = Cursor::UP;
+			startCursor.isPressed = true;
 			lastTime = curTime;
 		}
 		else if (Keyboard::get_instance().Press(VK_DOWN))
 		{
-			startSelector.moveDirection = Selector::DOWN;
-			startSelector.isPressed = true;
+			startCursor.moveDirection = Cursor::DOWN;
+			startCursor.isPressed = true;
 			lastTime = curTime;
 		}
-		startSelector.textureRect->Update();
+		startCursor.textureRect->Update();
 
 		for (int i = 0; i < startButtons.size(); i++)
 		{
@@ -114,7 +114,7 @@ void GameUI::Update()
 			Keyboard::get_instance().Down(VK_RETURN) ||
 			Keyboard::get_instance().Down(VK_SPACE))
 		{
-			startSelector.Execute(startButtons);
+			startCursor.Execute(startButtons);
 		}
 
 		break;

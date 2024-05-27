@@ -15,39 +15,37 @@
 #include <string>
 #include <cassert>
 #include <unordered_map>
+#include <unordered_set>
+#include <map>
+#include <set>
 
 
 //DirectX
 #include <d3dcompiler.h>
 #include <d3d11.h>
-#include <D3DX10math.h>
 #include <DirectXMath.h>
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "d3dx11.lib")
-#pragma comment(lib, "d3dx10.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dwrite.lib")
 
 //DirectTex
-#include <DirectXTex.h>
-#include "D3DX11tex.h"
+#include "ThirdParty/DirectXTex/DirectXTex.h"
 #include <d2d1.h>
 #include <d2d1helper.h>
 #include <dwrite.h>
-//#include <wincodec.h>
 
 //ImGui
-#include "ThirdParty/ImGui/imgui.h"
-#include "ThirdParty/ImGui/backends/imgui_impl_dx11.h"
-#include "ThirdParty/ImGui/backends/imgui_impl_win32.h"
+//#include "ThirdParty/imgui/imgui.h"
+//#include "ThirdParty/imgui/backends/imgui_impl_dx11.h"
+//#include "ThirdParty/imgui/backends/imgui_impl_win32.h"
 
 // Math
 #include "MathHelper.h"
 #include "XMFLOAT_Helper.h"
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+//extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
 #pragma comment(lib, "d2d1.lib")
@@ -97,7 +95,7 @@ const std::wstring TilesetsPath = L"Graphics/Tilesets/";
 const std::wstring PicturesPath = L"Graphics/Pictures/";
 const std::wstring IconsPath = L"Graphics/Icons/";
 const std::wstring GameoversPath = L"Graphics/Gameovers/";
-const std::wstring CharactersPath = L"Graphics/Characters/";
+const std::wstring GameEventsPath = L"Graphics/Events/";
 const std::wstring BattlersPath = L"Graphics/Battlers/";
 const std::wstring AutotilesPath = L"Graphics/Autotiles/";
 const std::wstring AnimationsPath = L"Graphics/Animations/";
@@ -163,11 +161,11 @@ struct WinSize
 
 struct Coord
 {
-    UINT x;
-    UINT y;
+    int x;
+    int y;
 
-    Coord(UINT x, UINT y) :x(x), y(y) {}
-
+    Coord(int x, int y) :x(x), y(y) {}
+    Coord() = default;
     bool operator==(const Coord& other) const {
         return x == other.x && y == other.y;
     }

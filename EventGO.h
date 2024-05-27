@@ -1,17 +1,14 @@
 #pragma once
-#define PoolSize 15
-#define ClearTime 60
-#define EnemySelection 4
 
-#include "IGameObj.h"
 #include "Util.h"
-#include "Player.h"
+#include "IGameObj.h"
+#include "GameEvent.h"
 
-class PlayerGO : public IGameObj
+class EventGO : public IGameObj
 {
 public:
 
-	PlayerGO(Coord coord, std::wstring name = L"Default") : playerCoord(coord), name(name) {};
+	EventGO(std::shared_ptr<GameEvent>(event));
 
 	virtual void Init() override;
 	virtual void Destroy() override;
@@ -27,15 +24,7 @@ public:
 
 private:
 
-	Player* player = nullptr;
-
-
-	//class Collisionengine* engine = nullptr;
-
+	std::shared_ptr<GameEvent> event;
 	bool valid = true;
 	bool destroy = false;
-
-	Coord playerCoord;
-	std::wstring name;
-
 };

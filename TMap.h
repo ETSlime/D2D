@@ -7,6 +7,8 @@
 #include "Map.h"
 
 
+#define NUM_VERTEX_PER_TILE 4
+#define NUM_INDEX_PER_TILE 6
 
 class TMap:public RectBase<VertexTile>
 {
@@ -21,6 +23,7 @@ public:
 
 	void MapVertexBuffer();
 	void UnmapVertexBuffer();
+	void UpdateVertices();
 
 private:
 	UINT tileXCount = 8;

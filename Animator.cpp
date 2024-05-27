@@ -1,8 +1,8 @@
 #include "Animator.h"
 #include "Timer.h"
 
-AnimationClip::AnimationClip(std::wstring clipName, Texture2D* srcTex, UINT frameCount, DirectX::XMFLOAT2 startPos, DirectX::XMFLOAT2 endPos, float playRate, bool bReversed)
-	:clipName(clipName), frameCount(frameCount), playRate(playRate), bReversed(bReversed)
+AnimationClip::AnimationClip(std::wstring clipName, Texture2D* srcTex, UINT frameCount, DirectX::XMFLOAT2 startPos, DirectX::XMFLOAT2 endPos, float playRate, bool bVertical, bool bReversed)
+	:clipName(clipName), frameCount(frameCount), playRate(playRate), isVertical(bVertical), bReversed(bReversed)
 {
 	srv = srcTex->GetSRV();  
 
@@ -11,8 +11,18 @@ AnimationClip::AnimationClip(std::wstring clipName, Texture2D* srcTex, UINT fram
 
 	DirectX::XMFLOAT2 clipSize = DirectX::XMFLOAT2(endPos.x - startPos.x, endPos.y - startPos.y);		
 	DirectX::XMFLOAT2 frameSize;
-	frameSize.x = clipSize.x / frameCount;		
-	frameSize.y = clipSize.y;
+
+	if (isVertical)
+	{
+		frameSize.x = clipSize.x;
+		frameSize.y = clipSize.y / frameCount;
+	}
+	else
+	{
+		frameSize.x = clipSize.x / frameCount;
+		frameSize.y = clipSize.y;
+	}
+
 
 	texelFrameSize.x = frameSize.x / imageWidth;	
 	texelFrameSize.y = frameSize.y / imageHeight;
@@ -25,9 +35,19 @@ AnimationClip::AnimationClip(std::wstring clipName, Texture2D* srcTex, UINT fram
 
 	for (UINT i = 0; i < frameCount; i++)
 	{
-		keyframe.x = texelStartPos.x + (texelFrameSize.x * i);
-		keyframe.y = texelStartPos.y;
-		keyFrames.push_back(keyframe);
+		if (isVertical)
+		{
+			keyframe.x = texelStartPos.x;
+			keyframe.y = texelStartPos.y + (texelFrameSize.y * i);
+			keyFrames.push_back(keyframe);
+		}
+		else
+		{
+			keyframe.x = texelStartPos.x + (texelFrameSize.x * i);
+			keyframe.y = texelStartPos.y;
+			keyFrames.push_back(keyframe);
+		}
+
 	}
 }
 

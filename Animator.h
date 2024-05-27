@@ -9,7 +9,7 @@ class AnimationClip
 public:
 	friend class Animator;
 
-	AnimationClip(std::wstring clipName, Texture2D* srcTex, UINT frameCount, DirectX::XMFLOAT2 startPos, DirectX::XMFLOAT2 endPos, float playRate, bool bReversed = false);
+	AnimationClip(std::wstring clipName, Texture2D* srcTex, UINT frameCount, DirectX::XMFLOAT2 startPos, DirectX::XMFLOAT2 endPos, float playRate, bool isVertical = false, bool bReversed = false);
 
 private:
 	std::wstring clipName = L"";
@@ -19,6 +19,7 @@ private:
 	DirectX::XMFLOAT2 texelFrameSize = Values::ZeroVec2;
 	float playRate = 0.0f;
 	bool bReversed = false;
+	bool isVertical = false;
 };
 
 class Animator
@@ -47,8 +48,6 @@ private:
 	DirectX::XMFLOAT2 currentFrame = Values::ZeroVec2;
 
 	float deltaTime = 0.0f;
-
-
 
 	float Rate = 0.0f;
 };
