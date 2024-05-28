@@ -13,7 +13,7 @@ public:
 	virtual void Update() override;
 	virtual void Render() override;
 	AnimationRect* GetanimRect() { return animRect; }
-	void OnPlayerCollision();
+	void OnPlayerCollision(Coroutine& coro);
 
 private:
 

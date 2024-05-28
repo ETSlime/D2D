@@ -10,6 +10,7 @@
 #include "IGameObj.h"
 #include "Keyboard.h"
 #include "Timer.h"
+#include "Coroutine.h"
 
 struct PassConstants
 {
@@ -96,4 +97,6 @@ public:
     void DestroyGO(std::wstring name);
     void Push(std::wstring name, std::unique_ptr<IGameObj> GO);
     void LoadFloor(int floorNum);
+
+    Coroutine& coro = Coroutine::get_instance();
 };

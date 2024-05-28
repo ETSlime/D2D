@@ -15,11 +15,12 @@ void BoundingBox::SetEdge(DirectX::XMFLOAT3 newLT, DirectX::XMFLOAT3 newRB)
 	edge->RB = newRB;
 }
 
-void BoundingBox::handleCollision()
+void BoundingBox::handleCollision(Coroutine& coro)
 {
 	if (onCollision) 
 	{
-		onCollision();
+		coro.setCallback(onCollision);
+		coro();
 	}
 }
 

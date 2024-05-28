@@ -88,7 +88,7 @@ bool Player::CanMove(const DirectX::XMFLOAT3& move)
 		{
 			if (collisionBox->colliderType == ColliderType::BLOCKING)
 			{
-				collisionBox->handleCollision();
+				collisionBox->handleCollision(MagicTowerApp::get_instance().coro);
 				SAFE_DELETE(predictedBox);
 				return false;
 			}
