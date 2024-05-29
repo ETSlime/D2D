@@ -25,7 +25,7 @@ struct TextureDesc
 class Texture2D
 {
 public:
-	Texture2D(std::wstring filePath);
+	Texture2D(std::wstring filePath, bool readRepeatedTex = true);
 
 	void ReadPixel(std::vector<DirectX::XMFLOAT4>* pixels);
 	static void ReadPixel(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
@@ -44,6 +44,7 @@ private:
 	DirectX::TexMetadata metaData;
 	ID3D11Device* mDevice = MagicTowerApp::get_instance().mDevice;
 	ID3D11DeviceContext* mDeviceContext = MagicTowerApp::get_instance().mDeviceContext;
+	bool readRepeatedTex;
 };
 
 class Textures
@@ -54,6 +55,6 @@ public:
 private:
 	friend class Texture2D;
 
-	static void Load(ID3D11Device* device, Texture2D* texture);
+	static void Load(ID3D11Device* device, Texture2D* texture, bool repeat);
 	static std::vector<TextureDesc> descs;
 };

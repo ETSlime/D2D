@@ -4,7 +4,7 @@ TMap::TMap(int floor)
 {
 	map.GenerateMap(floor);
 
-	Texture2D* tex = new Texture2D(TilesetsPath + L"tiles.png");
+	Texture2D* tex = new Texture2D(TilesetsPath + L"tiles.png", true);
 	tileSRV = tex->GetSRV();
 
 

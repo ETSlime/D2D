@@ -173,6 +173,7 @@
     <ClCompile Include="UITextureRect.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="VertexTypes.cpp" />
+    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationRect.h" />
@@ -222,6 +223,7 @@
     <ClInclude Include="Util.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="VertexTypes.h" />
+    <ClInclude Include="Weapon.h" />
     <ClInclude Include="XMFLOAT_Helper.h" />
   </ItemGroup>
   <ItemGroup>

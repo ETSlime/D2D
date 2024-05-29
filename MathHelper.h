@@ -9,6 +9,10 @@
 #include <Windows.h>
 #include <DirectXMath.h>
 #include <cstdint>
+#include <random>
+#include <sstream>
+#include <iomanip>
+#include <string>
 
 class MathHelper
 {
@@ -95,6 +99,42 @@ public:
 	static const float Infinity;
 	static const float Pi;
 
+	// Function to generate a random UUID v4
+	static std::string generate_uuid_v4() {
+		std::random_device rd;  // obtain a random number from hardware
+		std::mt19937 gen(rd()); // seed the generator
+		std::uniform_int_distribution<> dis(0, 15); // define the range for hex digits
+		std::uniform_int_distribution<> dis2(8, 11); // define the range for variant part
 
+		std::stringstream ss;
+		ss << std::hex;
+		ss << std::setfill('0');
+
+		// Generate the UUID according to RFC 4122
+		for (int i = 0; i < 8; ++i) {
+			ss << dis(gen);
+		}
+		ss << "-";
+		for (int i = 0; i < 4; ++i) {
+			ss << dis(gen);
+		}
+		ss << "-4"; // Set the version to 4
+		for (int i = 0; i < 3; ++i) {
+			ss << dis(gen);
+		}
+		ss << "-";
+		ss << dis2(gen); // Set the variant to 8, 9, A, or B
+		for (int i = 0; i < 3; ++i) {
+			ss << dis(gen);
+		}
+		ss << "-";
+		for (int i = 0; i < 12; ++i) {
+			ss << dis(gen);
+		}
+
+		return ss.str();
+	}
 };
+
+
 

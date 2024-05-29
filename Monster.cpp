@@ -1,5 +1,28 @@
 #include "Monster.h"
 
+constexpr UINT IDLE_ANIM_FRAME = 4;
+constexpr float ANIM_PLAY_SPEED = 10.0f;
+
+void Monster::OnPlayerCollision(Coroutine& coro)
+{
+	std::shared_ptr<Message> eventUpdate = std::make_shared<MessageEventUpdate>(this->eventName);
+
+	if (coro.getState() == 0)
+	{
+		Player::player->playAttackAnim = true;
+
+		coro.yield(0.2f);
+	}
+	if (coro.getState() == 1)
+	{
+		
+		MessageDispatcher::get_instance().dispatch("UpdateEvents", eventUpdate);
+		destroy = true;
+		Player::player->playAttackAnim = false;
+		// final state, complete the coroutine, otherwise will cause memory leak
+		coro.setComplete();
+	}
+};
 
 Monster::Monster(Coord coord, UINT monsterID, std::wstring eventName, DirectX::XMFLOAT3 size)
 	:GameEvent(coord, size, EventType::MONSTER, eventName)
@@ -14,7 +37,7 @@ Monster::Monster(Coord coord, UINT monsterID, std::wstring eventName, DirectX::X
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(MonsterTex->GetWidth(), MonsterTex->GetHeight());
 
 	// idle Anim
-	AnimationClip* Idle = new AnimationClip(L"Idle", MonsterTex, 4, DirectX::XMFLOAT2(0, monsterID % 4 * 0.25f * texSize.y), DirectX::XMFLOAT2(texSize.x, (monsterID % 4 + 1) * 0.25f * texSize.y), 1.0f / 10.0f);
+	AnimationClip* Idle = new AnimationClip(L"Idle", MonsterTex, IDLE_ANIM_FRAME, DirectX::XMFLOAT2(0, monsterID % 4 * 0.25f * texSize.y), DirectX::XMFLOAT2(texSize.x, (monsterID % 4 + 1) * 0.25f * texSize.y), 1.0f / ANIM_PLAY_SPEED);
 
 
 
@@ -26,11 +49,16 @@ Monster::Monster(Coord coord, UINT monsterID, std::wstring eventName, DirectX::X
 
 
 	animRect->SetAnimation(animator);
+
+	// bounding box
+	animRect->UpdateBoundingBox();
+	animRect->SetBoundingBoxType(ColliderType::BLOCKING);
+
+	// lamda expression  to capture current object and bind its member functions as callbacks.
+	
+	animRect->SetOnCollision([this](Coroutine& coro) { this->OnPlayerCollision(coro); });
+
 	animRect->SetEvent(this);
-
-
-	//collision edge
-	SetCollision(20, 20, 20, 20);
 
 
 	SAFE_DELETE(MonsterTex);

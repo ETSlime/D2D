@@ -8,10 +8,9 @@
 void Map::UpdateEventsHandler(std::shared_ptr<Message> event)
 {
 	auto updateEvent = std::dynamic_pointer_cast<MessageEventUpdate>(event);
-	if (updateEvent)
+	if (updateEvent && curEvents.find(updateEvent->eventName) != curEvents.end())
 	{
 		curEvents.erase(updateEvent->eventName);
-
 	}
 }
 
@@ -56,8 +55,14 @@ void Map::GenerateEvent(int floor)
 {
 	for (auto& eventDesc : MapStatic::eventFloor[floor])
 	{
-		curEvents[eventDesc.get()->eventName] = (EventFactory::CreateGameEvent(*(eventDesc.get())));
+		curEvents[eventDesc.get()->eventName] = std::move(EventFactory::CreateGameEvent(*(eventDesc.get())));
 	}
+	//int size = MapStatic::eventFloor[floor].size();
+	//for (int i = size - 1; i >= 0; i--)
+	//{
+	//	auto eventDesc = MapStatic::eventFloor[floor][i].get();
+	//	curEvents[eventDesc->eventName] = std::move(EventFactory::CreateGameEvent(*(eventDesc)));
+	//}
 	
 }
 

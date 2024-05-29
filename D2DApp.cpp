@@ -479,8 +479,7 @@ void D2DApp::LogAdapters()
         D3DEnumAdapterInfo* adapterInfo = new D3DEnumAdapterInfo();
         ZeroMemory(adapterInfo, sizeof(D3DEnumAdapterInfo));
         adapterInfo->adapterOrdinal = index;
-        //ｱ箴・/ ｼｭｼ・
-        // ﾀﾏﾀﾌｻ・・ﾃｹｹｰ ｵﾎｹｰ
+
         adapter->GetDesc1(&adapterInfo->adapterDesc);
         adapterInfo->adapter = adapter;
 

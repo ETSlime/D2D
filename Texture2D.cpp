@@ -3,9 +3,9 @@
 
 std::vector<TextureDesc> Textures::descs;
 
-Texture2D::Texture2D(std::wstring filePath):filePath(filePath)
+Texture2D::Texture2D(std::wstring filePath, bool repeat):filePath(filePath), readRepeatedTex(repeat)
 {
-	Textures::Load(mDevice, this);
+	Textures::Load(mDevice, this, readRepeatedTex);
 }
 
 void Texture2D::ReadPixel(std::vector<DirectX::XMFLOAT4>* pixels)
@@ -84,7 +84,7 @@ void Textures::Delete()
 		SafeRelease(&desc.srv);
 }
 
-void Textures::Load(ID3D11Device* device, Texture2D* texture)
+void Textures::Load(ID3D11Device* device, Texture2D* texture, bool repeat)
 {
 	HRESULT hr;
 	DirectX::TexMetadata metaData;
@@ -127,7 +127,7 @@ void Textures::Load(ID3D11Device* device, Texture2D* texture)
 		}
 	}
 
-	if (bExist == true)
+	if (bExist == true && !repeat)
 	{
 		texture->srv = exist.srv;
 	}

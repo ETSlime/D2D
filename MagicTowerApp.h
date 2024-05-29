@@ -90,13 +90,13 @@ private:
 
     // GameObject
 private:
-    std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
+    //std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
 
     // public methods for other class
 public:
     void DestroyGO(std::wstring name);
     void Push(std::wstring name, std::unique_ptr<IGameObj> GO);
     void LoadFloor(int floorNum);
+    std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
 
-    Coroutine& coro = Coroutine::get_instance();
 };

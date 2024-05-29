@@ -6,19 +6,19 @@
 
 class EventFactory {
 public:
-    static std::unique_ptr<GameEvent> CreateGameEvent(const EventDescriptor& descriptor) 
+    static std::shared_ptr<GameEvent> CreateGameEvent(const EventDescriptor& descriptor) 
     {
         switch (descriptor.eventType) 
         {
         case EventType::MONSTER: 
         {
             const BattleEventDescriptor& battleDesc = static_cast<const BattleEventDescriptor&>(descriptor);
-            return std::make_unique<Monster>(battleDesc.coord, battleDesc.monsterID, battleDesc.eventName);
+            return std::make_shared<Monster>(battleDesc.coord, battleDesc.monsterID, battleDesc.eventName);
         }
         case EventType::DOOR:
         {
             const DoorEventDescriptor& doorDesc = static_cast<const DoorEventDescriptor&>(descriptor);
-            return std::make_unique<Door>(doorDesc.coord, doorDesc.doorType, doorDesc.eventName);
+            return std::make_shared<Door>(doorDesc.coord, doorDesc.doorType, doorDesc.eventName);
         }
         //case EventType::ITEM: {
         //    const ItemEventDescriptor& itemDesc = static_cast<const ItemEventDescriptor&>(descriptor);

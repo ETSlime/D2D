@@ -1,6 +1,7 @@
 #pragma once
 #include "Util.h"
 #include "Coroutine.h"
+#include "MathHelper.h"
 
 enum class ColliderType
 {
@@ -33,6 +34,8 @@ public:
 
 	ColliderType colliderType;
 	CollisionCallback onCollision;
+	std::string UUID = MathHelper::generate_uuid_v4();
+	bool repeatCollisionEvent = false;
 
 private:
 	RectEdge* edge = nullptr;

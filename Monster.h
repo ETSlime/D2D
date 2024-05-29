@@ -2,6 +2,7 @@
 
 #include "GameEvent.h"
 #include "AnimationRect.h"
+#include "Player.h"
 
 class Monster : public GameEvent
 {
@@ -12,6 +13,8 @@ public:
 	virtual void Update() override;
 	virtual void Render() override;
 	AnimationRect* GetanimRect() { return animRect; }
+
+	void OnPlayerCollision(Coroutine& coro);
 
 private:
 	

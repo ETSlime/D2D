@@ -49,6 +49,7 @@ public:
 	void SetAnimator(Animator** animator) { this->animator = animator; }
 	void SetPlayer(Player* player) { this->player = player; }
 
+	Direction movingWhere = Direction::Down;
 
 private:
 	Animator** animator = nullptr;
@@ -62,8 +63,6 @@ private:
 	bool moving = false;
 
 	float elapsedTime = 0;
-
-	Direction movingWhere = Direction::Down;
 
 	float deltaTime = 0.0f;
 };

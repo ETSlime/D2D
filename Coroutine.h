@@ -5,13 +5,13 @@
 #include <functional>
 #include "SingletonBase.h"
 
-class Coroutine : public SingletonBase<Coroutine>
+class Coroutine
 {
 public:
     Coroutine(std::function<void(Coroutine&)> func) : func(func), state(0), running(true) {}
     Coroutine() : state(0), running(true) {};
 
-    void operator()() 
+    void operator()()
     {
         if (running) 
         {
@@ -27,6 +27,9 @@ public:
             running = true;
             state++;
             func(*this);  // Resume the coroutine after waiting
+            if (state > 1) {
+                completed = true;  // Mark as completed after finishing the last part
+            }
             }).detach();
     }
 
@@ -40,6 +43,16 @@ public:
         this->func = func;
     }
 
+    bool isCompleted() const 
+    {
+        return completed;
+    }
+
+    void setComplete()
+    {
+        completed = true;
+    }
+
 private:
 
     friend class SingletonBase<Coroutine>;
@@ -47,5 +60,6 @@ private:
     std::function<void(Coroutine&)> func;
     std::atomic<int> state;  // Used to keep track of coroutine state
     std::atomic<bool> running;  // Used to control whether the coroutine should run
+    std::atomic<bool> completed;  // Used to mark if the coroutine has completed
 };
 

@@ -17,6 +17,8 @@ void Door::OnPlayerCollision(Coroutine& coro)
 	{
 		MessageDispatcher::get_instance().dispatch("UpdateEvents", eventUpdate);
 		destroy = true;
+		// final state, complete the coroutine, otherwise will cause memory leak
+		coro.setComplete();
 	}
 };
 

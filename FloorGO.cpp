@@ -12,8 +12,8 @@ void FloorGO::Init()
 	{
 		std::wstring EventGOName = L"EventGO" + std::to_wstring(eventGOID++);
 		mApp.Push(EventGOName, std::make_unique<EventGO>(event.second));
-	}
 	
+	}
 }
 
 void FloorGO::Destroy()

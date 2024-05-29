@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include "Animator.h"
 #include "Map.h"

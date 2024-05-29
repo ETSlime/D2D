@@ -6,6 +6,7 @@
 void PlayerGO::Init()
 {
 	player = new Player(playerCoord, L"002-Braver01.png");
+	Player::player = player;
 }
 
 void PlayerGO::Update()

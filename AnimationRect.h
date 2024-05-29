@@ -11,7 +11,8 @@ class GameEvent;
 class AnimationRect : public TextureRect
 {
 public:
-	AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, EventType type);
+	AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, 
+		EventType type = EventType::DEFAULT);
 	~AnimationRect();
 
 	void Update();
@@ -24,9 +25,7 @@ public:
 	void UpdateBoundingBox();
 	void SetBoundingBoxType(ColliderType type);
 	void SetOnCollision(CollisionCallback onCollision);
-
-	DirectX::XMFLOAT3 targetpostiont = { 0,0,0 };
-
+	PlayerControl::Direction GetCurDirection() { if (control) return control->movingWhere; }
 
 	BoundingBox* GetBox() { return boundingBox; }
 	bool AABB(BoundingBox* other);

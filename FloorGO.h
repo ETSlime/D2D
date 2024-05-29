@@ -5,6 +5,10 @@
 #include "TMap.h"
 #include "Util.h"
 
+
+#include "Door.h"
+#include "Monster.h"
+
 class FloorGO : public IGameObj
 {
 public:
