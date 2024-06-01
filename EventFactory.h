@@ -3,6 +3,8 @@
 #include "GameEvent.h"
 #include "Monster.h"
 #include "Door.h"
+#include "Item.h"
+#include "Stair.h"
 
 class EventFactory {
 public:
@@ -20,13 +22,20 @@ public:
             const DoorEventDescriptor& doorDesc = static_cast<const DoorEventDescriptor&>(descriptor);
             return std::make_shared<Door>(doorDesc.coord, doorDesc.doorType, doorDesc.eventName);
         }
-        //case EventType::ITEM: {
-        //    const ItemEventDescriptor& itemDesc = static_cast<const ItemEventDescriptor&>(descriptor);
-        //    return new ItemEvent(itemDesc.itemID);
-        //}
-        //case EventType::TERRAIN: {
+        case EventType::ITEM:
+        {
+            const ItemEventDescriptor& itemDesc = static_cast<const ItemEventDescriptor&>(descriptor);
+            return std::make_shared<Item>(itemDesc.coord, itemDesc.itemID, itemDesc.eventName);
+        }
+        case EventType::STAIR: 
+        {
+            const StairEventDescriptor& stairDesc = static_cast<const StairEventDescriptor&>(descriptor);
+            return std::make_shared<Stair>(stairDesc.coord, stairDesc.stairType, stairDesc.newPlayerCoord, stairDesc.eventName);
+        }
+        //case EventType::TERRAIN: 
+        //{
         //    const TerrainEventDescriptor& terrainDesc = static_cast<const TerrainEventDescriptor&>(descriptor);
-        //    return new TerrainEvent(terrainDesc.terrainEffect);
+        //    return std::make_shared<Stair>(terrainDesc.coord, terrainDesc.stairType, terrainDesc.eventName);
         //}
         default:
             return nullptr;

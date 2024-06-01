@@ -3,7 +3,7 @@
 #include "Coroutine.h"
 
 constexpr UINT OPENDOOR_ANIM_FRAME = 4;
-constexpr float ANIM_PLAY_SPEED = 10.0f;
+constexpr float ANIM_PLAY_SPEED = 15.0f;
 
 void Door::OnPlayerCollision(Coroutine& coro)
 {
@@ -48,17 +48,11 @@ Door::Door(Coord coord, DoorType type, std::wstring eventName, DirectX::XMFLOAT3
 	animator->SetAnim(Idle);
 	animator->SetAnim(open);
 	animator->SetCurrentAnimClip(L"Idle");
-	animRect->SetAnimation(animator);
 
-	// bounding box
-	animRect->UpdateBoundingBox();
-	animRect->SetBoundingBoxType(ColliderType::BLOCKING);
 
+	SetupAnimRect(ColliderType::BLOCKING);
 	// lamda expression  to capture current object and bind its member functions as callbacks.
 	animRect->SetOnCollision([this](Coroutine& coro) { this->OnPlayerCollision(coro); });
-
-	animRect->SetEvent(this);
-	
 
 	SAFE_DELETE(DoorTex);
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GameEvent.h"
 #include "AnimationRect.h"
 
@@ -13,6 +15,17 @@ GameEvent::~GameEvent()
 {
 	SAFE_DELETE(animRect);
 	SAFE_DELETE(animator);
+}
+
+void GameEvent::SetupAnimRect(ColliderType type)
+{
+	animRect->SetAnimation(animator);
+
+	// bounding box
+	animRect->UpdateBoundingBox();
+	animRect->SetBoundingBoxType(type);
+
+	animRect->SetEvent(this);
 }
 
 void GameEvent::SetCoord(Coord newCoord)
@@ -34,10 +47,16 @@ void GameEvent::SetCollision(float LT_x, float LT_y, float RB_x, float RB_y)
 
 DirectX::XMFLOAT3* GameEvent::GetPosition()
 {
-	return animRect->GetPos();
+	if (animRect)
+		return animRect->GetPos();
+	else
+		return nullptr;
 }
 
 BoundingBox* GameEvent::GetBoundingBox()
 {
-	return animRect->GetBox();
+	if (animRect)
+		return animRect->GetBox();
+	else
+		return nullptr;
 }

@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "AnimationRect.h"
+#include "ChangeMapEffect.h"
 
 Player* Player::player = nullptr;
 
@@ -45,17 +47,35 @@ Player::Player(Coord coord, std::wstring playerTexture, DirectX::XMFLOAT3 size)
 	//collision edge
 	//SetCollision(20, 20, 20, 20);
 
+	// weapon
 	sword = new Weapon(WeaponType::SWORD, 0);
+
+	// up/down stair effect
+	fadeEffect = new ChangeMapEffect();
 
 	SAFE_DELETE(playerTex);
 
 	player = this;
 }
 
+void Player::PlayFadeEffect(bool fade)
+{
+	if (fade)
+	{
+		fadeEffect->SetFading(true);
+		fadeEffect->StartFadeOut();
+	}
+		
+	else
+		fadeEffect->StartFadeIn();
+		
+}
+
 Player::~Player()
 {
 	SAFE_DELETE(armor);
 	SAFE_DELETE(sword);
+	SAFE_DELETE(fadeEffect);
 	cleanUpCompletedCoroutines();
 }
 
@@ -81,9 +101,12 @@ void Player::Update()
 			attackPosition += DirectX::XMFLOAT3(TileWidth, 0.0f, 0.0f);
 			break;
 		}
-		sword->UpdateAttackEffect(attackPosition);
+		DirectX::XMFLOAT3 adjust = DirectX::XMFLOAT3(TileWidth / 2, TileHeight / 2, 0.0f);
+		sword->UpdateAttackEffect(attackPosition - adjust);
 	}
-		
+	if (fadeEffect->GetFading())
+		fadeEffect->Update();
+
 	cleanUpCompletedCoroutines();
 }
 
@@ -92,6 +115,8 @@ void Player::Render()
 	animRect->Render();
 	if (playAttackAnim)
 		sword->RenderAttackEffect();
+	if (fadeEffect->GetFading())
+		fadeEffect->Render();
 }
 
 bool Player::CanMove(const DirectX::XMFLOAT3& move)
@@ -115,27 +140,28 @@ bool Player::CanMove(const DirectX::XMFLOAT3& move)
 	{
 		if (collisionBox->AABB(predictedBox))
 		{
+			if (!collisionBox->repeatCollisionEvent)
+			{
+				if (coroutinesNonRepeat.find(collisionBox->UUID) == coroutinesNonRepeat.end())
+				{
+					// hashmap to make sure one bounding box collison only happen once
+					std::shared_ptr<Coroutine> coro = std::make_shared<Coroutine>();
+					coroutinesNonRepeat[collisionBox->UUID] = coro;
+					collisionBox->handleCollision(*coro);
+				}
+			}
+			else if (!isCoroutineRunning)
+			{
+				isCoroutineRunning = true;
+				std::shared_ptr<Coroutine> coro = std::make_shared<Coroutine>();
+				coroutines.push_back(coro);
+				collisionBox->handleCollision(*coro);
+			}
+
 			switch (collisionBox->colliderType)
 			{
 			case (ColliderType::BLOCKING):
 			{
-				if (!collisionBox->repeatCollisionEvent)
-				{
-					if (coroutinesNonRepeat.find(collisionBox->UUID) == coroutinesNonRepeat.end())
-					{
-						// hashmap to make sure one bounding box collison only happen once
-						std::shared_ptr<Coroutine> coro = std::make_shared<Coroutine>();
-						coroutinesNonRepeat[collisionBox->UUID] = coro;
-						collisionBox->handleCollision(*coro);
-					}
-				}
-				else if (!isCoroutineRunning)
-				{
-					isCoroutineRunning = true;
-					std::shared_ptr<Coroutine> coro = std::make_shared<Coroutine>();
-					coroutines.push_back(coro);
-					collisionBox->handleCollision(*coro);
-				}
 				SAFE_DELETE(predictedBox);
 				return false;
 			}

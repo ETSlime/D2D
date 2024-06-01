@@ -36,4 +36,5 @@ private:
 
 	Map& map = Map::get_instance();
 	MagicTowerApp& mApp = MagicTowerApp::get_instance();
+	std::vector<std::wstring> curEventsGOName;
 };

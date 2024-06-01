@@ -83,15 +83,24 @@ void MagicTowerApp::Update()
     // Update Game Objs
     for (auto it = mGOs.begin(); it != mGOs.end();)
     {
-        if (it->second->IsDestroyed())
+        if (it->second && it->second->IsDestroyed())
         {
+            it->second->Destroy();
             it = mGOs.erase(it);
         }
         else
-        {
-            it->second->Update();
-            ++it;
-        }
+            it++;
+    }
+    for (auto it = pushQueue.begin(); it != pushQueue.end();)
+    {
+        Push(*it, std::make_unique<FloorGO>(std::stoi((*it).substr(7))));
+        it = pushQueue.erase(it);
+    }
+
+    for (auto it = mGOs.begin(); it != mGOs.end();)
+    {
+        it->second->Update();
+        ++it;
     }
 }
 
@@ -185,12 +194,12 @@ void MagicTowerApp::DrawRenderItems()
 
 void MagicTowerApp::DestroyGO(std::wstring name)
 {
-    mGOs[name]->SetIsDestroyed(true);
+    if (mGOs[name])
+        mGOs[name]->SetIsDestroyed(true);
 }
 
 void MagicTowerApp::LoadFloor(int floorNumber)
 {
-    
-    Push(L"FloorGO", std::make_unique<FloorGO>(floorNumber));
-    Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(10,10)));
+    std::wstring floorGOName = L"FloorGO" + std::to_wstring(floorNumber);
+    pushQueue.push_back(floorGOName);
 }

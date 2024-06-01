@@ -26,6 +26,7 @@ struct DrawingOrder
 {
     bool operator()(const std::wstring& lhs, const std::wstring& rhs) const 
     {
+
         // Check if lhs and rhs start with "Player"
         bool lhs_is_player = lhs.compare(0, 6, L"Player") == 0;
         bool rhs_is_player = rhs.compare(0, 6, L"Player") == 0;
@@ -90,13 +91,13 @@ private:
 
     // GameObject
 private:
-    //std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
+    std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
+    std::vector<std::wstring> pushQueue;
 
     // public methods for other class
 public:
     void DestroyGO(std::wstring name);
     void Push(std::wstring name, std::unique_ptr<IGameObj> GO);
     void LoadFloor(int floorNum);
-    std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
 
 };

@@ -2,6 +2,7 @@
 
 #include "Util.h"
 #include "MagicTowerApp.h"
+#include "PlayerGO.h"
 
 typedef int (*OnClick)();
 
@@ -58,7 +59,7 @@ public:
 		MagicTowerApp& mApp = MagicTowerApp::get_instance();
 
 		mApp.DestroyGO(L"StartMenuGO");
-
+		mApp.Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(10, 10)));
 		mApp.LoadFloor(0);
 
 		return 0;

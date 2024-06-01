@@ -31,6 +31,19 @@ struct VertexTexture
 	static const UINT count = 2;
 };
 
+struct SimpleVertex
+{
+	SimpleVertex() : position(0, 0, 0){}
+	SimpleVertex(DirectX::XMFLOAT3 position)
+		: position(position)
+	{
+
+	}
+	DirectX::XMFLOAT3 position;
+	static D3D11_INPUT_ELEMENT_DESC descs[];
+	static const UINT count = 2;
+};
+
 struct VertexTextureColor
 {
 	VertexTextureColor() : position(0, 0, 0), uv(0, 0), color(0, 0, 0, 0) {}

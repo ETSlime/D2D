@@ -15,7 +15,6 @@ void StartMenuGO::Init()
 void StartMenuGO::Destroy()
 {
 	SAFE_DELETE(startUI);
-
 }
 
 void StartMenuGO::Update()

@@ -45,7 +45,7 @@ class RectBase : public IRectBase
 {
 public:
 	RectBase();
-	~RectBase();
+	virtual ~RectBase();
 
 	virtual void Render() override;
 
@@ -58,7 +58,7 @@ class RectBase<VertexTexture>:public IRectBase
 {
 public:
 	RectBase(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, float rotation);
-	~RectBase();
+	virtual ~RectBase();
 
 	void CreateRenderResource(const std::vector<VertexTexture>vertices,
 		const std::vector<UINT>indices, std::wstring shaderPath);
@@ -75,5 +75,6 @@ protected:
 	float rotation;
 	ID3D11ShaderResourceView* srv = nullptr;
 };
+
 
 

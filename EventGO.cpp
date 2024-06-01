@@ -33,6 +33,7 @@ void EventGO::Render()
 
 void EventGO::PostRender()
 {
+	event->PostRender();
 }
 
 void EventGO::GUI()

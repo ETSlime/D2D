@@ -1,5 +1,6 @@
 #include "FloorGO.h"
 #include "EventGO.h"
+#include "Stair.h"
 
 FloorGO::FloorGO(int floor):floor(floor){}
 
@@ -10,16 +11,25 @@ void FloorGO::Init()
 	UINT eventGOID = 0;
 	for (auto& event : map.curEvents)
 	{
-		std::wstring EventGOName = L"EventGO" + std::to_wstring(eventGOID++);
+		std::wstring EventGOName;
+		if (event.second.get()->GetEventType() == EventType::STAIR)
+			dynamic_cast<Stair*>(event.second.get())->SetCurrentFloor(floor);
+
+		EventGOName = L"EventGO" + std::to_wstring(eventGOID++);
+		
 		mApp.Push(EventGOName, std::make_unique<EventGO>(event.second));
-	
+		curEventsGOName.push_back(EventGOName);
 	}
 }
 
 void FloorGO::Destroy()
 {
 	SAFE_DELETE(tileMap);
-
+	map.curEvents.clear();
+	for (auto& name : curEventsGOName)
+	{
+		mApp.DestroyGO(name);
+	}
 }
 
 void FloorGO::Update()

@@ -24,8 +24,9 @@ public:
 	static void BuildFloor0();
 	static void BuildFloor1();
 
+	template<typename... Args>
 	static std::unique_ptr<EventDescriptor> CreateEventDescriptor(EventType eventType, 
-		Coord coord, UINT eventID, std::wstring eventName = L"DefaultEventName");
+		Coord coord, UINT eventID, std::wstring eventName = L"DefaultEventName", Args... args);
 	static void GenerateTileMap(UINT floor);
 
 };

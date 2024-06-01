@@ -81,9 +81,6 @@
     <ClCompile Include="States.cpp">
       <Filter>Render</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerControl.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="Animator.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
@@ -153,6 +150,21 @@
     <ClCompile Include="MessageDispatcher.h">
       <Filter>Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerControl.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Stair.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ChangeMapEffect.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DApp.h">
@@ -211,9 +223,6 @@
     </ClInclude>
     <ClInclude Include="States.h">
       <Filter>Render</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerControl.h">
-      <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Animator.h">
       <Filter>Utilities</Filter>
@@ -281,9 +290,6 @@
     <ClInclude Include="MapStatic.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="EventFactory.h">
-      <Filter>System</Filter>
-    </ClInclude>
     <ClInclude Include="Monster.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -295,6 +301,27 @@
     </ClInclude>
     <ClInclude Include="String.h">
       <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Coroutine.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerControl.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Stair.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="EventFactory.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="ChangeMapEffect.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

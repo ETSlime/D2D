@@ -2,7 +2,6 @@
 
 #include "Tile.h"
 #include "Texture2D.h"
-#include "VertexTypes.h"
 #include "RectBase.h"
 #include "Map.h"
 

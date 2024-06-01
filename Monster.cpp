@@ -37,31 +37,20 @@ Monster::Monster(Coord coord, UINT monsterID, std::wstring eventName, DirectX::X
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(MonsterTex->GetWidth(), MonsterTex->GetHeight());
 
 	// idle Anim
-	AnimationClip* Idle = new AnimationClip(L"Idle", MonsterTex, IDLE_ANIM_FRAME, DirectX::XMFLOAT2(0, monsterID % 4 * 0.25f * texSize.y), DirectX::XMFLOAT2(texSize.x, (monsterID % 4 + 1) * 0.25f * texSize.y), 1.0f / ANIM_PLAY_SPEED);
-
-
+	AnimationClip* Idle = new AnimationClip(L"Idle", MonsterTex, IDLE_ANIM_FRAME, DirectX::XMFLOAT2(0, monsterID % 4 * 0.25f * texSize.y), 
+		DirectX::XMFLOAT2(texSize.x, (monsterID % 4 + 1) * 0.25f * texSize.y), 1.0f / ANIM_PLAY_SPEED);
 
 	//clip save
 	animator->SetAnim(Idle);
-
-
 	animator->SetCurrentAnimClip(L"Idle");
 
-
-	animRect->SetAnimation(animator);
-
-	// bounding box
-	animRect->UpdateBoundingBox();
-	animRect->SetBoundingBoxType(ColliderType::BLOCKING);
+	SetupAnimRect(ColliderType::BLOCKING);
 
 	// lamda expression  to capture current object and bind its member functions as callbacks.
-	
 	animRect->SetOnCollision([this](Coroutine& coro) { this->OnPlayerCollision(coro); });
 
-	animRect->SetEvent(this);
-
-
 	SAFE_DELETE(MonsterTex);
+	
 }
 
 Monster::~Monster()

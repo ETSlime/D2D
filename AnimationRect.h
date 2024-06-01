@@ -12,7 +12,7 @@ class AnimationRect : public TextureRect
 {
 public:
 	AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, 
-		EventType type = EventType::DEFAULT);
+		EventType type = EventType::DEFAULT, bool isCentered = false);
 	~AnimationRect();
 
 	void Update();
@@ -26,7 +26,6 @@ public:
 	void SetBoundingBoxType(ColliderType type);
 	void SetOnCollision(CollisionCallback onCollision);
 	PlayerControl::Direction GetCurDirection() { if (control) return control->movingWhere; }
-
 	BoundingBox* GetBox() { return boundingBox; }
 	bool AABB(BoundingBox* other);
 

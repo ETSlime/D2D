@@ -29,7 +29,7 @@ public:
 
 	void ClearCurrentMap();
 	Tile* GetTile(Coord coord) { return curMap[coord]; }
-	UINT GetNumOfTile() { return curMap.size(); }
+	UINT GetNumOfTile() { return static_cast<UINT>(curMap.size()); }
 	DirectX::XMFLOAT3 GetMapStartPosition() { return mapStartPosition; }
 	DirectX::XMFLOAT3 GetPositionFromCoord(Coord coord);
 

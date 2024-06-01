@@ -2,8 +2,8 @@
 #include "States.h"
 #include "Player.h"
 
-AnimationRect::AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, EventType type)
-	:TextureRect(position, size, 0.0f, false)
+AnimationRect::AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, EventType type, bool isCentered)
+	:TextureRect(position, size, 0.0f, isCentered)
 {
 	SetShader(ShaderPath + L"Animation.hlsl");
 
@@ -83,7 +83,8 @@ void AnimationRect::Move()
 {
 	if (control)
 	{
-		Map::get_instance().UpdateCollisionBoxes();
+		if (Player::player->allowControl == true)
+			Map::get_instance().UpdateCollisionBoxes();
 		control->UpdatePlayerPosition(position);
 	}
 		

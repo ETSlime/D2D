@@ -20,7 +20,7 @@ Map::Map()
 		std::bind(&Map::UpdateEventsHandler, this, std::placeholders::_1)));
 
 	mapBuilder[0] = MapStatic::BuildFloor0;
-	//mapBuilder[1] = MapStatic::BuildFloor1;
+	mapBuilder[1] = MapStatic::BuildFloor1;
 	//mapBuilder[2] = MapStatic::BuildFloor2;
 	//mapBuilder[3] = MapStatic::BuildFloor3;
 	//mapBuilder[4] = MapStatic::BuildFloor4;
@@ -88,6 +88,7 @@ void Map::UpdateCollisionBoxes()
 	collisionBoxes.clear();
 	for (const auto& event : curEvents)
 	{
-		collisionBoxes.push_back(event.second.get()->GetBoundingBox());
+		if (event.second)
+			collisionBoxes.push_back(event.second.get()->GetBoundingBox());
 	}
 }

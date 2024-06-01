@@ -1,9 +1,11 @@
 #pragma once
 
 #include "GameEvent.h"
-#include "AnimationRect.h"
 #include "Weapon.h"
 #include <mutex>
+
+class AnimationRect;
+class ChangeMapEffect;
 
 class Player : public GameEvent
 {
@@ -20,10 +22,13 @@ public:
 	Weapon* sword = nullptr;
 
 	bool CanMove(const DirectX::XMFLOAT3& move);
+	void PlayFadeEffect(bool fade);
 
 	static Player* player;
-
+	
 	bool playAttackAnim = false;
+	bool allowControl = true;
+	ChangeMapEffect* fadeEffect;
 
 private:
 

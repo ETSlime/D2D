@@ -18,7 +18,7 @@
 #include <unordered_set>
 #include <map>
 #include <set>
-
+#include <chrono>
 
 //DirectX
 #include <d3dcompiler.h>
@@ -165,7 +165,7 @@ struct Coord
     int y;
 
     Coord(int x, int y) :x(x), y(y) {}
-    Coord() = default;
+    Coord() { x = 0; y = 0; };
     bool operator==(const Coord& other) const {
         return x == other.x && y == other.y;
     }

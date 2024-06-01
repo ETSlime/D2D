@@ -138,6 +138,7 @@
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ChangeMapEffect.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="EventGO.cpp" />
     <ClCompile Include="GameEvent.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="IShader.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="MagicTowerApp.cpp" />
     <ClCompile Include="Map.cpp" />
@@ -163,6 +165,7 @@
     <ClCompile Include="PlayerGO.cpp" />
     <ClCompile Include="RectBase.cpp" />
     <ClCompile Include="CursorTextureRect.cpp" />
+    <ClCompile Include="Stair.cpp" />
     <ClCompile Include="States.cpp" />
     <ClCompile Include="String.cpp" />
     <ClCompile Include="Texture2D.cpp" />
@@ -181,6 +184,7 @@
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="ChangeMapEffect.h" />
     <ClInclude Include="Coroutine.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="EventFactory.h" />
@@ -195,6 +199,7 @@
     <ClInclude Include="IGameObj.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="IShader.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapStatic.h" />
@@ -210,6 +215,7 @@
     <ClInclude Include="CursorTextureRect.h" />
     <ClInclude Include="SingletonBase.h" />
     <ClInclude Include="MagicTowerApp.h" />
+    <ClInclude Include="Stair.h" />
     <ClInclude Include="States.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="Texture2D.h" />

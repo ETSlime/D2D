@@ -2,6 +2,9 @@
 
 #include "RectBase.h"
 
+// Explicit template instantiation for VertexTile
+template class RectBase<VertexTile>;
+template class RectBase<SimpleVertex>;
 
 RectBase<VertexTexture>::RectBase(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, float rotation)
 	:position(position), size(size), rotation(rotation){}
@@ -158,7 +161,3 @@ void RectBase<VertexType>::Render()
 
 	
 }
-
-
-// Explicit template instantiation for VertexTile
-template class RectBase<VertexTile>;

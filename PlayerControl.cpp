@@ -111,7 +111,7 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 	if (t >= 0.99f)
 	{
 		elapsedTime = 0;
-		if (keyboard.Press(key))
+		if (keyboard.Press(key) && Player::player->allowControl == true)
 		{
 			DirectX::XMFLOAT3 move;
 			switch (key)
@@ -174,6 +174,13 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 
 void PlayerControl::UpdatePlayerPosition(DirectX::XMFLOAT3& position)
 {
+	if (CHECKMOVE && Player::player->allowControl == false)
+	{
+		Idle();
+		return;
+	}
+		
+
 	if (keyboard.Down(VK_UP) && CHECKMOVE)
 	{
 		SetMovement(VK_UP, position);

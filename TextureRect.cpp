@@ -1,5 +1,4 @@
 #include "TextureRect.h"
-//#include <D3DX11tex.h>
 
 
 TextureRect::TextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, float rotation, bool isCenter)
@@ -43,14 +42,7 @@ void TextureRect::SetIndices()
 
 TextureRect::~TextureRect()
 {
-	SAFE_DELETE(mVertexBuffer);
-	SAFE_DELETE(mIndexBuffer);
-	SAFE_DELETE(mVertexShader);
-	SAFE_DELETE(mPixelShader);
-	SAFE_DELETE(mInputLayout);
-	SAFE_DELETE(mWorldBuffer);
 	SAFE_DELETE(boundingBox);
-	SafeRelease(&srv);
 }
 
 
