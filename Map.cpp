@@ -19,8 +19,9 @@ Map::Map()
 	dispatcher.registerHandler("UpdateEvents", static_cast<MessageHandler>(
 		std::bind(&Map::UpdateEventsHandler, this, std::placeholders::_1)));
 
-	mapBuilder[0] = MapStatic::BuildFloor0;
-	mapBuilder[1] = MapStatic::BuildFloor1;
+	mapBuilder = MapStatic::BuildFloor;
+	//mapBuilder[0] = MapStatic::BuildFloor0;
+	//mapBuilder[1] = MapStatic::BuildFloor1;
 	//mapBuilder[2] = MapStatic::BuildFloor2;
 	//mapBuilder[3] = MapStatic::BuildFloor3;
 	//mapBuilder[4] = MapStatic::BuildFloor4;
@@ -46,9 +47,9 @@ void Map::ClearCurrentMap()
 	curEvents.clear();
 }
 
-void Map::GenerateMap(int floor)
+void Map::GenerateMap(int floorNum)
 {
-	mapBuilder[floor]();
+	mapBuilder(floorNum);
 }
 
 void Map::GenerateEvent(int floor)
@@ -68,7 +69,7 @@ void Map::GenerateEvent(int floor)
 
 DirectX::XMFLOAT3 Map::GetPositionFromCoord(Coord coord)
 {
-	return mapStartPosition + DirectX::XMFLOAT3(coord.x * TileWidth, coord.y * TileHeight, 0.0f);
+	return mapStartPosition + DirectX::XMFLOAT3(coord.x * static_cast<float>(TileWidth), coord.y * static_cast<float>(TileHeight), 0.0f);
 }
 
 void Map::UpdateUnwalkableTiles()

@@ -30,7 +30,7 @@ public:
 	bool AABB(BoundingBox* other);
 
 	int GetDirection() { return control->GetFacingWhere(); }
-	void SetFacingWhere(int a) { this->_FacingWhere = a; }
+	void SetFacingWhere(PlayerControl::Direction dir) { control->SetFacingWhere(dir); }
 
 	void SetclipName(std::wstring clipname1, std::wstring clipname2);
 
@@ -50,7 +50,7 @@ private:
 
 	int _FacingWhere = 0;
 
-	DirectX::XMFLOAT3 beforePosition = { 0,0,0 };
+	//DirectX::XMFLOAT3 beforePosition = { 0,0,0 };
 
 	//UploadBuffer<>* shaderBuffer = nullptr;
 

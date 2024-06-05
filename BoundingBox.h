@@ -35,7 +35,7 @@ public:
 	ColliderType colliderType;
 	CollisionCallback onCollision;
 	std::string UUID = MathHelper::generate_uuid_v4();
-	bool repeatCollisionEvent = false;
+	bool repeatCollisionEvent = true;
 
 private:
 	RectEdge* edge = nullptr;

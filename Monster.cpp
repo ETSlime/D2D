@@ -1,4 +1,5 @@
 #include "Monster.h"
+#include "MapStatic.h"
 
 constexpr UINT IDLE_ANIM_FRAME = 4;
 constexpr float ANIM_PLAY_SPEED = 10.0f;
@@ -6,11 +7,10 @@ constexpr float ANIM_PLAY_SPEED = 10.0f;
 void Monster::OnPlayerCollision(Coroutine& coro)
 {
 	std::shared_ptr<Message> eventUpdate = std::make_shared<MessageEventUpdate>(this->eventName);
-
+	
 	if (coro.getState() == 0)
 	{
 		Player::player->playAttackAnim = true;
-
 		coro.yield(0.2f);
 	}
 	if (coro.getState() == 1)
@@ -18,6 +18,7 @@ void Monster::OnPlayerCollision(Coroutine& coro)
 		
 		MessageDispatcher::get_instance().dispatch("UpdateEvents", eventUpdate);
 		destroy = true;
+		MapStatic::eventParams[Player::player->GetCurFloor()].erase(eventName);
 		Player::player->playAttackAnim = false;
 		// final state, complete the coroutine, otherwise will cause memory leak
 		coro.setComplete();

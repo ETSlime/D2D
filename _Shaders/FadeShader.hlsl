@@ -8,11 +8,6 @@ struct PixelInput
     float4 position : SV_POSITION0;
 };
 
-cbuffer WorldBuffer : register(b0) // 0 ~ 127
-{
-    matrix _world;
-};
-
 cbuffer VPBuffer : register(b1)
 {
     matrix _view;
@@ -38,8 +33,7 @@ PixelInput VS(VertexInput input)
 
 float4 PS(PixelInput input) : SV_Target
 {
-
-    float4 color = float4(0.0f, 0.0f, 0.0f, 0.5f);
+    float4 color = float4(0.0f, 0.0f, 0.0f, 0.0f);
     color.a = t;
     return color;
 }

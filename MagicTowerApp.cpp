@@ -1,5 +1,5 @@
 #include "MagicTowerApp.h"
-#include "StartMenuGO.h"
+#include "GameUIGO.h"
 #include "FloorGO.h"
 #include "PlayerGO.h"
 
@@ -56,7 +56,7 @@ HRESULT MagicTowerApp::Initialize()
 
         BuildResources();
 
-        Push(L"StartMenuGO", std::make_unique<StartMenuGO>(&mD2DResource, &curWindowSize));
+        Push(L"StartMenuGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::StartMenu));
     }
     return hr;
 }
@@ -99,7 +99,8 @@ void MagicTowerApp::Update()
 
     for (auto it = mGOs.begin(); it != mGOs.end();)
     {
-        it->second->Update();
+        if (it->second)
+            it->second->Update();
         ++it;
     }
 }
@@ -177,14 +178,14 @@ void MagicTowerApp::DrawRenderItems()
     // render
     for (const auto& GO : mGOs)
     {
-        if (GO.second->IsValid() == true)
+        if (GO.second && GO.second->IsValid() == true)
             GO.second->Render();
     }
 
     // post render
     for (const auto& GO : mGOs)
     {
-        if (GO.second->IsValid() == true)
+        if (GO.second && GO.second->IsValid() == true)
             GO.second->PostRender();
     }
 

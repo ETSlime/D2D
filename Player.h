@@ -30,15 +30,28 @@ public:
 	bool allowControl = true;
 	ChangeMapEffect* fadeEffect;
 
+	int GetCurFloor() { return curFloor; }
+	void SetCurFLoor(int newFloorNum) { curFloor = newFloorNum; }
+
+	void AddItem(ItemID itemID) { items[itemID]++; }
+	bool UseItem(ItemID itemID) { if (items[itemID] > 0) { items[itemID]--; return true; } else return false; }
+	void ChangeHP(UINT amout) { HP += amout; }
+
 private:
 
+	// player attributes
+	int HP, MP, atk, def;
+	std::unordered_map<ItemID, UINT> items;
+	int curFloor = 0;
+
+	// get every collison box in this map
 	const std::vector<BoundingBox*>* unwalkableTiles = Map::get_instance().GetUnwalkableTiles();
 	const std::vector<BoundingBox*>* collisionBoxes = Map::get_instance().GetCollisionBoxes();
 
 	// Store active coroutines
 	std::vector<std::shared_ptr<Coroutine>> coroutines;  
 	// Track if a coroutine is already running
-	std::atomic<bool> isCoroutineRunning;  
+	std::atomic<bool> isCoroutineRunning = false;  
 	// Store active coroutines correspoindign to boundingbox
 	std::unordered_map<std::string, std::shared_ptr<Coroutine>> coroutinesNonRepeat;  
 	std::mutex mtx;  // Mutex to protect coroutines map

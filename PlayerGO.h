@@ -24,13 +24,8 @@ public:
 	virtual void SetIsDestroyed(bool _destroy) override;
 	virtual void SetIsValid(bool _valid) override;
 
-
 private:
-
 	Player* player = nullptr;
-
-
-	//class Collisionengine* engine = nullptr;
 
 	bool valid = true;
 	bool destroy = false;

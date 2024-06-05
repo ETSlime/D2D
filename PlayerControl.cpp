@@ -6,7 +6,8 @@
 
 PlayerControl::PlayerControl()
 {
-
+	targetPosition = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	prevPosition = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 }
 
 PlayerControl::~PlayerControl()
@@ -178,8 +179,7 @@ void PlayerControl::UpdatePlayerPosition(DirectX::XMFLOAT3& position)
 	{
 		Idle();
 		return;
-	}
-		
+	}	
 
 	if (keyboard.Down(VK_UP) && CHECKMOVE)
 	{

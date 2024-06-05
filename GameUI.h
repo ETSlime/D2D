@@ -26,7 +26,7 @@ public:
 	~GameUI();
 
 	void init_startUI();
-
+	void init_mainMenu();
 
 
 	void Update();

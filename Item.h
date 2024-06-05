@@ -2,12 +2,12 @@
 
 #include "GameEvent.h"
 #include "AnimationRect.h"
-#include "Player.h"
+
 
 class Item : public GameEvent
 {
 public:
-	Item(Coord coord, UINT id, std::wstring eventName = L"DefaultEventName",
+	Item(Coord coord, ItemID id, std::wstring eventName = L"DefaultEventName",
 		DirectX::XMFLOAT3 size = { TileWidth, TileHeight, 1 });
 	~Item();
 
@@ -18,6 +18,6 @@ public:
 
 private:
 
-	UINT itemID;
+	ItemID itemID;
 
 };

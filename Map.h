@@ -6,7 +6,7 @@
 #include "BoundingBox.h"
 #include "MessageDispatcher.h"
 
-typedef void (*BuildMap)();
+typedef void (*BuildMap)(int floorNum);
 
 class Tile;
 class MapStatic;
@@ -42,7 +42,7 @@ public:
 private:
 	std::unordered_map<Coord, Tile*> curMap;
 	std::unordered_map<std::wstring, std::shared_ptr<GameEvent>> curEvents;
-	std::unordered_map<int, BuildMap> mapBuilder;
+	BuildMap mapBuilder;
 
 	DirectX::XMFLOAT3 mapStartPosition = DirectX::XMFLOAT3(340, 50, 0);
 

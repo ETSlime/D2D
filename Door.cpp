@@ -1,6 +1,8 @@
 #include "Door.h"
 #include "MessageDispatcher.h"
 #include "Coroutine.h"
+#include "Player.h"
+#include "MapStatic.h"
 
 constexpr UINT OPENDOOR_ANIM_FRAME = 4;
 constexpr float ANIM_PLAY_SPEED = 15.0f;
@@ -8,18 +10,63 @@ constexpr float ANIM_PLAY_SPEED = 15.0f;
 void Door::OnPlayerCollision(Coroutine& coro)
 {
 	std::shared_ptr<Message> eventUpdate = std::make_shared<MessageEventUpdate>(this->eventName);
-	animator->SetCurrentAnimClip(L"Open");
-	if (coro.getState() == 0) 
-	{	
-		coro.yield(OPENDOOR_ANIM_FRAME / ANIM_PLAY_SPEED);
+	if (coro.getState() == 0)
+	{
+		bool openDoor = false;
+		switch (doorType)
+		{
+		case DoorType::YELLOW:
+			if (Player::player->UseItem(ItemID::YELLOW_KEY))
+				openDoor = true;
+			break;
+		case DoorType::BLUE:
+			if (Player::player->UseItem(ItemID::BLUE_KEY))
+				openDoor = true;
+			break;
+		case DoorType::RED:
+			if (Player::player->UseItem(ItemID::RED_KEY))
+				openDoor = true;
+			break;
+		case DoorType::SPECIAL:
+			if (Player::player->UseItem(ItemID::SPECIAL_YELLOW_KEY))
+				openDoor = true;
+			break;
+		default:
+			break;
+		}
+		if (openDoor)
+		{
+			animator->SetCurrentAnimClip(L"Open");
+			coro.yield(OPENDOOR_ANIM_FRAME / ANIM_PLAY_SPEED);
+		}
+		else
+			coro.setComplete();
+
 	}
-	if (coro.getState() == 1) 
+	if (coro.getState() == 1)
 	{
 		MessageDispatcher::get_instance().dispatch("UpdateEvents", eventUpdate);
 		destroy = true;
+		MapStatic::eventParams[Player::player->GetCurFloor()].erase(eventName);
 		// final state, complete the coroutine, otherwise will cause memory leak
 		coro.setComplete();
 	}
+
+	//std::cout << "aaaaaaaaaaaaabbbbbbbbb";
+	//std::shared_ptr<Message> eventUpdate = std::make_shared<MessageEventUpdate>(this->eventName);
+	//animator->SetCurrentAnimClip(L"Open");
+	//if (coro.getState() == 0)
+	//{
+	//	coro.yield(OPENDOOR_ANIM_FRAME / ANIM_PLAY_SPEED);
+	//}
+	//if (coro.getState() == 1)
+	//{
+	//	MessageDispatcher::get_instance().dispatch("UpdateEvents", eventUpdate);
+	//	destroy = true;
+	//	// final state, complete the coroutine, otherwise will cause memory leak
+	//	coro.setComplete();
+	//}
+
 };
 
 Door::Door(Coord coord, DoorType type, std::wstring eventName, DirectX::XMFLOAT3 size)

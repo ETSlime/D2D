@@ -2,8 +2,9 @@
 
 #include "IGameObj.h"
 #include "MagicTowerApp.h"
+#include "GameUI.h"
 
-class StartMenuGO : public IGameObj
+class GameUIGO : public IGameObj
 {
 public:
 	virtual void Init() override;
@@ -17,12 +18,12 @@ public:
 	virtual void SetIsDestroyed(bool _destroy) override;
 	virtual void SetIsValid(bool _valid) override;
 
-	StartMenuGO(const D2DResource* D2DResource, const WinSize* winSize);
+	GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIMode mode);
 
 private:
 
 	class GameUI* startUI = nullptr;
-
+	GameUI::UIMode UImode;
 	bool valid = true;
 	bool destroy = false;
 

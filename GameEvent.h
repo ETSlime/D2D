@@ -31,6 +31,58 @@ enum class StairType
 	DOWN
 };
 
+enum class ItemID
+{
+	YELLOW_KEY,
+	BLUE_KEY,
+	RED_KEY,
+	GREEN_KEY,
+	GRAY_KEY,
+	IRON_KEY,
+	SPECIAL_YELLOW_KEY,
+	YELLOW_KEY_2,
+	BLUE_KEY_2,
+	RED_KEY_2,
+	GREEN_KEY_2,
+	BOOK,
+	NOTE,
+	TELEWARP,
+	LUCKY_COIN,
+	HOE,
+	HOE_2,
+	ICE,
+	EARTHQUAKE_SCROLL,
+	FLYER,
+	DOWNSTAIR_FLYER,
+	UPSTAIR_FLYER,
+	PLACEHOLDER,
+	BOOMB,
+	LARGE_BOOMB,
+	PLACEHOLDER2,
+	KINDLE,
+	SHOES,
+	BAGS,
+	PLACEHOLDER3,
+	PLACEHOLDER4,
+	ATT_GEM,
+	DEF_GEM,
+	MATK_GEM,
+	MDEF_GEM,
+	RED_POTION,
+	BLUE_POTION,
+	GREEN_POTION,
+	YELLOW_POTION,
+	GREEN_POT,
+	PINK_POT,
+	BLUE_POT,
+	PLACEHOLDER5,
+	PLACEHOLDER6,
+	PLACEHOLDER7,
+	ANTIDOTE,
+	UNIVERSAL_ANTIDOTE
+};
+
+
 struct EventDescriptor 
 {
 	UINT eventID;
@@ -68,9 +120,9 @@ struct DoorEventDescriptor : public EventDescriptor
 
 struct ItemEventDescriptor : public EventDescriptor
 {
-	UINT itemID;
+	ItemID itemID;
 	ItemEventDescriptor() = default;
-	ItemEventDescriptor(UINT ID)
+	ItemEventDescriptor(ItemID ID)
 	{
 		itemID = ID;
 	}

@@ -66,7 +66,7 @@
     <ClCompile Include="VertexShader.cpp">
       <Filter>Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="StartMenuGO.cpp">
+    <ClCompile Include="GameUIGO.cpp">
       <Filter>Game Objects</Filter>
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
@@ -209,7 +209,7 @@
     <ClInclude Include="SingletonBase.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="StartMenuGO.h">
+    <ClInclude Include="GameUIGO.h">
       <Filter>Game Objects</Filter>
     </ClInclude>
     <ClInclude Include="Texture2D.h">

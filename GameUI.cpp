@@ -1,21 +1,17 @@
 #include "GameUI.h"
 
-
 GameUI::GameUI(const D2DResource* D2DResource, const WinSize* winSize, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, UIMode mode)
 	:mD2DResource(D2DResource), curWinSize(winSize), position(position), size(size), mode(mode)
 {
-	startCursor.baseX = 0.48f;
-	startCursor.baseY = 0.435f;
-	startCursor.position = DirectX::XMFLOAT3(startCursor.baseX * curWinSize->width, startCursor.baseY * curWinSize->height, 0.0f);
-	startCursor.size = DirectX::XMFLOAT3(250, 50, 1.0f);
-	startCursor.curIdx = 0;
-	startCursor.textureRect = new CursorTextureRect(startCursor.position, 
-		startCursor.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+
 
 	switch (mode)
 	{
 	case StartMenu:
 		this->init_startUI();
+		break;
+	case MainMenu:
+		this->init_mainMenu();
 		break;
 	}
 }
@@ -26,17 +22,39 @@ GameUI::~GameUI(){}
 
 void GameUI::init_startUI()
 {
+	startCursor.baseX = 0.48f;
+	startCursor.baseY = 0.435f;
+	startCursor.position = DirectX::XMFLOAT3(startCursor.baseX * curWinSize->width, startCursor.baseY * curWinSize->height, 0.0f);
+	startCursor.size = DirectX::XMFLOAT3(250, 50, 1.0f);
+	startCursor.curIdx = 0;
+	startCursor.textureRect = new CursorTextureRect(startCursor.position,
+		startCursor.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+
 	startButtons.push_back(new Button(L"始めから", DirectX::XMFLOAT3(0.4f, 0.535f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::startGame, true));
 	startButtons.push_back(new Button(L"続きから", DirectX::XMFLOAT3(0.4f, 0.635f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
 	startButtons.push_back(new Button(L"ゲーム終了", DirectX::XMFLOAT3(0.4f, 0.735f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
 	startButtons.push_back(new Button(L"遊ぶ方法説明", DirectX::XMFLOAT3(0.4f, 0.835f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
 
-
 	base = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
-	
 }
 
+void GameUI::init_mainMenu()
+{
+	startCursor.baseX = 0.48f;
+	startCursor.baseY = 0.435f;
+	startCursor.position = DirectX::XMFLOAT3(startCursor.baseX * curWinSize->width, startCursor.baseY * curWinSize->height, 0.0f);
+	startCursor.size = DirectX::XMFLOAT3(250, 50, 1.0f);
+	startCursor.curIdx = 0;
+	startCursor.textureRect = new CursorTextureRect(startCursor.position,
+		startCursor.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 
+	startButtons.push_back(new Button(L"始めから", DirectX::XMFLOAT3(0.4f, 0.535f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::startGame, true));
+	startButtons.push_back(new Button(L"続きから", DirectX::XMFLOAT3(0.4f, 0.635f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
+	startButtons.push_back(new Button(L"ゲーム終了", DirectX::XMFLOAT3(0.4f, 0.735f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
+	startButtons.push_back(new Button(L"遊ぶ方法説明", DirectX::XMFLOAT3(0.4f, 0.835f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
+
+	base = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+}
 
 void GameUI::Render()
 {

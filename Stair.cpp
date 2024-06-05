@@ -2,6 +2,7 @@
 
 #include "Stair.h"
 #include "ChangeMapEffect.h"
+#include "MapStatic.h"
 
 void Stair::OnPlayerCollision(Coroutine& coro, StairType type)
 {
@@ -14,6 +15,7 @@ void Stair::OnPlayerCollision(Coroutine& coro, StairType type)
 	if (coro.getState() == 1)
 	{
 		std::wstring curFloorName = L"FloorGO" + std::to_wstring(floorNumber);
+		MapStatic::eventFloor->clear();
 		mApp.DestroyGO(curFloorName);
 		if (type == StairType::UP)
 			mApp.LoadFloor(floorNumber + 1);
@@ -21,9 +23,10 @@ void Stair::OnPlayerCollision(Coroutine& coro, StairType type)
 			mApp.LoadFloor(floorNumber - 1);
 		Player::player->SetCoord(newPlayerCoord);
 		Player::player->UpdatePositionByCoord(newPlayerCoord);
-		destroy = true;
+		Player::player->GetanimRect()->SetFacingWhere(PlayerControl::Down);
 		Player::player->PlayFadeEffect(false);
 		Player::player->allowControl = true;
+		destroy = true;
 		coro.setComplete();
 	}
 };

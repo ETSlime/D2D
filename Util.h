@@ -19,6 +19,7 @@
 #include <map>
 #include <set>
 #include <chrono>
+#include <variant>
 
 //DirectX
 #include <d3dcompiler.h>
