@@ -85,9 +85,8 @@ protected:
 
     // Direct2D
     ID2D1Factory* pD2DFactory = nullptr;
-    IDWriteFactory* pD2DWriteFactory = nullptr;
     D2DResource mD2DResource;
-    float baseFontSize = 32.0f;
+    float baseFontSize = 40.0f;
     float aspectRatio = 1.0f;
     WinSize curWindowSize = { WinMaxWidth, WinMaxHeight };
 

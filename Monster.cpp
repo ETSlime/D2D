@@ -26,7 +26,7 @@ void Monster::OnPlayerCollision(Coroutine& coro)
 };
 
 Monster::Monster(Coord coord, UINT monsterID, std::wstring eventName, DirectX::XMFLOAT3 size)
-	:GameEvent(coord, size, EventType::MONSTER, eventName)
+	:GameEvent(coord, size, EventType::MONSTER, eventName), monsterID(monsterID)
 {
 	std::wstring MonsterTexture;
 	MonsterTexture = L"Monster";
@@ -52,6 +52,7 @@ Monster::Monster(Coord coord, UINT monsterID, std::wstring eventName, DirectX::X
 
 	SAFE_DELETE(MonsterTex);
 	
+	monsterData = Database::monsterDatabase[monsterID];
 }
 
 Monster::~Monster()

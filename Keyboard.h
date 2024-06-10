@@ -17,6 +17,8 @@ public:
 	bool Up(DWORD key) { return keyMap[key] == KEY_INPUT_STATUS_UP; }
 	bool Press(DWORD key) { return keyMap[key] == KEY_INPUT_STATUS_PRESS; }
 
+	bool GetStateChange() { return change; }
+
 private:
 	Keyboard();
 	~Keyboard();
@@ -24,6 +26,7 @@ private:
 	byte keyState[MAX_INPUT_KEY];
 	byte keyOldState[MAX_INPUT_KEY];
 	byte keyMap[MAX_INPUT_KEY];
+	bool change = false;
 
 	enum
 	{

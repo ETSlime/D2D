@@ -9,7 +9,8 @@ CursorTextureRect::CursorTextureRect(DirectX::XMFLOAT3 position,
 	SetVertices();
 	SetIndices();
 	CreateRenderResource(vertices, indices, ShaderPath + L"CursorTexture.hlsl");
-	shaderBuffer = new UploadBuffer<float>(mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
+	shaderBuffer = new UploadBuffer<ShaderData>(mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
+	shaderData.enabled = true;
 
 	// SRV
 	// Load texture from file using DirectXTex
@@ -54,8 +55,8 @@ void CursorTextureRect::SetIndices()
 
 void CursorTextureRect::Update()
 {
-	totalTime = Timer::TotalTime();
-	shaderBuffer->MapData(mDeviceContext, totalTime);
+	shaderData.totalTime = Timer::TotalTime();
+	shaderBuffer->MapData(mDeviceContext, shaderData);
 	UpdateWorld();
 }
 

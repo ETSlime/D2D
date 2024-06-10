@@ -85,10 +85,10 @@ enum class ItemID
 
 struct EventDescriptor 
 {
-	UINT eventID;
+	UINT eventID = 0;
 	Coord coord;
 	std::wstring eventName;
-	EventType eventType;
+	EventType eventType = EventType::DEFAULT;
 
 	virtual ~EventDescriptor() = default;
 };

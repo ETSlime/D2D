@@ -3,6 +3,7 @@
 #include "GameEvent.h"
 #include "AnimationRect.h"
 #include "Player.h"
+#include "Database.h"
 
 class Monster : public GameEvent
 {
@@ -15,6 +16,9 @@ public:
 	AnimationRect* GetanimRect() { return animRect; }
 
 	void OnPlayerCollision(Coroutine& coro);
+
+	UINT monsterID;
+	MonsterData monsterData;
 
 private:
 	

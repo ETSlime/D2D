@@ -20,13 +20,26 @@ void Keyboard::Update()
 			int state = keyState[i];
 
 			if (oldState == 0 && state == 1)
+			{
 				keyMap[i] = KEY_INPUT_STATUS_DOWN;
+				change = true;
+			}
 			else if (oldState == 1 && state == 0)
-				keyMap[i] = KEY_INPUT_STATUS_UP; 
+			{
+				keyMap[i] = KEY_INPUT_STATUS_UP;
+				change = true;
+			}
 			else if (oldState == 1 && state == 1)
+			{
 				keyMap[i] = KEY_INPUT_STATUS_PRESS;
+				change = false;
+			}
 			else
+			{
 				keyMap[i] = KEY_INPUT_STATUS_NONE;
+				change = false;
+			}
+				
 		}
 	}
 

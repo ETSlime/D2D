@@ -137,8 +137,10 @@
     <ClCompile Include="AnimationRect.cpp" />
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
+    <ClCompile Include="ButtonOnClick.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ChangeMapEffect.cpp" />
+    <ClCompile Include="Database.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="EventGO.cpp" />
     <ClCompile Include="GameEvent.cpp" />
@@ -182,10 +184,11 @@
     <ClInclude Include="AnimationRect.h" />
     <ClInclude Include="Animator.h" />
     <ClInclude Include="BoundingBox.h" />
-    <ClInclude Include="Button.h" />
+    <ClInclude Include="ButtonOnClick.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ChangeMapEffect.h" />
     <ClInclude Include="Coroutine.h" />
+    <ClInclude Include="Database.h" />
     <ClInclude Include="Door.h" />
     <ClInclude Include="EventFactory.h" />
     <ClInclude Include="EventGO.h" />

@@ -64,8 +64,8 @@ inline void SafeRelease(
     }
 }
 
-#define WinMaxWidth 1280
-#define WinMaxHeight 720
+#define WinMaxWidth 980
+#define WinMaxHeight 750
 
 #define SAFE_DELETE(p) { if(p) { delete(p); (p) = nullptr; } }
 #define SAFE_DELETE_ARRAY(p) { if(p) { delete[](p); (p) = nullptr; } }
@@ -102,7 +102,7 @@ const std::wstring AutotilesPath = L"Graphics/Autotiles/";
 const std::wstring AnimationsPath = L"Graphics/Animations/";
 
 // Font
-const std::wstring FontPath = L"Fonts/ARIAL.TTF";
+const std::wstring FontPath = L"Fonts/";
 
 #ifndef ThrowIfFailed
 #define ThrowIfFailed(x)                                              \
@@ -152,6 +152,7 @@ struct D2DResource
     ID2D1RenderTarget* pD2DRenderTarget;
     IDWriteTextFormat* pTextFormat;
     ID2D1SolidColorBrush* pSolidColorBrush;
+    IDWriteFactory* pD2DWriteFactory;
 };
 
 struct WinSize

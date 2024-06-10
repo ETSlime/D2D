@@ -27,7 +27,7 @@ private:
     bool isFadingOut = false;
     bool isFadingIn = false;
     bool isFading = false;
-    float fadeSpeed = 1.0f; // 控制渐变速度
+    float fadeSpeed = 1.0f; 
 
     std::vector<SimpleVertex> vertices;
     std::vector<UINT> indices;

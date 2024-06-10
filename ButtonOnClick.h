@@ -3,6 +3,7 @@
 #include "Util.h"
 #include "MagicTowerApp.h"
 #include "PlayerGO.h"
+#include "Player.h"
 
 typedef int (*OnClick)();
 
@@ -38,38 +39,14 @@ class ButtonOnClick
 {
 
 public:
-	static int tutorial()
-	{
-		MagicTowerApp& mApp = MagicTowerApp::get_instance();
 
-		mApp.mTimer.Stop();
-		EnableWindow(mApp.m_hwnd, FALSE);
-		MessageBox(mApp.m_hwnd, L"sasa", L"Helper", MB_OK | MB_ICONASTERISK);
-		MessageBox(mApp.m_hwnd, L"asfdfsd", L"Helper", MB_OK | MB_ICONASTERISK);
-		MessageBox(mApp.m_hwnd, L"sgdsjgo", L"Helper", MB_OK | MB_ICONASTERISK);
-		MessageBox(mApp.m_hwnd, L"horfoh", L"Helper", MB_OK | MB_ICONASTERISK);
-		EnableWindow(mApp.m_hwnd, TRUE);
-		mApp.mTimer.Start();
-		
-		return 0;
-	};
+	static std::unique_ptr<Coroutine> coro;
 
-	static int startGame()
-	{
-		MagicTowerApp& mApp = MagicTowerApp::get_instance();
+	static void fadeCallback(Coroutine& coro);
 
-		mApp.DestroyGO(L"StartMenuGO");
-		mApp.Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(10, 10)));
-		mApp.LoadFloor(0);
+	static int tutorial();
 
-		return 0;
-	}
+	static int startGame();
 
-	static int exitGame()
-	{
-		PostQuitMessage(0);
-
-		return 0;
-	}
+	static int exitGame();
 };
-

@@ -24,11 +24,11 @@ void ChangeMapEffect::SetVertices()
 	vertices[0].position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 
-	vertices[1].position = DirectX::XMFLOAT3(1000.0f, 1000.0f, 0.0f);
+	vertices[1].position = DirectX::XMFLOAT3(1500.0f, 1500.0f, 0.0f);
 
-	vertices[2].position = DirectX::XMFLOAT3(1000.0f, 0.0f, 0.0f);
+	vertices[2].position = DirectX::XMFLOAT3(1500.0f, 0.0f, 0.0f);
 
-	vertices[3].position = DirectX::XMFLOAT3(0.0f, 1000.0f, 0.0f);
+	vertices[3].position = DirectX::XMFLOAT3(0.0f, 1500.0f, 0.0f);
 }
 
 void ChangeMapEffect::SetIndices()

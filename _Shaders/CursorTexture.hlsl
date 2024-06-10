@@ -20,6 +20,7 @@ cbuffer WorldBuffer : register(b0)
 cbuffer PSBuffer : register(b2)
 {
 	float totalTime;
+    float enabled;
 };
 
 cbuffer cbPerObject : register(b1)
@@ -47,7 +48,10 @@ SamplerState _samp : register(s0);
 float4 PS(PixelInput input) : SV_Target
 {
 	float4 color = _sourceTex.Sample(_samp, input.uv);
-	color.a = 0.2f + abs(sin(2.7f * totalTime))* color.a;
+	if (enabled)
+		color.a = 0.2f + abs(sin(2.7f * totalTime))* color.a;
+	else
+        color.a = 0.1f;
 	return color;
 
 }

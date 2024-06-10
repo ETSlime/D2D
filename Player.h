@@ -18,8 +18,7 @@ public:
 	virtual void Render() override;
 	AnimationRect* GetanimRect() { return animRect; }
 
-	Weapon* armor = nullptr;
-	Weapon* sword = nullptr;
+
 
 	bool CanMove(const DirectX::XMFLOAT3& move);
 	void PlayFadeEffect(bool fade);
@@ -28,6 +27,7 @@ public:
 	
 	bool playAttackAnim = false;
 	bool allowControl = true;
+	bool renderPlayer = false;
 	ChangeMapEffect* fadeEffect;
 
 	int GetCurFloor() { return curFloor; }
@@ -43,6 +43,13 @@ private:
 	int HP, MP, atk, def;
 	std::unordered_map<ItemID, UINT> items;
 	int curFloor = 0;
+
+	// player weapons
+	Weapon* armor = nullptr;
+	Weapon* sword = nullptr;
+
+	Keyboard& keyboard = Keyboard::get_instance();
+	MagicTowerApp& mApp = MagicTowerApp::get_instance();
 
 	// get every collison box in this map
 	const std::vector<BoundingBox*>* unwalkableTiles = Map::get_instance().GetUnwalkableTiles();

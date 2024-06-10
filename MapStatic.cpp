@@ -122,8 +122,13 @@ std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventPa
 	
 	// Using emplace to avoid copying std::unique_ptr, which is non-copyable.
 	tempEventParams[0].emplace(L"Monster001", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 4, 5 }, 0));
-	tempEventParams[0].emplace(L"Monster002", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 5 }, 0));
-	tempEventParams[0].emplace(L"Monster003", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 6 }, 0));
+	tempEventParams[0].emplace(L"Monster002", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 5 }, 1));
+	tempEventParams[0].emplace(L"Monster003", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 6 }, 2));
+	tempEventParams[0].emplace(L"Monster004", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 7 }, 3));
+	tempEventParams[0].emplace(L"Monster005", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 8 }, 4));
+	tempEventParams[0].emplace(L"Monster006", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 9 }, 5));
+	tempEventParams[0].emplace(L"Monster007", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 10 }, 6));
+	tempEventParams[0].emplace(L"Monster008", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 11 }, 7));
 	tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::YELLOW_KEY));
 	tempEventParams[0].emplace(L"Item002", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 7 }, ItemID::BLUE_KEY));
 	tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::RED_KEY));
@@ -142,7 +147,7 @@ std::unordered_map<int, std::unordered_map<Coord, UINT>> MapStatic::mapTileIdx =
 	{	0,
 	{
 		{Coord(0,0), 11}, {Coord(0,1), 11}, {Coord(0,2), 11},{Coord(0,3), 11}, {Coord(0,4), 11}, {Coord(0,5), 11},{Coord(0,6), 11}, {Coord(0,7), 11}, {Coord(0,8), 11},{Coord(0,9), 11}, {Coord(0,10), 11}, {Coord(0,11), 11},{Coord(0,12), 11},
-		{Coord(1,0), 11}, {Coord(1,1), 11}, {Coord(1,2), 11},{Coord(1,3), 11}, {Coord(1,4), 11}, {Coord(1,5), 11},{Coord(1,6), 11}, {Coord(1,7), 11}, {Coord(1,8), 11},{Coord(1,9), 11}, {Coord(1,10), 11}, {Coord(1,11), 11},{Coord(1,12), 11},
+		{Coord(1,0), 11}, {Coord(1,1), 57}, {Coord(1,2), 11},{Coord(1,3), 11}, {Coord(1,4), 11}, {Coord(1,5), 11},{Coord(1,6), 11}, {Coord(1,7), 11}, {Coord(1,8), 11},{Coord(1,9), 11}, {Coord(1,10), 11}, {Coord(1,11), 11},{Coord(1,12), 11},
 		{Coord(2,0), 11}, {Coord(2,1), 11}, {Coord(2,2), 11},{Coord(2,3), 11}, {Coord(2,4), 11}, {Coord(2,5), 11},{Coord(2,6), 11}, {Coord(2,7), 11}, {Coord(2,8), 11},{Coord(2,9), 11}, {Coord(2,10), 11}, {Coord(2,11), 11},{Coord(2,12), 11},
 		{Coord(3,0), 11}, {Coord(3,1), 11}, {Coord(3,2), 11},{Coord(3,3), 11}, {Coord(3,4), 11}, {Coord(3,5), 11},{Coord(3,6), 11}, {Coord(3,7), 11}, {Coord(3,8), 11},{Coord(3,9), 11}, {Coord(3,10), 11}, {Coord(3,11), 11},{Coord(3,12), 11},
 		{Coord(4,0), 11}, {Coord(4,1), 11}, {Coord(4,2), 11},{Coord(4,3), 11}, {Coord(4,4), 11}, {Coord(4,5), 11},{Coord(4,6), 11}, {Coord(4,7), 11}, {Coord(4,8), 11},{Coord(4,9), 11}, {Coord(4,10), 11}, {Coord(4,11), 11},{Coord(4,12), 11},

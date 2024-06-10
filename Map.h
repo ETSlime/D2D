@@ -20,6 +20,7 @@ public:
 	friend class SingletonBase<Map>;
 	friend class MapStatic;
 	friend class FloorGO;
+	friend class GameUI;
 
 	Map();
 	~Map();
@@ -44,7 +45,7 @@ private:
 	std::unordered_map<std::wstring, std::shared_ptr<GameEvent>> curEvents;
 	BuildMap mapBuilder;
 
-	DirectX::XMFLOAT3 mapStartPosition = DirectX::XMFLOAT3(340, 50, 0);
+	DirectX::XMFLOAT3 mapStartPosition = DirectX::XMFLOAT3(280, 50, 0);
 
 	std::vector<BoundingBox*> unwalkableTiles;
 	std::vector<BoundingBox*> collisionBoxes;

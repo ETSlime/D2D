@@ -81,6 +81,14 @@ Player::~Player()
 
 void Player::Update()
 {
+	if (!keyboard.Press('X'))
+		mApp.SetAllowSwitch(true);
+	if (keyboard.Press('X') && mApp.AvailableToSwitch())
+	{
+		mApp.SetAllowSwitch(false);
+		mApp.SetGameMode(GameMode::DISPLAYMENU);
+		mApp.InitGameUI();
+	}
 	animator->Update();
 	animRect->Update();
 	if (playAttackAnim)
@@ -112,7 +120,8 @@ void Player::Update()
 
 void Player::Render()
 {
-	animRect->Render();
+	if (renderPlayer)
+		animRect->Render();
 	if (playAttackAnim)
 		sword->RenderAttackEffect();
 	if (fadeEffect->GetFading())

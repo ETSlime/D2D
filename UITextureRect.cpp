@@ -16,72 +16,14 @@ UITextureRect::UITextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size,
 	hr = CreateTexture(mDevice, image.GetImages(), image.GetImageCount(), image.GetMetadata(), (ID3D11Resource**)&texture);
 	// Create shader resource view
 	hr = mDevice->CreateShaderResourceView(texture, nullptr, &srv);
-	//HRESULT hr = D3DX11CreateShaderResourceViewFromFile
-	//(
-	//	mDevice,
-	//	texturePath.c_str(),
-	//	nullptr,
-	//	nullptr,
-	//	&srv,
-	//	nullptr
-	//);
+
 	Assert(SUCCEEDED(hr));
 }
 
-//UITextureRect::UITextureRect(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
-//	DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, float rotation)
-//	:mDevice(device), mDeviceContext(deviceContext), position(position), size(size), rotation(rotation)
-//{
-//	//vertices
-//	{
-//		vertices.assign(4, VertexTexture());
-//
-//		vertices[0].position = DirectX::XMFLOAT3(-0.5f, -0.5f, -0.0f);
-//		vertices[0].uv = DirectX::XMFLOAT2(0, 1);
-//
-//		vertices[1].position = DirectX::XMFLOAT3(0.5f, 0.5f, 0.0f);
-//		vertices[1].uv = DirectX::XMFLOAT2(1, 0);
-//
-//		vertices[2].position = DirectX::XMFLOAT3(0.5f, -0.5f, 0.0f);
-//		vertices[2].uv = DirectX::XMFLOAT2(1, 1);
-//
-//		vertices[3].position = DirectX::XMFLOAT3(-0.5f, 0.5f, 0.0f);
-//		vertices[3].uv = DirectX::XMFLOAT2(0, 0);
-//	}
-//
-//	//VertexBuffer
-//	mVertexBuffer = new DefaultBuffer();
-//	mVertexBuffer->CreateDefaultBuffer(device, deviceContext, vertices.data(),
-//		vertices.size(), sizeof(VertexTexture), D3D11_USAGE_DYNAMIC);
-//
-//	//IndexBuffer
-//	indices = { 0, 1, 2, 0, 3, 1 };
-//	mIndexBuffer = new DefaultBuffer();
-//	mIndexBuffer->CreateDefaultBuffer(device, deviceContext, indices.data(),
-//		indices.size(), sizeof(UINT), D3D11_USAGE_IMMUTABLE);
-//
-//	//VertexShader
-//	mVertexShader = new VertexShader(mDevice, mDeviceContext);
-//	mVertexShader->Create(ShaderPath + L"UITexture.hlsl", "VS");
-//
-//	//PixelShader
-//	mPixelShader = new PixelShader(mDevice, mDeviceContext);
-//	mPixelShader->Create(ShaderPath + L"UITexture.hlsl", "PS");
-//
-//	//InputLayout
-//	mInputLayout = new InputLayout(mDevice, mDeviceContext);
-//	mInputLayout->Create(VertexTexture::descs, VertexTexture::count, mVertexShader->GetBlob());
-//
-//	//WorldBuffer
-//	mWorldBuffer = new UploadBuffer<DirectX::XMFLOAT4X4>(
-//		device, deviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
-//
-//}
-
 void UITextureRect::SetVertices()
 {
-	float edgeSizeX = 25;
-	float edgeSizeY = 10;
+	float edgeSizeX = 18;
+	float edgeSizeY = 8;
 	float edgeScaleX = edgeSizeX / size.x;
 	float edgeScaleY = edgeSizeY / size.y;
 

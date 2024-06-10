@@ -18,10 +18,18 @@ public:
 	void Update() override;
 	void Render() override;
 
-private:
-	UploadBuffer<float>* shaderBuffer;
-	float totalTime;
+	void SetCursorEnable(bool enable) { shaderData.enabled = enable; }
 
+private:
+
+	struct ShaderData
+	{
+		float totalTime;
+		float enabled;
+	};
+
+	UploadBuffer<ShaderData>* shaderBuffer;
+	ShaderData shaderData;
 	std::vector<VertexTexture> vertices;
 	std::vector<UINT> indices;
 };

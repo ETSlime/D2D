@@ -18,12 +18,12 @@ public:
 	virtual void SetIsDestroyed(bool _destroy) override;
 	virtual void SetIsValid(bool _valid) override;
 
-	GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIMode mode);
+	GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIRenderMode mode);
 
 private:
 
 	class GameUI* startUI = nullptr;
-	GameUI::UIMode UImode;
+	GameUI::UIRenderMode UImode;
 	bool valid = true;
 	bool destroy = false;
 

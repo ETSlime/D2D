@@ -12,6 +12,12 @@
 #include "Timer.h"
 #include "Coroutine.h"
 
+enum class GameMode
+{
+    GAMEPLAY,
+    DISPLAYMENU
+};
+
 struct PassConstants
 {
     DirectX::XMFLOAT4X4 View;
@@ -63,6 +69,8 @@ private:
     // constant buffer
     std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
 
+    GameMode gameMode;
+
 public:
     MagicTowerApp();
     MagicTowerApp(const MagicTowerApp& rhs) = delete;
@@ -92,7 +100,10 @@ private:
     // GameObject
 private:
     std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
+    std::unique_ptr<IGameObj> gameUI;
     std::vector<std::wstring> pushQueue;
+
+    bool allowSwitchMode = true;
 
     // public methods for other class
 public:
@@ -100,4 +111,8 @@ public:
     void Push(std::wstring name, std::unique_ptr<IGameObj> GO);
     void LoadFloor(int floorNum);
 
+    void SetGameMode(GameMode mode) { gameMode = mode; }
+    bool AvailableToSwitch() { return allowSwitchMode; }
+    void SetAllowSwitch(bool allow) { allowSwitchMode = allow; }
+    void InitGameUI() { gameUI.get()->Init(); }
 };

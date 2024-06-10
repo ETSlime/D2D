@@ -314,11 +314,11 @@ HRESULT D2DApp::CreateDeviceIndependentResources()
     assert(SUCCEEDED(hr));
 
     // Create D2DWrite factory
-    hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&pD2DWriteFactory));
+    hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&mD2DResource.pD2DWriteFactory));
     assert(SUCCEEDED(hr));
 
     // Create font
-    hr = pD2DWriteFactory->CreateTextFormat(FontPath.c_str(), nullptr, 
+    hr = mD2DResource.pD2DWriteFactory->CreateTextFormat((FontPath + L"Gabriola.ttf").c_str(), nullptr,
         DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, baseFontSize, L"", &(mD2DResource.pTextFormat));
     assert(SUCCEEDED(hr));
 
@@ -410,7 +410,7 @@ void D2DApp::OnResize(UINT width, UINT height)
     assert(mSwapChain);
 
     // Adjust windows size according to aspect ratio
-    if (width / height > aspectRatio) 
+    if (height > 0 && width / height > aspectRatio)
     {
         height = static_cast<UINT>(width / aspectRatio);
     }
@@ -419,7 +419,8 @@ void D2DApp::OnResize(UINT width, UINT height)
         width = static_cast<UINT>(height * aspectRatio);
     }
     float winScale = width  / 1280.0f;
-
+    if (winScale == 0)
+        winScale = 0.0001;
     curWindowSize.width = width;
     curWindowSize.height = height;
 
@@ -450,7 +451,7 @@ void D2DApp::OnResize(UINT width, UINT height)
     mScreenViewport.MinDepth = 0.0f;
     mScreenViewport.MaxDepth = 1.0f;
 
-    hr = pD2DWriteFactory->CreateTextFormat(FontPath.c_str(), 
+    hr = mD2DResource.pD2DWriteFactory->CreateTextFormat(FontPath.c_str(),
         nullptr,
         DWRITE_FONT_WEIGHT_NORMAL, // font weight
         DWRITE_FONT_STYLE_NORMAL, // font style

@@ -30,7 +30,7 @@ int main()
 
 MagicTowerApp::MagicTowerApp():D2DApp()
 {
-
+    gameMode = GameMode::GAMEPLAY;
 }
 
 MagicTowerApp::~MagicTowerApp()
@@ -56,7 +56,7 @@ HRESULT MagicTowerApp::Initialize()
 
         BuildResources();
 
-        Push(L"StartMenuGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::StartMenu));
+        Push(L"StartMenuGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU));
     }
     return hr;
 }
@@ -80,29 +80,39 @@ void MagicTowerApp::Update()
     //// Update GUI
     //mGui.Update();
 
-    // Update Game Objs
-    for (auto it = mGOs.begin(); it != mGOs.end();)
+    switch (gameMode)
     {
-        if (it->second && it->second->IsDestroyed())
+    case GameMode::GAMEPLAY:
+        // Update Game Objs
+        for (auto it = mGOs.begin(); it != mGOs.end();)
         {
-            it->second->Destroy();
-            it = mGOs.erase(it);
+            if (it->second && it->second->IsDestroyed())
+            {
+                it->second->Destroy();
+                it = mGOs.erase(it);
+            }
+            else
+                it++;
         }
-        else
-            it++;
-    }
-    for (auto it = pushQueue.begin(); it != pushQueue.end();)
-    {
-        Push(*it, std::make_unique<FloorGO>(std::stoi((*it).substr(7))));
-        it = pushQueue.erase(it);
+        for (auto it = pushQueue.begin(); it != pushQueue.end();)
+        {
+            Push(*it, std::make_unique<FloorGO>(std::stoi((*it).substr(7))));
+            it = pushQueue.erase(it);
+        }
+
+        for (auto it = mGOs.begin(); it != mGOs.end();)
+        {
+            if (it->second)
+                it->second->Update();
+            ++it;
+        }
+        break;
+    case GameMode::DISPLAYMENU:
+        gameUI->Update();
+        break;
     }
 
-    for (auto it = mGOs.begin(); it != mGOs.end();)
-    {
-        if (it->second)
-            it->second->Update();
-        ++it;
-    }
+
 }
 
 void MagicTowerApp::Draw()
@@ -125,6 +135,8 @@ void MagicTowerApp::Draw()
 
 void MagicTowerApp::BuildResources()
 {
+    gameUI = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::INGAMEUI);
+
     PassCB = std::make_unique<UploadBuffer<PassConstants>>(
         mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
 }
@@ -163,10 +175,10 @@ void MagicTowerApp::DrawRenderItems()
     std::wstring fps(std::to_wstring(mTimer.FPS()));
     D2D1_RECT_F textRect;
 
-    textRect.left = 0;
-    textRect.top = 0;
+    textRect.left = 20;
+    textRect.top = WinMaxHeight - 50;
     textRect.right = 300;
-    textRect.bottom = 50;
+    textRect.bottom = WinMaxHeight;
 
     mD2DResource.pD2DRenderTarget->DrawText(
         (L"fps: " + fps).c_str(),
@@ -175,19 +187,28 @@ void MagicTowerApp::DrawRenderItems()
         &textRect,
         mD2DResource.pSolidColorBrush);
 
-    // render
-    for (const auto& GO : mGOs)
+    switch (gameMode)
     {
-        if (GO.second && GO.second->IsValid() == true)
-            GO.second->Render();
+    case GameMode::GAMEPLAY:
+        // render
+        for (const auto& GO : mGOs)
+        {
+            if (GO.second && GO.second->IsValid() == true)
+                GO.second->Render();
+        }
+
+        // post render
+        for (const auto& GO : mGOs)
+        {
+            if (GO.second && GO.second->IsValid() == true)
+                GO.second->PostRender();
+        }
+        break;
+    case GameMode::DISPLAYMENU:
+        gameUI->Render();
+        break;
     }
 
-    // post render
-    for (const auto& GO : mGOs)
-    {
-        if (GO.second && GO.second->IsValid() == true)
-            GO.second->PostRender();
-    }
 
     // For Direct2D
     mD2DResource.pD2DRenderTarget->EndDraw();
@@ -203,4 +224,5 @@ void MagicTowerApp::LoadFloor(int floorNumber)
 {
     std::wstring floorGOName = L"FloorGO" + std::to_wstring(floorNumber);
     pushQueue.push_back(floorGOName);
+    Push(L"MainGAMEUIGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::PLAYERSTATES));
 }

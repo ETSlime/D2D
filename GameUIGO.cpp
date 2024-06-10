@@ -3,12 +3,12 @@
 #include "TextureRect.h"
 
 
-GameUIGO::GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIMode mode)
+GameUIGO::GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIRenderMode mode)
 	:mD2DResource(D2DResource), curWinSize(winSize), UImode(mode){}
 
 void GameUIGO::Init()
 {
-	startUI = new GameUI(mD2DResource, curWinSize, DirectX::XMFLOAT3(640, 200, 0), DirectX::XMFLOAT3(400, 300, 1), UImode);
+	startUI = new GameUI(mD2DResource, curWinSize, UImode);
 }
 
 void GameUIGO::Destroy()

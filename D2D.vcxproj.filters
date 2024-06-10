@@ -165,6 +165,12 @@
     <ClCompile Include="ChangeMapEffect.cpp">
       <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="ButtonOnClick.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Database.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DApp.h">
@@ -257,7 +263,7 @@
     <ClInclude Include="CursorTextureRect.h">
       <Filter>2DGeometry</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h">
+    <ClInclude Include="ButtonOnClick.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="TMap.h">
@@ -322,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="ChangeMapEffect.h">
       <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Database.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
