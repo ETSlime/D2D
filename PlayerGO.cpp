@@ -26,7 +26,6 @@ void PlayerGO::PostRender()
 void PlayerGO::Destroy()
 {
 	SAFE_DELETE(player);
-
 }
 
 void PlayerGO::GUI()

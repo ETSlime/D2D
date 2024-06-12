@@ -1,5 +1,5 @@
 #include "EventGO.h"
-
+#include "String.h"
 
 EventGO::EventGO(std::shared_ptr<GameEvent>(event)) 
 { 
@@ -13,13 +13,13 @@ void EventGO::Init()
 
 void EventGO::Destroy()
 {
-
+	this->event.reset();
 }
 
 void EventGO::Update()
 {
 	event->Update();
-	if (event->destroy)
+	if (event->GetDestroyed())
 	{
 		SetIsDestroyed(true);
 	}

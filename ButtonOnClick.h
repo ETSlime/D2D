@@ -42,11 +42,23 @@ public:
 
 	static std::unique_ptr<Coroutine> coro;
 
-	static void fadeCallback(Coroutine& coro);
+	static MagicTowerApp& mApp;
+
+	static void startGameFadeCallback(Coroutine& coro);
+
+	static void returnTitleFadeCallback(Coroutine& coro);
 
 	static int tutorial();
 
 	static int startGame();
 
 	static int exitGame();
+
+	static int save();
+
+	static int load();
+
+	static int itemCheck();
+
+	static int title();
 };

@@ -1,12 +1,13 @@
 #include "ButtonOnClick.h"
 #include "ChangeMapEffect.h"
+#include "GameUIGO.h"
 
-std::unique_ptr<Coroutine> ButtonOnClick::coro = std::make_unique<Coroutine>();
+std::unique_ptr<Coroutine> ButtonOnClick::coro;
+MagicTowerApp& ButtonOnClick::mApp = MagicTowerApp::get_instance();
 
-void ButtonOnClick::fadeCallback(Coroutine& coro)
+void ButtonOnClick::startGameFadeCallback(Coroutine& coro)
 {
-	MagicTowerApp& mApp = MagicTowerApp::get_instance();
-
+	// start fade in
 	if (coro.getState() == 0)
 	{
 		mApp.Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(0, 0)));
@@ -14,8 +15,10 @@ void ButtonOnClick::fadeCallback(Coroutine& coro)
 		Player::player->PlayFadeEffect(true);
 		coro.yield(Player::player->fadeEffect->GetFadeSpeed());
 	}
+	// start fadeout, enter gameplay mode
 	if (coro.getState() == 1)
 	{
+		mApp.SetGameMode(GameMode::GAMEPLAY);
 		mApp.DestroyGO(L"StartMenuGO");
 		Player::player->renderPlayer = true;
 		mApp.LoadFloor(0);
@@ -25,10 +28,31 @@ void ButtonOnClick::fadeCallback(Coroutine& coro)
 	}
 }
 
+void ButtonOnClick::returnTitleFadeCallback(Coroutine& coro)
+{
+	// start fade in
+	if (coro.getState() == 0)
+	{
+		Player::player->allowControl = false;
+		Player::player->PlayFadeEffect(true);
+		coro.yield(Player::player->fadeEffect->GetFadeSpeed());
+	}
+	// start fade out, return to title
+	if (coro.getState() == 1)
+	{
+		mApp.SetGameMode(GameMode::TITLE);
+		//mApp.DestroyGO(L"StartMenuGO");
+		Player::player->PlayFadeEffect(false);
+		coro.yield(2.0f);
+	}
+	if (coro.getState() == 2)
+	{
+		coro.setComplete();
+	}
+}
+
 int ButtonOnClick::tutorial()
 {
-	MagicTowerApp& mApp = MagicTowerApp::get_instance();
-
 	mApp.mTimer.Stop();
 	EnableWindow(mApp.m_hwnd, FALSE);
 	MessageBox(mApp.m_hwnd, L"sasa", L"Helper", MB_OK | MB_ICONASTERISK);
@@ -43,10 +67,10 @@ int ButtonOnClick::tutorial()
 
 int ButtonOnClick::startGame()
 {
+	coro = std::make_unique<Coroutine>();
 	coro.get()->setCallback([](Coroutine& coro)
-		{ fadeCallback(coro); });
+		{ startGameFadeCallback(coro); });
 	(*coro.get())();
-
 
 	return 0;
 }
@@ -54,6 +78,36 @@ int ButtonOnClick::startGame()
 int ButtonOnClick::exitGame()
 {
 	PostQuitMessage(0);
+
+	return 0;
+}
+
+int ButtonOnClick::save()
+{
+	return 0;
+}
+
+int ButtonOnClick::load()
+{
+	return 0;
+}
+
+int ButtonOnClick::itemCheck()
+{
+	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->ChangeUIMode(GameUI::UIRenderMode::ITEMCHECK);
+	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetChangeUIMode();
+	return 0;
+}
+
+int ButtonOnClick::title()
+{
+	mApp.SetGameMode(GameMode::GAMEPLAY);
+	coro = std::make_unique<Coroutine>();
+	coro.get()->setCallback([](Coroutine& coro)
+		{ returnTitleFadeCallback(coro); });
+	(*coro.get())();
+	//mApp.ReturnTitle();
+	mApp.ReturnTitle();
 
 	return 0;
 }

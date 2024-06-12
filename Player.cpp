@@ -87,7 +87,6 @@ void Player::Update()
 	{
 		mApp.SetAllowSwitch(false);
 		mApp.SetGameMode(GameMode::DISPLAYMENU);
-		mApp.InitGameUI();
 	}
 	animator->Update();
 	animRect->Update();
@@ -130,6 +129,8 @@ void Player::Render()
 
 bool Player::CanMove(const DirectX::XMFLOAT3& move)
 {
+	collisionBoxes = Map::get_instance().GetCollisionBoxes();
+	unwalkableTiles = Map::get_instance().GetUnwalkableTiles();
 	if (Keyboard::get_instance().Press(VK_CONTROL))
 		return true;
 	BoundingBox* predictedBox = new BoundingBox(*animRect->GetBox());

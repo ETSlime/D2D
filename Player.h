@@ -31,7 +31,10 @@ public:
 	ChangeMapEffect* fadeEffect;
 
 	int GetCurFloor() { return curFloor; }
+	UINT GetWalkingSteps(){ return walkingSteps; }
+	void StepsCountOne() { walkingSteps++; }
 	void SetCurFLoor(int newFloorNum) { curFloor = newFloorNum; }
+	const std::map<ItemID, UINT>& GetItems() const { return items; }
 
 	void AddItem(ItemID itemID) { items[itemID]++; }
 	bool UseItem(ItemID itemID) { if (items[itemID] > 0) { items[itemID]--; return true; } else return false; }
@@ -41,7 +44,8 @@ private:
 
 	// player attributes
 	int HP, MP, atk, def;
-	std::unordered_map<ItemID, UINT> items;
+	UINT walkingSteps = 0;
+	std::map<ItemID, UINT> items;
 	int curFloor = 0;
 
 	// player weapons

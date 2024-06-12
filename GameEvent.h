@@ -159,12 +159,14 @@ public:
 	Coord GetCoord() { return eventCoord; }
 	EventType GetEventType() { return eventType; }
 	BoundingBox* GetBoundingBox();
-
-	bool destroy = false;
+	std::wstring GetEventName() { return eventName; }
+	bool GetDestroyed() { return destroy; }
+	
 
 protected:
 	AnimationRect* animRect = nullptr;
 	Animator* animator = nullptr;
+	bool destroy = false;
 
 	Coord eventCoord;
 	EventType eventType;

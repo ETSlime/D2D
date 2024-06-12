@@ -8,23 +8,23 @@ AnimationRect::AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size,
 	SetShader(ShaderPath + L"Animation.hlsl");
 
 
-	{
-		D3D11_SAMPLER_DESC desc;
-		States::GetSamplerDesc(&desc);
-		States::CreateSampler(&desc, &point[0]);
+	//{
+	//	D3D11_SAMPLER_DESC desc;
+	//	States::GetSamplerDesc(&desc);
+	//	States::CreateSampler(&desc, &point[0]);
 
-		desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-		States::CreateSampler(&desc, &point[1]);
-	}
+	//	desc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	//	States::CreateSampler(&desc, &point[1]);
+	//}
 
-	{
-		D3D11_BLEND_DESC desc;
-		States::GetBlendDesc(&desc);
-		States::CreateBlend(&desc, &bPoint[0]);
+	//{
+	//	D3D11_BLEND_DESC desc;
+	//	States::GetBlendDesc(&desc);
+	//	States::CreateBlend(&desc, &bPoint[0]);
 
-		desc.RenderTarget[0].BlendEnable = true;
-		States::CreateBlend(&desc, &bPoint[1]);
-	}
+	//	desc.RenderTarget[0].BlendEnable = true;
+	//	States::CreateBlend(&desc, &bPoint[1]);
+	//}
 
 	if (type == EventType::PLAYER)
 		control = new PlayerControl();

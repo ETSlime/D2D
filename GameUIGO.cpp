@@ -8,22 +8,22 @@ GameUIGO::GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameU
 
 void GameUIGO::Init()
 {
-	startUI = new GameUI(mD2DResource, curWinSize, UImode);
+	gameUI = new GameUI(mD2DResource, curWinSize, UImode);
 }
 
 void GameUIGO::Destroy()
 {
-	SAFE_DELETE(startUI);
+	SAFE_DELETE(gameUI);
 }
 
 void GameUIGO::Update()
 {
-	startUI->Update();
+	gameUI->Update();
 }
 
 void GameUIGO::Render()
 {
-	startUI->Render();
+	gameUI->Render();
 }
 
 void GameUIGO::PostRender()
@@ -52,4 +52,13 @@ void GameUIGO::SetIsValid(bool _valid)
 void GameUIGO::SetIsDestroyed(bool _destroy)
 {
 	this->destroy = _destroy;
+}
+
+void GameUIGO::ChangeUIMode(GameUI::UIRenderMode mode)
+{
+	UImode = mode; 
+	if (gameUI)
+		gameUI->ChangeRenderMode(UImode);
+	else
+		gameUI = new GameUI(mD2DResource, curWinSize, UImode);
 }

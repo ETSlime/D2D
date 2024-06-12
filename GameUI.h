@@ -26,7 +26,8 @@ public:
 	{
 		STARTMENU,
 		INGAMEUI,
-		PLAYERSTATES
+		PLAYERSTATES,
+		ITEMCHECK,
 	};
 public:
 
@@ -37,15 +38,20 @@ public:
 
 	void Update();
 	void Render();
-	UIRect* GetanimRect() { return animRect; }
 
-	void RenderPlayerStates();
-	void RenderMonsterStates();
+
+	void ChangeRenderMode(GameUI::UIRenderMode mode) { InitGameUI(mode); renderMode = mode; }
+	void SetRenderModeOnChanging() { renderModeOnChanging = true; }
 
 private:
 
 	struct Cursor
 	{
+		~Cursor()
+		{
+			SAFE_DELETE(textureRect);
+		}
+
 		CursorTextureRect* textureRect = nullptr;
 		DirectX::XMFLOAT3 position = {};
 		DirectX::XMFLOAT3 size = {};
@@ -69,12 +75,17 @@ private:
 			textureRect->UpdatePosition(position);
 		}
 
-		void MoveUp(std::vector<Button*>& buttons)
+		void MoveUp(std::vector<std::unique_ptr<Button>>& buttons)
 		{
 			buttons[curIdx]->isSelected = false;
 			curIdx = curIdx > 0 ? curIdx - 1 : buttons.size() - 1;
 			Update(curIdx);
 			buttons[curIdx]->isSelected = true;
+		}
+
+		void MoveUp(std::unordered_map<ItemCategory, Button*>& buttons)
+		{
+
 		}
 
 		void MoveUp()
@@ -83,7 +94,7 @@ private:
 			Update(curIdx);
 		}
 
-		void MoveDown(std::vector<Button*>& buttons)
+		void MoveDown(std::vector<std::unique_ptr<Button>>& buttons)
 		{
 			buttons[curIdx]->isSelected = false;
 			curIdx = curIdx < buttons.size() - 1 ? curIdx + 1 : 0;
@@ -91,38 +102,66 @@ private:
 			buttons[curIdx]->isSelected = true;
 		}
 
-		void MoveDown()
+		void MoveDown(std::unordered_map<ItemCategory, Button*>& buttons)
 		{
-			curIdx = curIdx < 6 ? curIdx + 1 : 6;
+
+		}
+
+		void MoveDown(int maxCount)
+		{
+			curIdx = curIdx < maxCount ? curIdx + 1 : maxCount;
 			Update(curIdx);
 		}
 
-		void Execute(std::vector<Button*>& buttons)
+		void Execute(std::vector<std::unique_ptr<Button>>& buttons)
 		{
-			buttons[curIdx]->pOnClick();
+			if (buttons[curIdx]->pOnClick)
+				buttons[curIdx]->pOnClick();
 		}
 	};
 
+	// Init UI
+	void InitGameUI(GameUI::UIRenderMode mode);
 	void InitMainMenu();
 	void InitInGameUI();
 	void InitPlayerState();
+	void InitItemCheck();
 
-	void UpdateTextRect(D2D1_RECT_F* textRect);
-	void UpdateCursorAndButton(Cursor& cursor, std::vector<Button*>& buttons);
-	void UpdateMonsterCursor(Cursor& cursor);
+	
+	// draw text
 	IDWriteTextFormat* DynamicTextFormat(const std::wstring& text, const D2D1_RECT_F* textRect, bool* isTransformed = nullptr);
 	void DrawTextWithSpacing(IDWriteTextFormat* pTextFormat, const std::wstring& text, const D2D1_RECT_F* rect);
+	D2D1_RECT_F GetTextRect(float left, float top, float right, float bottom);
+	std::wstring GetFormattedTime() const;
 
+	// cursor & button
 	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd;
 	float curTime = 0, lastTime = 0;
-	std::vector<Button*> startButtons, gameMenuButtons;
+	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons;
+	std::unordered_set<ItemCategory> itemCategorySet;
+	//std::unordered_map<ItemCategory, Button*> itemCategoryButtons;
+	void UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
+	void UpdateMonsterCursor(Cursor& cursor);
+	void UpdateItemCursor(Cursor& cursor, std::vector<Button*>& buttons);
+	void UpdateUIState();
 
-	// texture
+	// render
+	void RenderItem();
+	void RenderPlayerStates();
+	void RenderMonsterStates();
+
+	// start menu
 	UITextureRect* base = nullptr;
+	// in game menu
 	UITextureRect* rightDispalyBase = nullptr;
 	UITextureRect* leftButtonBase = nullptr;
 	UITextureRect* timerBase = nullptr;
 	UITextureRect* walkingStepBase = nullptr;
+	// item check
+	UITextureRect* itemCheckTitleBase = nullptr;
+	UITextureRect* itemCheckDetailBase = nullptr;
+	UITextureRect* itemCheckCategoryBase = nullptr;
+	UITextureRect* itemCheckDescriptionBase = nullptr;
 	// icon texture
 	TextureRect* playerIcon = nullptr;
 	TextureRect* yellowKeyIcon = nullptr;
@@ -131,15 +170,14 @@ private:
 	TextureRect* greenKeyIcon = nullptr;
 
 	// monster texture&data
-	std::unordered_map<UINT, std::tuple<UINT, TextureRect*, MonsterData>> monsters;
+	std::map<UINT, std::tuple<int, std::unique_ptr<TextureRect>, MonsterData>> monsters;
 
-	int mode = 0;  
-	int pressWhat = 0;
-	UIRect* animRect = nullptr;
-
-	int time = 0;
-
+	// Render mode/UI states
 	UIState UIstate = UIState::MenuLevel1;
+	UIRenderMode renderMode;
+	bool renderModeOnChanging = false;
+
+	// instance & resource
 	Keyboard& keyboard = Keyboard::get_instance();
 	Map& map = Map::get_instance();
 	MagicTowerApp& mApp = MagicTowerApp::get_instance();

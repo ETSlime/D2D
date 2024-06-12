@@ -14,6 +14,8 @@ void Stair::OnPlayerCollision(Coroutine& coro, StairType type)
 	}
 	if (coro.getState() == 1)
 	{
+		Player::player->SetCoord(newPlayerCoord);
+		Player::player->UpdatePositionByCoord(newPlayerCoord);
 		std::wstring curFloorName = L"FloorGO" + std::to_wstring(floorNumber);
 		MapStatic::eventFloor->clear();
 		mApp.DestroyGO(curFloorName);
@@ -21,8 +23,6 @@ void Stair::OnPlayerCollision(Coroutine& coro, StairType type)
 			mApp.LoadFloor(floorNumber + 1);
 		else if (type == StairType::DOWN)
 			mApp.LoadFloor(floorNumber - 1);
-		Player::player->SetCoord(newPlayerCoord);
-		Player::player->UpdatePositionByCoord(newPlayerCoord);
 		Player::player->GetanimRect()->SetFacingWhere(PlayerControl::Down);
 		Player::player->PlayFadeEffect(false);
 		Player::player->allowControl = true;

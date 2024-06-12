@@ -27,9 +27,10 @@ public:
             running = true;
             state++;
             func(*this);  // Resume the coroutine after waiting
-            if (state > 1) {
-                completed = true;  // Mark as completed after finishing the last part
-            }
+            // comment below to set complete by hand
+            //if (state > 1) {
+            //    completed = true;  // Mark as completed after finishing the last part
+            //}
             }).detach();
     }
 

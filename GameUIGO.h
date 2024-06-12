@@ -20,9 +20,12 @@ public:
 
 	GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIRenderMode mode);
 
+	void ChangeUIMode(GameUI::UIRenderMode mode);
+	void SetChangeUIMode() { gameUI->SetRenderModeOnChanging(); }
+
 private:
 
-	class GameUI* startUI = nullptr;
+	class GameUI* gameUI = nullptr;
 	GameUI::UIRenderMode UImode;
 	bool valid = true;
 	bool destroy = false;

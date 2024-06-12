@@ -52,21 +52,6 @@ void Door::OnPlayerCollision(Coroutine& coro)
 		coro.setComplete();
 	}
 
-	//std::cout << "aaaaaaaaaaaaabbbbbbbbb";
-	//std::shared_ptr<Message> eventUpdate = std::make_shared<MessageEventUpdate>(this->eventName);
-	//animator->SetCurrentAnimClip(L"Open");
-	//if (coro.getState() == 0)
-	//{
-	//	coro.yield(OPENDOOR_ANIM_FRAME / ANIM_PLAY_SPEED);
-	//}
-	//if (coro.getState() == 1)
-	//{
-	//	MessageDispatcher::get_instance().dispatch("UpdateEvents", eventUpdate);
-	//	destroy = true;
-	//	// final state, complete the coroutine, otherwise will cause memory leak
-	//	coro.setComplete();
-	//}
-
 };
 
 Door::Door(Coord coord, DoorType type, std::wstring eventName, DirectX::XMFLOAT3 size)

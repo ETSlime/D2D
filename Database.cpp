@@ -1,5 +1,14 @@
 #include "Database.h"
 
+std::unordered_map<ItemID, std::tuple<std::wstring, ItemCategory>> Database::itemCategoryMap = 
+{
+	{ ItemID::YELLOW_KEY, std::make_tuple(L"Œ®—Ş", ItemCategory::KEYS)},
+	{ ItemID::BLUE_KEY,  std::make_tuple(L"Œ®—Ş", ItemCategory::KEYS) },
+	{ ItemID::RED_KEY,  std::make_tuple(L"Œ®—Ş", ItemCategory::KEYS) },
+	{ ItemID::BOOK,  std::make_tuple(L"H‹ï—Ş",ItemCategory::AUXILIARIES) },
+	{ ItemID::BOOMB,  std::make_tuple(L"d—v—Ş",ItemCategory::TREASURES) }
+};
+
 std::unordered_map<UINT, MonsterData> Database::monsterDatabase =
 {
 	{0,
