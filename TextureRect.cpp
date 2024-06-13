@@ -8,6 +8,9 @@ TextureRect::TextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, flo
 	SetIndices();
 	CreateRenderResource(vertices, indices, ShaderPath + L"VertexTexture.hlsl");
 
+	shaderBuffer = new UploadBuffer<float>(mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
+	enabled = 1.0f;
+
 }
 
 void TextureRect::SetVertices()
@@ -48,33 +51,16 @@ TextureRect::~TextureRect()
 
 void TextureRect::Update()
 {
+	shaderBuffer->MapData(mDeviceContext, enabled);
 	UpdateWorld();
 	Move();
 }
 
-//void TextureRect::Render()
-//{
-//	//mVertexBuffer->SetIA();
-//	//mIndexBuffer->SetIA();
-//	UINT offset = 0;
-//	mDeviceContext->IASetVertexBuffers(0, 1, mVertexBuffer->GetBuffer(), mVertexBuffer->GetStride(), &offset);
-//	mDeviceContext->IASetIndexBuffer(mIndexBuffer->GetResource(), DXGI_FORMAT_R32_UINT, offset);
-//	//mInputLayout->SetIA();
-//	mDeviceContext->IASetInputLayout(mInputLayout->GetInputLayout());
-//
-//	mDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-//
-//	mVertexShader->SetShader();
-//	mPixelShader->SetShader();
-//
-//	//mWorldBuffer->SetVSBuffer(0);
-//	mWorldBuffer->MapData(mDeviceContext, world);
-//	mDeviceContext->VSSetConstantBuffers(0, 1, mWorldBuffer->Resource());
-//
-//	mDeviceContext->PSSetShaderResources(0, 1, &srv);
-//
-//	mDeviceContext->DrawIndexed(indices.size(), 0, 0);
-//}
+void TextureRect::Render()
+{
+	mDeviceContext->PSSetConstantBuffers(2, 1, shaderBuffer->Resource());
+	__super::Render();
+}
 
 void TextureRect::Move()
 {

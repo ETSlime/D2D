@@ -40,8 +40,8 @@ Map::~Map()
 void Map::ClearCurrentMap()
 {
 	// release tile resource
-	for (auto& tile : curMap)
-		SAFE_DELETE(tile.second);
+	//for (auto& tile : curMap)
+	//	SAFE_DELETE(tile.second);
 
 	curMap.clear();
 	curEvents.clear();

@@ -14,6 +14,7 @@
 
 enum class GameMode
 {
+    TITLE,
     GAMEPLAY,
     DISPLAYMENU
 };
@@ -101,18 +102,21 @@ private:
 private:
     std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
     std::unique_ptr<IGameObj> gameUI;
+    std::unique_ptr<IGameObj> startMenuGO;
     std::vector<std::wstring> pushQueue;
 
     bool allowSwitchMode = true;
 
     // public methods for other class
 public:
+
+    void ReturnTitle();
     void DestroyGO(std::wstring name);
     void Push(std::wstring name, std::unique_ptr<IGameObj> GO);
     void LoadFloor(int floorNum);
 
-    void SetGameMode(GameMode mode) { gameMode = mode; }
+    void SetGameMode(GameMode mode);
+    GameMode GetGameMode() { return gameMode; }
     bool AvailableToSwitch() { return allowSwitchMode; }
     void SetAllowSwitch(bool allow) { allowSwitchMode = allow; }
-    void InitGameUI() { gameUI.get()->Init(); }
 };

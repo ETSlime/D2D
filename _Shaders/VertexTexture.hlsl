@@ -10,6 +10,11 @@ struct PixelInput
     float2 uv : TEXCOORD0;
 };
 
+cbuffer PSBuffer : register(b2)
+{
+    float enabled;
+};
+
 cbuffer WorldBuffer : register(b0)// 0 ~ 127
 {
     matrix _world;
@@ -39,6 +44,7 @@ SamplerState _samp : register(s0);
 float4 PS(PixelInput input) : SV_Target
 {
     float4 color = _sourceTex.Sample(_samp, (float2)input.uv);
- 
+    if (!enabled)
+        color = color * 0.5;
     return color;
 }

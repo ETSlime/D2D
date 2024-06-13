@@ -29,7 +29,7 @@ public:
 	void GenerateEvent(int floor);
 
 	void ClearCurrentMap();
-	Tile* GetTile(Coord coord) { return curMap[coord]; }
+	std::shared_ptr<Tile> GetTile(Coord coord) { return curMap[coord]; }
 	UINT GetNumOfTile() { return static_cast<UINT>(curMap.size()); }
 	DirectX::XMFLOAT3 GetMapStartPosition() { return mapStartPosition; }
 	DirectX::XMFLOAT3 GetPositionFromCoord(Coord coord);
@@ -41,7 +41,7 @@ public:
 	const std::vector<BoundingBox*>* GetCollisionBoxes() { return &collisionBoxes; }
 
 private:
-	std::unordered_map<Coord, Tile*> curMap;
+	std::unordered_map<Coord, std::shared_ptr<Tile>> curMap;
 	std::unordered_map<std::wstring, std::shared_ptr<GameEvent>> curEvents;
 	BuildMap mapBuilder;
 

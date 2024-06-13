@@ -30,7 +30,7 @@ int main()
 
 MagicTowerApp::MagicTowerApp():D2DApp()
 {
-    gameMode = GameMode::GAMEPLAY;
+    gameMode = GameMode::TITLE;
 }
 
 MagicTowerApp::~MagicTowerApp()
@@ -56,7 +56,6 @@ HRESULT MagicTowerApp::Initialize()
 
         BuildResources();
 
-        Push(L"StartMenuGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU));
     }
     return hr;
 }
@@ -80,20 +79,53 @@ void MagicTowerApp::Update()
     //// Update GUI
     //mGui.Update();
 
+    // Update Game Objs
+    for (auto it = mGOs.begin(); it != mGOs.end();)
+    {
+        if (it->second && it->second->IsDestroyed())
+        {
+            it->second->Destroy();
+            it = mGOs.erase(it);
+        }
+        else
+            it++;
+    }
+
     switch (gameMode)
     {
-    case GameMode::GAMEPLAY:
-        // Update Game Objs
-        for (auto it = mGOs.begin(); it != mGOs.end();)
+    case GameMode::TITLE:
+        if (startMenuGO)
         {
-            if (it->second && it->second->IsDestroyed())
+            if (startMenuGO->IsDestroyed())
             {
-                it->second->Destroy();
-                it = mGOs.erase(it);
+                startMenuGO->Destroy();
+                startMenuGO.release();
             }
             else
-                it++;
+                startMenuGO->Update();
         }
+
+        if (gameUI && gameUI->IsDestroyed())
+        {
+            gameUI->Destroy();
+            gameUI.release();
+        }
+
+        if (mGOs[L"PlayerGO"])
+            mGOs[L"PlayerGO"]->Update();
+        break;
+    case GameMode::GAMEPLAY:
+        //// Update Game Objs
+        //for (auto it = mGOs.begin(); it != mGOs.end();)
+        //{
+        //    if (it->second && it->second->IsDestroyed())
+        //    {
+        //        it->second->Destroy();
+        //        it = mGOs.erase(it);
+        //    }
+        //    else
+        //        it++;
+        //}
         for (auto it = pushQueue.begin(); it != pushQueue.end();)
         {
             Push(*it, std::make_unique<FloorGO>(std::stoi((*it).substr(7))));
@@ -135,8 +167,9 @@ void MagicTowerApp::Draw()
 
 void MagicTowerApp::BuildResources()
 {
-    gameUI = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::INGAMEUI);
 
+    startMenuGO = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU);
+    startMenuGO->Init();
     PassCB = std::make_unique<UploadBuffer<PassConstants>>(
         mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
 }
@@ -189,6 +222,12 @@ void MagicTowerApp::DrawRenderItems()
 
     switch (gameMode)
     {
+    case GameMode::TITLE:
+        if (startMenuGO && startMenuGO->IsValid() == true)
+            startMenuGO->Render();
+        if (mGOs[L"PlayerGO"])
+            mGOs[L"PlayerGO"]->Render();
+        break;
     case GameMode::GAMEPLAY:
         // render
         for (const auto& GO : mGOs)
@@ -218,6 +257,8 @@ void MagicTowerApp::DestroyGO(std::wstring name)
 {
     if (mGOs[name])
         mGOs[name]->SetIsDestroyed(true);
+    else if (name == L"StartMenuGO")
+        startMenuGO->SetIsDestroyed(true);
 }
 
 void MagicTowerApp::LoadFloor(int floorNumber)
@@ -225,4 +266,37 @@ void MagicTowerApp::LoadFloor(int floorNumber)
     std::wstring floorGOName = L"FloorGO" + std::to_wstring(floorNumber);
     pushQueue.push_back(floorGOName);
     Push(L"MainGAMEUIGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::PLAYERSTATES));
+}
+
+void MagicTowerApp::SetGameMode(GameMode mode)
+{
+    gameMode = mode;
+    switch (mode)
+    {
+    case GameMode::TITLE:
+    {
+        startMenuGO->Init();
+        break;
+    }
+    case GameMode::DISPLAYMENU:
+        dynamic_cast<GameUIGO*>(gameUI.get())->ChangeUIMode(GameUI::UIRenderMode::INGAMEUI);
+        break;
+      
+    case GameMode::GAMEPLAY:
+        if (gameUI == nullptr)
+            gameUI = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::INGAMEUI);
+        gameUI->Init();
+        break;
+    }
+}
+
+void MagicTowerApp::ReturnTitle()
+{
+    gameUI->SetIsDestroyed(true);
+    for (auto& GO : mGOs)
+    {
+        if (GO.second)
+            GO.second->SetIsDestroyed(true);
+    }
+    //Push(L"StartMenuGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU));
 }

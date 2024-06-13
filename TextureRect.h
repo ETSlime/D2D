@@ -14,6 +14,7 @@ public:
 	void SetSRV(ID3D11ShaderResourceView* srv) { this->srv = srv; }
 
 	void Update() override;
+	void Render() override;
 	virtual void SetVertices() override;
 	virtual void SetIndices() override;
 
@@ -44,9 +45,12 @@ protected:
 
 	BoundingBox* boundingBox = nullptr;
 
+	UploadBuffer<float>* shaderBuffer;
+
 
 	DirectX::XMFLOAT2 CollisionEdge_LT = { 0,0 };
 	DirectX::XMFLOAT2 CollisionEdge_RB = { 0,0 };
 
 	bool centered;
+	float enabled;
 };

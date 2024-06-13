@@ -40,6 +40,7 @@ enum class ItemID
 	GRAY_KEY,
 	IRON_KEY,
 	SPECIAL_YELLOW_KEY,
+	WHITE_KEY,
 	YELLOW_KEY_2,
 	BLUE_KEY_2,
 	RED_KEY_2,
@@ -159,12 +160,14 @@ public:
 	Coord GetCoord() { return eventCoord; }
 	EventType GetEventType() { return eventType; }
 	BoundingBox* GetBoundingBox();
-
-	bool destroy = false;
+	std::wstring GetEventName() { return eventName; }
+	bool GetDestroyed() { return destroy; }
+	
 
 protected:
 	AnimationRect* animRect = nullptr;
 	Animator* animator = nullptr;
+	bool destroy = false;
 
 	Coord eventCoord;
 	EventType eventType;

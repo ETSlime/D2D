@@ -105,7 +105,7 @@ void TMap::UpdateVertices()
 	{
 		for (UINT x = 0; x < MapStatic::gameWidth; x++)
 		{
-			Tile* tile = map.GetTile(Coord(x, y));
+			std::shared_ptr<Tile> tile = map.GetTile(Coord(x, y));
 			for (VertexTile& v : tileVertices)
 			{
 				v.bWalkable = static_cast<float>(tile->GetIsWalkable());

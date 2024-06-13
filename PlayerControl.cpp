@@ -111,7 +111,10 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 
 	if (t >= 0.99f)
 	{
+		// one step walking has been performed
+		player->StepsCountOne();
 		elapsedTime = 0;
+		// if still pressed, keep moving by setting next movement
 		if (keyboard.Press(key) && Player::player->allowControl == true)
 		{
 			DirectX::XMFLOAT3 move;
