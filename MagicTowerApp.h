@@ -116,6 +116,7 @@ public:
     void LoadFloor(int floorNum);
 
     void SetGameMode(GameMode mode);
+    GameMode GetGameMode() { return gameMode; }
     bool AvailableToSwitch() { return allowSwitchMode; }
     void SetAllowSwitch(bool allow) { allowSwitchMode = allow; }
 };

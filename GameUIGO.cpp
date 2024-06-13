@@ -8,7 +8,8 @@ GameUIGO::GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameU
 
 void GameUIGO::Init()
 {
-	gameUI = new GameUI(mD2DResource, curWinSize, UImode);
+	if (gameUI == nullptr)
+		gameUI = new GameUI(mD2DResource, curWinSize, UImode);
 }
 
 void GameUIGO::Destroy()

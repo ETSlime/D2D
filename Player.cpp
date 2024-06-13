@@ -86,7 +86,11 @@ void Player::Update()
 	if (keyboard.Press('X') && mApp.AvailableToSwitch())
 	{
 		mApp.SetAllowSwitch(false);
-		mApp.SetGameMode(GameMode::DISPLAYMENU);
+		// only change game mode to displaymenu if on game play mode
+		if (mApp.GetGameMode() == GameMode::GAMEPLAY)
+		{
+			mApp.SetGameMode(GameMode::DISPLAYMENU);
+		}
 	}
 	animator->Update();
 	animRect->Update();

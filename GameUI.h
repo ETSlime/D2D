@@ -42,6 +42,7 @@ public:
 
 	void ChangeRenderMode(GameUI::UIRenderMode mode) { InitGameUI(mode); renderMode = mode; }
 	void SetRenderModeOnChanging() { renderModeOnChanging = true; }
+	void SetGameModeOnChanging(bool change) { gameModeOnChanging = change; }
 
 private:
 
@@ -83,11 +84,6 @@ private:
 			buttons[curIdx]->isSelected = true;
 		}
 
-		void MoveUp(std::unordered_map<ItemCategory, Button*>& buttons)
-		{
-
-		}
-
 		void MoveUp()
 		{
 			curIdx = curIdx > 0 ? curIdx - 1 : 0;
@@ -100,11 +96,6 @@ private:
 			curIdx = curIdx < buttons.size() - 1 ? curIdx + 1 : 0;
 			Update(curIdx);
 			buttons[curIdx]->isSelected = true;
-		}
-
-		void MoveDown(std::unordered_map<ItemCategory, Button*>& buttons)
-		{
-
 		}
 
 		void MoveDown(int maxCount)
@@ -136,10 +127,10 @@ private:
 
 	// cursor & button
 	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd;
+	UINT itemCategoryIdx = 0;
 	float curTime = 0, lastTime = 0;
 	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons;
 	std::unordered_set<ItemCategory> itemCategorySet;
-	//std::unordered_map<ItemCategory, Button*> itemCategoryButtons;
 	void UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
 	void UpdateMonsterCursor(Cursor& cursor);
 	void UpdateItemCursor(Cursor& cursor, std::vector<Button*>& buttons);
@@ -176,6 +167,7 @@ private:
 	UIState UIstate = UIState::MenuLevel1;
 	UIRenderMode renderMode;
 	bool renderModeOnChanging = false;
+	bool gameModeOnChanging = false;
 
 	// instance & resource
 	Keyboard& keyboard = Keyboard::get_instance();
@@ -186,5 +178,6 @@ private:
 	ID3D11DeviceContext* mDeviceContext = MagicTowerApp::get_instance().mDeviceContext;
 	const D2DResource* mD2DResource = nullptr;
 	const WinSize* curWinSize = nullptr;
+
 };
 

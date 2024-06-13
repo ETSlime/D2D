@@ -22,7 +22,7 @@ public:
 
 	void ChangeUIMode(GameUI::UIRenderMode mode);
 	void SetChangeUIMode() { gameUI->SetRenderModeOnChanging(); }
-
+	void SetChangeGameMode(bool change) { gameUI->SetGameModeOnChanging(change); }
 private:
 
 	class GameUI* gameUI = nullptr;

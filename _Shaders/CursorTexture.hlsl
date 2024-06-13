@@ -51,7 +51,7 @@ float4 PS(PixelInput input) : SV_Target
 	if (enabled)
 		color.a = 0.2f + abs(sin(2.7f * totalTime))* color.a;
 	else
-        color.a = 0.1f;
+        color.a = 0.3f;
 	return color;
 
 }

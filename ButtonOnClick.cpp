@@ -10,20 +10,26 @@ void ButtonOnClick::startGameFadeCallback(Coroutine& coro)
 	// start fade in
 	if (coro.getState() == 0)
 	{
+		// changing game mode
+		dynamic_cast<GameUIGO*>(mApp.startMenuGO.get())->SetChangeGameMode(true);
+		// create player GO
 		mApp.Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(0, 0)));
 		Player::player->allowControl = false;
 		Player::player->PlayFadeEffect(true);
+		// fade in effect
 		coro.yield(Player::player->fadeEffect->GetFadeSpeed());
 	}
 	// start fadeout, enter gameplay mode
 	if (coro.getState() == 1)
 	{
 		mApp.SetGameMode(GameMode::GAMEPLAY);
-		mApp.DestroyGO(L"StartMenuGO");
+		//mApp.DestroyGO(L"StartMenuGO");
 		Player::player->renderPlayer = true;
 		mApp.LoadFloor(0);
 		Player::player->PlayFadeEffect(false);
 		Player::player->allowControl = true;
+		// finish changing game mode
+		dynamic_cast<GameUIGO*>(mApp.startMenuGO.get())->SetChangeGameMode(false);
 		coro.setComplete();
 	}
 }
@@ -41,14 +47,11 @@ void ButtonOnClick::returnTitleFadeCallback(Coroutine& coro)
 	if (coro.getState() == 1)
 	{
 		mApp.SetGameMode(GameMode::TITLE);
-		//mApp.DestroyGO(L"StartMenuGO");
 		Player::player->PlayFadeEffect(false);
-		coro.yield(2.0f);
-	}
-	if (coro.getState() == 2)
-	{
+		mApp.ReturnTitle();
 		coro.setComplete();
 	}
+
 }
 
 int ButtonOnClick::tutorial()
@@ -106,8 +109,6 @@ int ButtonOnClick::title()
 	coro.get()->setCallback([](Coroutine& coro)
 		{ returnTitleFadeCallback(coro); });
 	(*coro.get())();
-	//mApp.ReturnTitle();
-	mApp.ReturnTitle();
 
 	return 0;
 }

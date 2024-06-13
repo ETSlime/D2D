@@ -19,7 +19,7 @@ void MapStatic::GenerateTileMap(UINT floor)
 	{
 		for (UINT j = 0; j < gameHeight; j++)
 		{
-			Map::get_instance().curMap[Coord(i, j)] = new Tile(mapTileIdx[floor].at(Coord(i, j)), Coord(i, j));
+			Map::get_instance().curMap[Coord(i, j)] = std::make_shared<Tile>(mapTileIdx[floor].at(Coord(i, j)), Coord(i, j));
 		}
 	}
 }
@@ -121,7 +121,7 @@ std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventPa
 	std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> tempEventParams;
 	
 	// Using emplace to avoid copying std::unique_ptr, which is non-copyable.
-	tempEventParams[0].emplace(L"Monster001", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 4, 5 }, 0));
+	tempEventParams[0].emplace(L"Monster001", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 5 }, 0));
 	tempEventParams[0].emplace(L"Monster002", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 5 }, 1));
 	tempEventParams[0].emplace(L"Monster003", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 6 }, 2));
 	tempEventParams[0].emplace(L"Monster004", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 7 }, 3));
@@ -150,16 +150,38 @@ std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventPa
 	tempEventParams[0].emplace(L"Monster028", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 2, 8 }, 0));
 	tempEventParams[0].emplace(L"Monster029", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 2, 9 }, 0));
 	tempEventParams[0].emplace(L"Monster030", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 2, 10 }, 0));
-	tempEventParams[0].emplace(L"Monster020", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 2, 11 }, 0));
+	tempEventParams[0].emplace(L"Monster031", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 2, 11 }, 0));
+	tempEventParams[0].emplace(L"Monster032", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 3, 2 }, 0));
+	tempEventParams[0].emplace(L"Monster033", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 3, 3 }, 0));
+	tempEventParams[0].emplace(L"Monster034", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 3, 4 }, 0));
+	tempEventParams[0].emplace(L"Monster035", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 3, 5 }, 0));
+	tempEventParams[0].emplace(L"Monster036", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 6 }, 0));
+	tempEventParams[0].emplace(L"Monster037", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 7 }, 0));
+	tempEventParams[0].emplace(L"Monster038", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 8 }, 0));
+	tempEventParams[0].emplace(L"Monster039", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 9 }, 0));
+	tempEventParams[0].emplace(L"Monster040", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 10 }, 0));
+	tempEventParams[0].emplace(L"Monster041", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 11 }, 0));
+	tempEventParams[0].emplace(L"Monster0422", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 2, 11 }, 0));
+	tempEventParams[0].emplace(L"Monster042", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 2 }, 0));
+	tempEventParams[0].emplace(L"Monster043", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 3 }, 0));
+	tempEventParams[0].emplace(L"Monster044", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 4 }, 0));
+	tempEventParams[0].emplace(L"Monster045", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 5 }, 0));
+	tempEventParams[0].emplace(L"Monster046", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 6 }, 0));
+	tempEventParams[0].emplace(L"Monster047", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 7 }, 0));
+	tempEventParams[0].emplace(L"Monster048", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 8 }, 0));
+	tempEventParams[0].emplace(L"Monster049", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 9 }, 0));
+	tempEventParams[0].emplace(L"Monster050", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 10 }, 0));
+	tempEventParams[0].emplace(L"Monster051", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 11 }, 0));
 	tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::YELLOW_KEY));
 	tempEventParams[0].emplace(L"Item002", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 7 }, ItemID::BLUE_KEY));
-	tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::RED_KEY));
+	tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::RED_KEY)); 
 	tempEventParams[0].emplace(L"Door001", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 6 }, DoorType::YELLOW));
+	tempEventParams[0].emplace(L"Item004", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 4, 10 }, ItemID::BOOK));
 	tempEventParams[0].emplace(L"Door002", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 7 }, DoorType::BLUE));
 	tempEventParams[0].emplace(L"Door003", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 8 }, DoorType::RED));
 	tempEventParams[0].emplace(L"Stair001", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::UP, Coord{ 1, 1 }));
 
-	tempEventParams[1].emplace(L"Door003", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 8 }, DoorType::RED));
+	//tempEventParams[1].emplace(L"Door003", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 8 }, DoorType::RED));
 	tempEventParams[1].emplace(L"Stair001", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::DOWN, Coord{ 2, 2 }));
 	return tempEventParams;
 	}();

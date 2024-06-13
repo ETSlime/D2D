@@ -79,6 +79,18 @@ void MagicTowerApp::Update()
     //// Update GUI
     //mGui.Update();
 
+    // Update Game Objs
+    for (auto it = mGOs.begin(); it != mGOs.end();)
+    {
+        if (it->second && it->second->IsDestroyed())
+        {
+            it->second->Destroy();
+            it = mGOs.erase(it);
+        }
+        else
+            it++;
+    }
+
     switch (gameMode)
     {
     case GameMode::TITLE:
@@ -93,21 +105,27 @@ void MagicTowerApp::Update()
                 startMenuGO->Update();
         }
 
+        if (gameUI && gameUI->IsDestroyed())
+        {
+            gameUI->Destroy();
+            gameUI.release();
+        }
+
         if (mGOs[L"PlayerGO"])
             mGOs[L"PlayerGO"]->Update();
         break;
     case GameMode::GAMEPLAY:
-        // Update Game Objs
-        for (auto it = mGOs.begin(); it != mGOs.end();)
-        {
-            if (it->second && it->second->IsDestroyed())
-            {
-                it->second->Destroy();
-                it = mGOs.erase(it);
-            }
-            else
-                it++;
-        }
+        //// Update Game Objs
+        //for (auto it = mGOs.begin(); it != mGOs.end();)
+        //{
+        //    if (it->second && it->second->IsDestroyed())
+        //    {
+        //        it->second->Destroy();
+        //        it = mGOs.erase(it);
+        //    }
+        //    else
+        //        it++;
+        //}
         for (auto it = pushQueue.begin(); it != pushQueue.end();)
         {
             Push(*it, std::make_unique<FloorGO>(std::stoi((*it).substr(7))));
@@ -149,8 +167,7 @@ void MagicTowerApp::Draw()
 
 void MagicTowerApp::BuildResources()
 {
-    gameUI = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::INGAMEUI);
-    gameUI->Init();
+
     startMenuGO = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU);
     startMenuGO->Init();
     PassCB = std::make_unique<UploadBuffer<PassConstants>>(
@@ -258,15 +275,19 @@ void MagicTowerApp::SetGameMode(GameMode mode)
     {
     case GameMode::TITLE:
     {
-        //if (startMenuGO == nullptr)
-        //    startMenuGO = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU);
         startMenuGO->Init();
         break;
     }
     case GameMode::DISPLAYMENU:
         dynamic_cast<GameUIGO*>(gameUI.get())->ChangeUIMode(GameUI::UIRenderMode::INGAMEUI);
         break;
-    }    
+      
+    case GameMode::GAMEPLAY:
+        if (gameUI == nullptr)
+            gameUI = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::INGAMEUI);
+        gameUI->Init();
+        break;
+    }
 }
 
 void MagicTowerApp::ReturnTitle()

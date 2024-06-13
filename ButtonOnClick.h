@@ -35,6 +35,17 @@ struct Button
 
 };
 
+struct ItemButton : Button
+{
+	ItemButton(std::wstring text, DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 size, const WinSize* curWinSize, OnClick pOnClick, TextureRect* icon, bool Selected = false) :
+		Button(text, position, size, curWinSize, pOnClick, Selected), itemIcon(icon) {}
+	~ItemButton()
+	{
+		SAFE_DELETE(itemIcon);
+	}
+	TextureRect* itemIcon;
+};
+
 class ButtonOnClick
 {
 

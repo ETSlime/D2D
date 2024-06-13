@@ -114,6 +114,11 @@ void GameUI::InitInGameUI()
 		mainGameCursor_2nd.textureRect = new CursorTextureRect(mainGameCursor_2nd.position,
 			mainGameCursor_2nd.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 
+	mainGameCursor_1st.textureRect->UpdateSize(mainGameCursor_1st.size);
+	mainGameCursor_2nd.textureRect->UpdateSize(mainGameCursor_2nd.size);
+	mainGameCursor_1st.Update(mainGameCursor_1st.curIdx);
+	mainGameCursor_2nd.Update(mainGameCursor_2nd.curIdx);
+
 	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3(0, 0, 0);
 	DirectX::XMFLOAT3 size = DirectX::XMFLOAT3(0, 0, 0);
 	if (rightDispalyBase == nullptr)
@@ -221,17 +226,25 @@ void GameUI::InitItemCheck()
 	size = DirectX::XMFLOAT3(WinMaxWidth, WinMaxHeight * 0.13, 1);
 	itemCheckDescriptionBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 
-	mainGameCursor_1st.baseX = 0.11f;
-	mainGameCursor_1st.baseY = 0.407f;
+	mainGameCursor_1st.baseX = 0.125f;
+	mainGameCursor_1st.baseY = 0.797f;
 	mainGameCursor_1st.position = DirectX::XMFLOAT3(mainGameCursor_1st.baseX * curWinSize->width, mainGameCursor_1st.baseY * curWinSize->height, 0.0f);
-	mainGameCursor_1st.size = DirectX::XMFLOAT3(240, 50, 1.0f);
+	mainGameCursor_1st.size = DirectX::XMFLOAT3(210, 50, 1.0f);
 	mainGameCursor_1st.curIdx = 0;
 	mainGameCursor_1st.spacing = 0.075;
+	mainGameCursor_1st.textureRect->UpdateSize(mainGameCursor_1st.size);
+	mainGameCursor_1st.Update(mainGameCursor_1st.curIdx);
 
+	float spacing = 0.075f;
+	
 	for (auto& item : Player::player->GetItems())
 	{
 		if (itemCategorySet.find(std::get<1>(Database::itemCategoryMap[item.first])) == itemCategorySet.end())
-			itemCategoryButtons.push_back(std::make_unique<Button>(std::get<0>(Database::itemCategoryMap[item.first]), DirectX::XMFLOAT3(0.08f, 0.175f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true));
+		{
+			itemCategorySet.insert(std::get<1>(Database::itemCategoryMap[item.first]));
+			itemCategoryButtons.push_back(std::make_unique<Button>(std::get<0>(Database::itemCategoryMap[item.first]), DirectX::XMFLOAT3(0.04f, 0.175f + spacing * itemCategoryIdx++, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true));
+		}
+			
 		
 	}
 
@@ -285,7 +298,7 @@ void GameUI::Render()
 			textFormat,
 			timerTextRect,
 			mD2DResource->pSolidColorBrush);
-		//SafeRelease(&textFormat);
+		SafeRelease(&textFormat);
 
 		std::wstring timer = GetFormattedTime();
 		D2D1_RECT_F timerRect = GetTextRect(0.13f, 0.62f, 0.25f, 0.72f);
@@ -297,7 +310,7 @@ void GameUI::Render()
 			textFormat,
 			timerRect,
 			mD2DResource->pSolidColorBrush);
-		//SafeRelease(&textFormat);
+		SafeRelease(&textFormat);
 
 		std::wstring walkingStepsText = L"歩数";
 		D2D1_RECT_F walkingStepsTextRect = GetTextRect(0.01f, 0.77f, 0.15f, 0.87f);
@@ -309,7 +322,7 @@ void GameUI::Render()
 			textFormat,
 			walkingStepsTextRect,
 			mD2DResource->pSolidColorBrush);
-		//SafeRelease(&textFormat);
+		SafeRelease(&textFormat);
 
 		std::wstring walkingSteps = std::to_wstring(Player::player->GetWalkingSteps());
 		D2D1_RECT_F walkingStepsRect = GetTextRect(0.13f, 0.87f, 0.25f, 0.97f);
@@ -321,7 +334,7 @@ void GameUI::Render()
 			textFormat,
 			walkingStepsRect,
 			mD2DResource->pSolidColorBrush);
-		//SafeRelease(&textFormat);
+		SafeRelease(&textFormat);
 
 		mainGameCursor_1st.textureRect->Render();
 		if (UIstate == UIState::MenuLevel2) mainGameCursor_2nd.textureRect->Render();
@@ -349,8 +362,8 @@ void GameUI::Render()
 				mD2DResource->pSolidColorBrush);
 		}
 
-		std::wstring itemCheckTitle = L"aojfiosjfafsf";
-		D2D1_RECT_F itemCheckTitleRect = GetTextRect(0.03f, 0.03f, 0.15f, 0.095f);
+		std::wstring itemCheckTitle = L"アイテム";
+		D2D1_RECT_F itemCheckTitleRect = GetTextRect(0.045f, 0.03f, 0.16f, 0.095f);
 		IDWriteTextFormat* textFormat = DynamicTextFormat(itemCheckTitle, &itemCheckTitleRect);
 
 		mD2DResource->pD2DRenderTarget->DrawText(
@@ -359,7 +372,7 @@ void GameUI::Render()
 			textFormat,
 			itemCheckTitleRect,
 			mD2DResource->pSolidColorBrush);
-		//SafeRelease(&textFormat);
+		SafeRelease(&textFormat);
 
 		mainGameCursor_1st.textureRect->Render();
 
@@ -554,7 +567,14 @@ void GameUI::UpdateUIState()
 			mApp.SetAllowSwitch(true);
 		if (keyboard.Down('X') && mApp.AvailableToSwitch())
 		{
+			// reset cursor index
+			mainGameCursor_1st.curIdx = 0;
+			mainGameCursor_2nd.curIdx = 0;
+			mainGameCursor_1st.Update(mainGameCursor_1st.curIdx);
+			mainGameCursor_2nd.Update(mainGameCursor_2nd.curIdx);
+			// prvent from switching back to UI mode
 			mApp.SetAllowSwitch(false);
+			// switch to gameplay mode
 			mApp.SetGameMode(GameMode::GAMEPLAY);
 		}
 		else if (keyboard.Down('C'))
@@ -580,6 +600,9 @@ void GameUI::UpdateUIState()
 
 void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons)
 {
+	// disable button and cursor when changing game mode
+	if (gameModeOnChanging) return;
+
 	cursor.textureRect->Update();
 	if (buttons.size() == 0)
 		return;
@@ -654,7 +677,7 @@ void GameUI::RenderMonsterStates()
 	bool toggle = false;
 	for (auto& monster : monsters)
 	{
-		if (position == 7)
+		if (position == MAX_MONSTER_STATE_COUNT + 1)
 			break;
 		if (std::get<0>(monster.second) == position)
 		{
@@ -686,7 +709,7 @@ void GameUI::RenderMonsterStates()
 			}
 			else
 				DrawTextWithSpacing(textFormat, name, &nameTextRect);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			//Reset transformation matrix
 			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
@@ -696,7 +719,7 @@ void GameUI::RenderMonsterStates()
 			D2D1_RECT_F attributeTextRect = GetTextRect(0.4082f, 0.084f + position * spacing, 0.5102f, 0.1306 + position * spacing);
 			textFormat = DynamicTextFormat(attribute, &attributeTextRect);
 			DrawTextWithSpacing(textFormat, attribute, &attributeTextRect);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			if (!toggle)
 				mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::LightSkyBlue));
@@ -713,7 +736,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				HPTextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring v1 = std::to_wstring(data.HP);
 			//D2D1_RECT_F v1TextRect = D2D1::RectF(570, 25 + position * spacing, 640, 60 + position * spacing);
@@ -725,7 +748,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				v1TextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring attack = L"攻撃";
 			//D2D1_RECT_F attackTextRect = D2D1::RectF(650, 25 + position * spacing, 705, 60 + position * spacing);
@@ -737,7 +760,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				attackTextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring v2 = std::to_wstring(data.attack);
 			//D2D1_RECT_F v2TextRect = D2D1::RectF(715, 25 + position * spacing, 785, 60 + position * spacing);
@@ -749,7 +772,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				v2TextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring defense = L"防御";
 			//D2D1_RECT_F defenseTextRect = D2D1::RectF(795, 25 + position * spacing, 850, 60 + position * spacing);
@@ -761,7 +784,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				defenseTextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring v3 = std::to_wstring(data.defense);
 			//D2D1_RECT_F v3TextRect = D2D1::RectF(860, 25 + position * spacing, 930, 60 + position * spacing);
@@ -773,7 +796,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				v3TextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring gold = L"GOLD";
 			//D2D1_RECT_F goldTextRect = D2D1::RectF(505, 65 + position * spacing, 560, 100 + position * spacing);
@@ -785,7 +808,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				goldTextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring v4 = std::to_wstring(data.gold);
 			//D2D1_RECT_F v4TextRect = D2D1::RectF(570, 65 + position * spacing, 640, 100 + position * spacing);
@@ -797,7 +820,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				v4TextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring exp = L"EXP";
 			//D2D1_RECT_F expTextRect = D2D1::RectF(650, 65 + position * spacing, 705, 100 + position * spacing);
@@ -809,7 +832,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				expTextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring v5 = std::to_wstring(data.exp);
 			//D2D1_RECT_F v5TextRect = D2D1::RectF(715, 65 + position * spacing, 785, 100 + position * spacing);
@@ -821,7 +844,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				v5TextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			std::wstring damage = L"ダメージ";
 			//D2D1_RECT_F damageTextRect = D2D1::RectF(795, 65 + position * spacing, 850, 100 + position * spacing);
@@ -833,7 +856,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				damageTextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::IndianRed));
 			std::wstring v6 = L"10000";
@@ -846,7 +869,7 @@ void GameUI::RenderMonsterStates()
 				textFormat,
 				v6TextRect,
 				mD2DResource->pSolidColorBrush);
-			//SafeRelease(&textFormat);
+			SafeRelease(&textFormat);
 
 			position++;
 		}
