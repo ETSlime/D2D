@@ -1,7 +1,6 @@
 #include "GameUI.h"
 #include "Monster.h"
 
-#define MAX_MONSTER_STATE_COUNT		(6)
 
 GameUI::GameUI(const D2DResource* D2DResource, const WinSize* winSize, UIRenderMode mode)
 	:mD2DResource(D2DResource), curWinSize(winSize), renderMode(mode)
@@ -25,7 +24,10 @@ GameUI::~GameUI()
 	SAFE_DELETE(blueKeyIcon);
 	SAFE_DELETE(redKeyIcon);
 	SAFE_DELETE(greenKeyIcon);
-
+	for (auto saveSlotBase : saveSlotBases)
+		SAFE_DELETE(saveSlotBase);
+	saveSlotBases.clear();
+	SAFE_DELETE(dialogueBase);
 	//monsters.clear();
 	//startButtons.clear();
 	//gameMenuButtons.clear();
@@ -35,6 +37,7 @@ GameUI::~GameUI()
 
 void GameUI::InitGameUI(GameUI::UIRenderMode mode)
 {
+	// Initialize UI components based on render mode
 	switch (mode)
 	{
 	case STARTMENU:
@@ -48,6 +51,21 @@ void GameUI::InitGameUI(GameUI::UIRenderMode mode)
 		break;
 	case ITEMCHECK:
 		this->InitItemCheck();
+		break;
+	case SAVEDATA:
+		this->InitSaveData();
+		break;
+	case LOADDATA:
+		this->InitLoadData();
+		break;
+	case DIALOGUE:
+		this->InitDialogue();
+		break;
+	case ITEMGET:
+		this->InitItemGet();
+		break;
+	default:
+		break;
 	}
 }
 
@@ -99,7 +117,7 @@ void GameUI::InitInGameUI()
 	mainGameCursor_1st.position = DirectX::XMFLOAT3(mainGameCursor_1st.baseX * curWinSize->width, mainGameCursor_1st.baseY * curWinSize->height, 0.0f);
 	mainGameCursor_1st.size = DirectX::XMFLOAT3(250, 50, 1.0f);
 	mainGameCursor_1st.curIdx = 0;
-	mainGameCursor_1st.spacing = 0.075;
+	mainGameCursor_1st.spacing = GENERAL_BUTTON_SPACING;
 	if (mainGameCursor_1st.textureRect == nullptr)
 		mainGameCursor_1st.textureRect = new CursorTextureRect(mainGameCursor_1st.position,
 			mainGameCursor_1st.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
@@ -109,7 +127,7 @@ void GameUI::InitInGameUI()
 	mainGameCursor_2nd.position = DirectX::XMFLOAT3(mainGameCursor_2nd.baseX * curWinSize->width, mainGameCursor_2nd.baseY * curWinSize->height, 0.0f);
 	mainGameCursor_2nd.size = DirectX::XMFLOAT3(620, 100, 1.0f);
 	mainGameCursor_2nd.curIdx = 0;
-	mainGameCursor_2nd.spacing = 0.133;
+	mainGameCursor_2nd.spacing = MONSTER_STATUS_SPACING;
 	if (mainGameCursor_2nd.textureRect == nullptr)
 		mainGameCursor_2nd.textureRect = new CursorTextureRect(mainGameCursor_2nd.position,
 			mainGameCursor_2nd.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
@@ -150,8 +168,8 @@ void GameUI::InitInGameUI()
 	gameMenuButtons.clear();
 	gameMenuButtons.push_back(std::make_unique<Button>(L"資料", DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true));
 	gameMenuButtons.push_back(std::make_unique<Button>(L"アイテム", DirectX::XMFLOAT3(0.035f, 0.1f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::itemCheck));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"セーブ", DirectX::XMFLOAT3(0.035f, 0.175f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::save));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"ロード", DirectX::XMFLOAT3(0.035f, 0.25f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::load));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"セーブ", DirectX::XMFLOAT3(0.035f, 0.175f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::saveData));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"ロード", DirectX::XMFLOAT3(0.035f, 0.25f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::loadData));
 	gameMenuButtons.push_back(std::make_unique<Button>(L"タイトルへ戻る", DirectX::XMFLOAT3(0.035f, 0.325f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::title));
 	gameMenuButtons.push_back(std::make_unique<Button>(L"ゲーム終了", DirectX::XMFLOAT3(0.035f, 0.40f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
 }
@@ -173,7 +191,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 yellowKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 10, WinMaxHeight - 510, 0);
 		DirectX::XMFLOAT3 yellowKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* yellowKeyIconTex = new Texture2D(IconsPath + L"yellowkey.png");
+		Texture2D* yellowKeyIconTex = new Texture2D(IconsPath + L"黄色の鍵.png");
 		yellowKeyIcon = new TextureRect(yellowKeyIonPosition, yellowKeyIonSize, 0.0f);
 		yellowKeyIcon->SetSRV(yellowKeyIconTex->GetSRV());
 	}
@@ -184,7 +202,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 blueKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 10, WinMaxHeight - 560, 0);
 		DirectX::XMFLOAT3 blueKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* blueKeyIconTex = new Texture2D(IconsPath + L"bluekey.png");
+		Texture2D* blueKeyIconTex = new Texture2D(IconsPath + L"紫の鍵.png");
 		blueKeyIcon = new TextureRect(blueKeyIonPosition, blueKeyIonSize, 0.0f);
 		blueKeyIcon->SetSRV(blueKeyIconTex->GetSRV());
 	}
@@ -194,7 +212,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 redKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 10, WinMaxHeight - 610, 0);
 		DirectX::XMFLOAT3 redKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* redKeyIconTex = new Texture2D(IconsPath + L"redkey.png");
+		Texture2D* redKeyIconTex = new Texture2D(IconsPath + L"赤い鍵.png");
 		redKeyIcon = new TextureRect(redKeyIonPosition, redKeyIonSize, 0.0f);
 		redKeyIcon->SetSRV(redKeyIconTex->GetSRV());
 	}
@@ -213,38 +231,90 @@ void GameUI::InitPlayerState()
 
 void GameUI::InitItemCheck()
 {
-	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3(WinMaxWidth / 8, WinMaxHeight * (1 - 0.07), 0);
-	DirectX::XMFLOAT3 size = DirectX::XMFLOAT3(WinMaxWidth / 4, WinMaxHeight * 0.13, 1);
-	itemCheckTitleBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
-	position = DirectX::XMFLOAT3(WinMaxWidth / 8, position.y - WinMaxHeight * 0.86 / 2, 0);
-	size = DirectX::XMFLOAT3(WinMaxWidth / 4, WinMaxHeight * 0.72, 1);
-	itemCheckCategoryBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
-	position = DirectX::XMFLOAT3(WinMaxWidth * 5 / 8, WinMaxHeight * 0.569, 0);
-	size = DirectX::XMFLOAT3(WinMaxWidth * 0.75, WinMaxHeight * 0.85, 1);
-	itemCheckDetailBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
-	position = DirectX::XMFLOAT3(WinMaxWidth / 2, WinMaxHeight * 0.07, 0);
-	size = DirectX::XMFLOAT3(WinMaxWidth, WinMaxHeight * 0.13, 1);
-	itemCheckDescriptionBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	DirectX::XMFLOAT3 position{}, size;
+	if (itemCheckTitleBase == nullptr)
+	{
+		position = DirectX::XMFLOAT3(WinMaxWidth / 8, WinMaxHeight * (1 - 0.07), 0);
+		size = DirectX::XMFLOAT3(WinMaxWidth / 4, WinMaxHeight * 0.13, 1);
+		itemCheckTitleBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	}
+	if (itemCheckCategoryBase == nullptr)
+	{
+		position = DirectX::XMFLOAT3(WinMaxWidth / 8, position.y - WinMaxHeight * 0.86 / 2, 0);
+		size = DirectX::XMFLOAT3(WinMaxWidth / 4, WinMaxHeight * 0.72, 1);
+		itemCheckCategoryBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	}
+	if (itemCheckDetailBase == nullptr)
+	{
+		position = DirectX::XMFLOAT3(WinMaxWidth * 5 / 8, WinMaxHeight * 0.569, 0);
+		size = DirectX::XMFLOAT3(WinMaxWidth * 0.75, WinMaxHeight * 0.85, 1);
+		itemCheckDetailBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	}
+	if (itemCheckDescriptionBase == nullptr)
+	{
+		position = DirectX::XMFLOAT3(WinMaxWidth / 2, WinMaxHeight * 0.07, 0);
+		size = DirectX::XMFLOAT3(WinMaxWidth, WinMaxHeight * 0.13, 1);
+		itemCheckDescriptionBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	}
+	
 
 	mainGameCursor_1st.baseX = 0.125f;
 	mainGameCursor_1st.baseY = 0.797f;
 	mainGameCursor_1st.position = DirectX::XMFLOAT3(mainGameCursor_1st.baseX * curWinSize->width, mainGameCursor_1st.baseY * curWinSize->height, 0.0f);
 	mainGameCursor_1st.size = DirectX::XMFLOAT3(210, 50, 1.0f);
 	mainGameCursor_1st.curIdx = 0;
-	mainGameCursor_1st.spacing = 0.075;
+	mainGameCursor_1st.spacing = GENERAL_BUTTON_SPACING;
 	mainGameCursor_1st.textureRect->UpdateSize(mainGameCursor_1st.size);
 	mainGameCursor_1st.Update(mainGameCursor_1st.curIdx);
 
-	float spacing = 0.075f;
+	mainGameCursor_2nd.baseX = 0.625f;
+	mainGameCursor_2nd.baseY = 0.927f;
+	mainGameCursor_2nd.position = DirectX::XMFLOAT3(mainGameCursor_2nd.baseX * curWinSize->width, mainGameCursor_2nd.baseY * curWinSize->height, 0.0f);
+	mainGameCursor_2nd.size = DirectX::XMFLOAT3(690, 50, 1.0f);
+	mainGameCursor_2nd.curIdx = 0;
+	mainGameCursor_2nd.spacing = GENERAL_BUTTON_SPACING;
+	mainGameCursor_2nd.textureRect->UpdateSize(mainGameCursor_2nd.size);
+	mainGameCursor_2nd.Update(mainGameCursor_2nd.curIdx);
 	
+	// clear current item buttons
+	itemCategoryButtons.clear();
+	itemButtons.clear();
+	itemButtonIdx.clear();
+	curItemCategory.clear();
+	UINT itemCategoryIdx = 0;
 	for (auto& item : Player::player->GetItems())
 	{
-		if (itemCategorySet.find(std::get<1>(Database::itemCategoryMap[item.first])) == itemCategorySet.end())
+		// skip zero count item
+		if (item.second == 0) continue;
+
+		std::wstring itemCategory = std::get<0>(Database::itemCategoryMap[item.first]);
+		if (itemButtons.find(itemCategory) == itemButtons.end())
 		{
-			itemCategorySet.insert(std::get<1>(Database::itemCategoryMap[item.first]));
-			itemCategoryButtons.push_back(std::make_unique<Button>(std::get<0>(Database::itemCategoryMap[item.first]), DirectX::XMFLOAT3(0.04f, 0.175f + spacing * itemCategoryIdx++, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true));
-		}
+			if (curItemCategory.empty()) curItemCategory = itemCategory;
+			std::unique_ptr itemButton = std::make_unique<Button>(
+				itemCategory, DirectX::XMFLOAT3(0.04f, 0.175f + mainGameCursor_2nd.spacing * itemCategoryIdx++, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true);
+			itemButton.get()->overrideOnClick(ButtonOnClick::showItemList, itemCategory);
+			itemCategoryButtons.push_back(std::move(itemButton));
 			
+		}
+		// item button
+		std::wstring itemName = std::get<1>(Database::itemCategoryMap[item.first]);
+		std::unique_ptr<ItemCategoryButton> itemButton = std::make_unique<ItemCategoryButton>(
+			itemName, DirectX::XMFLOAT3(0.34f, 0.045f + mainGameCursor_2nd.spacing * itemButtonIdx[itemCategory]++, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, nullptr, true);
+		// item button text
+		DirectX::XMFLOAT3 itemIonPosition = DirectX::XMFLOAT3(0, 0, 0);
+		DirectX::XMFLOAT3 itemIonSize = DirectX::XMFLOAT3(TileWidth * 0.8f, TileHeight * 0.8f, 1);
+		Texture2D* itemIconTex = new Texture2D(IconsPath + itemName + L".png");
+		std::unique_ptr<TextureRect> itemIcon = std::make_unique<TextureRect>(itemIonPosition, itemIonSize, 0.0f);
+		itemIcon->SetSRV(itemIconTex->GetSRV());
+		itemButton.get()->itemIcon = std::move(itemIcon);
+		itemButton.get()->UpdateCount(item.second);
+		if (itemButton.get()->pOnClick == nullptr)
+		{
+			itemButton.get()->itemIcon->SetEnable(false);
+		}
+		itemButtons[itemCategory].push_back(std::move(itemButton));
+
 		
 	}
 
@@ -253,6 +323,80 @@ void GameUI::InitItemCheck()
 	mainGameCursor_1st.textureRect->SetCursorEnable(true);
 }
 
+void GameUI::InitSaveData()
+{
+	DirectX::XMFLOAT3 position, size;
+	if (saveDataTitleBase == nullptr)
+	{
+		position = DirectX::XMFLOAT3(WinMaxWidth / 2, WinMaxHeight * (1-0.07), 0);
+		size = DirectX::XMFLOAT3(WinMaxWidth, WinMaxHeight * 0.136f, 1);
+		saveDataTitleBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	}
+	
+	if (saveSlotBases.empty())
+	{
+		float saveSlotBaseX = WinMaxHeight * 0.748;
+		float spacing = WinMaxHeight * SAVE_SLOATS_SPACING;
+		for (int i = 0; i < SAVE_SLOTS_PER_PAGE; i++)
+		{
+			position = DirectX::XMFLOAT3(WinMaxWidth / 2, saveSlotBaseX - spacing * i, 0);
+			size = DirectX::XMFLOAT3(WinMaxWidth, WinMaxHeight * SAVE_SLOATS_SPACING, 1);
+			saveSlotBases.push_back(new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png"));
+		}
+		
+	}
+
+	for (int i = 0; i < SAVE_SLOT_SIZE; i++)
+	{
+		saveDataButtons.push_back(std::make_unique<Button>(L"ファイル " + std::to_wstring(i), DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr));
+	}
+	saveDataButtons[0].get()->isSelected = true;
+
+	mainGameCursor_1st.baseX = 0.086f;
+	mainGameCursor_1st.baseY = 0.81f;
+	mainGameCursor_1st.position = DirectX::XMFLOAT3(mainGameCursor_1st.baseX * curWinSize->width, mainGameCursor_1st.baseY * curWinSize->height, 0.0f);
+	mainGameCursor_1st.size = DirectX::XMFLOAT3(140, 46, 1.0f);
+	mainGameCursor_1st.curIdx = 0;
+	mainGameCursor_1st.spacing = SAVE_SLOATS_SPACING;
+	mainGameCursor_1st.textureRect->UpdateSize(mainGameCursor_1st.size);
+	mainGameCursor_1st.Update(mainGameCursor_1st.curIdx);
+
+	mainGameCursor_1st.enabled = true;
+	mainGameCursor_1st.textureRect->SetCursorEnable(true);
+}
+
+void GameUI::InitLoadData(){}
+
+void GameUI::InitDialogue()
+{
+	// restrict player movement
+	Player::player->SetAllowControl(false);
+
+	// init UI base
+	DirectX::XMFLOAT3 position{}, size{};
+	position = DirectX::XMFLOAT3(WinMaxWidth * 0.63, WinMaxHeight * 0.2, 0);
+	size = DirectX::XMFLOAT3(WinMaxWidth * 0.7, WinMaxHeight * 0.35, 1);
+	dialogueBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	dialogueBase->SetDialogue(true);
+	position = DirectX::XMFLOAT3(WinMaxWidth * 0.34, WinMaxHeight * 0.41, 0);
+	size = DirectX::XMFLOAT3(WinMaxWidth * 0.12, WinMaxHeight * 0.1, 1);
+	nameBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	nameBase->SetDialogue(true);
+}
+
+void GameUI::InitItemGet()
+{
+	// restrict player movement
+	Player::player->SetAllowControl(false);
+
+	// init UI base
+	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3(WinMaxWidth * 0.63, WinMaxHeight * 0.5, 0);
+	DirectX::XMFLOAT3 size = DirectX::XMFLOAT3(WinMaxWidth * 0.7, WinMaxHeight * 0.35, 1);
+	dialogueBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	dialogueBase->SetDialogue(true);
+}
+
+// Render method to render UI based on the current render mode
 void GameUI::Render()
 {
 	switch (renderMode)
@@ -278,63 +422,7 @@ void GameUI::Render()
 		leftButtonBase->Render();
 		timerBase->Render();
 
-		for (int i = 0; i < gameMenuButtons.size(); i++)
-		{
-			mD2DResource->pD2DRenderTarget->DrawText(
-				gameMenuButtons[i]->text.c_str(),
-				gameMenuButtons[i]->text.size(),
-				mD2DResource->pTextFormat,
-				gameMenuButtons[i]->textRect,
-				mD2DResource->pSolidColorBrush);
-		}
-
-		std::wstring timerText = L"プレイ時間";
-		D2D1_RECT_F timerTextRect = GetTextRect(0.03f, 0.52f, 0.15f, 0.62f);
-		IDWriteTextFormat* textFormat = DynamicTextFormat(timerText, &timerTextRect);
-
-		mD2DResource->pD2DRenderTarget->DrawText(
-			timerText.c_str(),
-			timerText.length(),
-			textFormat,
-			timerTextRect,
-			mD2DResource->pSolidColorBrush);
-		SafeRelease(&textFormat);
-
-		std::wstring timer = GetFormattedTime();
-		D2D1_RECT_F timerRect = GetTextRect(0.13f, 0.62f, 0.25f, 0.72f);
-		textFormat = DynamicTextFormat(timer, &timerRect);
-
-		mD2DResource->pD2DRenderTarget->DrawText(
-			timer.c_str(),
-			timer.length(),
-			textFormat,
-			timerRect,
-			mD2DResource->pSolidColorBrush);
-		SafeRelease(&textFormat);
-
-		std::wstring walkingStepsText = L"歩数";
-		D2D1_RECT_F walkingStepsTextRect = GetTextRect(0.01f, 0.77f, 0.15f, 0.87f);
-		textFormat = DynamicTextFormat(walkingStepsText, &walkingStepsTextRect);
-
-		mD2DResource->pD2DRenderTarget->DrawText(
-			walkingStepsText.c_str(),
-			walkingStepsText.length(),
-			textFormat,
-			walkingStepsTextRect,
-			mD2DResource->pSolidColorBrush);
-		SafeRelease(&textFormat);
-
-		std::wstring walkingSteps = std::to_wstring(Player::player->GetWalkingSteps());
-		D2D1_RECT_F walkingStepsRect = GetTextRect(0.13f, 0.87f, 0.25f, 0.97f);
-		textFormat = DynamicTextFormat(walkingSteps, &walkingStepsTextRect);
-
-		mD2DResource->pD2DRenderTarget->DrawText(
-			walkingSteps.c_str(),
-			walkingSteps.length(),
-			textFormat,
-			walkingStepsRect,
-			mD2DResource->pSolidColorBrush);
-		SafeRelease(&textFormat);
+		RenderInGameUI();
 
 		mainGameCursor_1st.textureRect->Render();
 		if (UIstate == UIState::MenuLevel2) mainGameCursor_2nd.textureRect->Render();
@@ -343,39 +431,89 @@ void GameUI::Render()
 	}
 
 	case PLAYERSTATES:
-		RenderPlayerStates();
+		//RenderPlayerStates();
 		break;
 
 	case ITEMCHECK:
+	{
 		itemCheckTitleBase->Render();
 		itemCheckCategoryBase->Render();
 		itemCheckDetailBase->Render();
 		itemCheckDescriptionBase->Render();
 
-		for (int i = 0; i < itemCategoryButtons.size(); i++)
-		{
-			mD2DResource->pD2DRenderTarget->DrawText(
-				itemCategoryButtons[i]->text.c_str(),
-				itemCategoryButtons[i]->text.size(),
-				mD2DResource->pTextFormat,
-				itemCategoryButtons[i]->textRect,
-				mD2DResource->pSolidColorBrush);
-		}
+		RenderItemCheck();
 
-		std::wstring itemCheckTitle = L"アイテム";
-		D2D1_RECT_F itemCheckTitleRect = GetTextRect(0.045f, 0.03f, 0.16f, 0.095f);
-		IDWriteTextFormat* textFormat = DynamicTextFormat(itemCheckTitle, &itemCheckTitleRect);
+		mainGameCursor_1st.textureRect->Render();
+		if (UIstate == UIState::MenuLevel2) mainGameCursor_2nd.textureRect->Render();
+		break;
+	}
+
+	case SAVEDATA:
+	{
+		// title
+		saveDataTitleBase->Render();
+
+		std::wstring saveDataTitle = L"このファイルにセーブデータを保存しますか";
+		D2D1_RECT_F saveDataTitleRect = GetTextRect(0.045f, 0.03f, 0.56f, 0.095f);
+		IDWriteTextFormat* textFormat = DynamicTextFormat(saveDataTitle, &saveDataTitleRect);
 
 		mD2DResource->pD2DRenderTarget->DrawText(
-			itemCheckTitle.c_str(),
-			itemCheckTitle.length(),
+			saveDataTitle.c_str(),
+			saveDataTitle.length(),
 			textFormat,
-			itemCheckTitleRect,
+			saveDataTitleRect,
 			mD2DResource->pSolidColorBrush);
 		SafeRelease(&textFormat);
 
+		// save slots
+		RenderSaveSlot();
+
 		mainGameCursor_1st.textureRect->Render();
 
+		break;
+	}
+
+	case DIALOGUE:
+	{
+		nameBase->Render();
+		dialogueBase->Render();
+
+		D2D1_RECT_F TextRect = GetTextRect(0.31f, 0.64f, 0.95f, 0.82f);
+
+		mD2DResource->pD2DRenderTarget->DrawText(
+			dialogueText.c_str(),
+			dialogueText.length(),
+			mD2DResource->pTextFormat,
+			TextRect,
+			mD2DResource->pSolidColorBrush);
+
+		TextRect = GetTextRect(0.31f, 0.56f, 0.55f, 0.67f);
+
+		mD2DResource->pD2DRenderTarget->DrawText(
+			dialogueName.c_str(),
+			dialogueName.length(),
+			mD2DResource->pTextFormat,
+			TextRect,
+			mD2DResource->pSolidColorBrush);
+
+		break;
+	}
+
+	case ITEMGET:
+	{
+		dialogueBase->Render();
+		D2D1_RECT_F TextRect = GetTextRect(0.31f, 0.37f, 0.95f, 0.62f);
+
+		mD2DResource->pD2DRenderTarget->DrawText(
+			dialogueText.c_str(),
+			dialogueText.length(),
+			mD2DResource->pTextFormat,
+			TextRect,
+			mD2DResource->pSolidColorBrush);
+		break;
+	}
+
+	default:
 		break;
 	}	
 
@@ -427,25 +565,155 @@ void GameUI::Update()
 		itemCheckDetailBase->Update();
 		itemCheckDescriptionBase->Update();
 
-		//mainGameCursor_1st.enabled = true;
-		//mainGameCursor_1st.textureRect->SetCursorEnable(true);
-		//UIstate = UIState::MenuLevel1;
-		UpdateCursorAndButton(mainGameCursor_1st, itemCategoryButtons);
+		if (UIstate == UIState::MenuLevel1)
+		{
+			UpdateCursorAndButton(mainGameCursor_1st, itemCategoryButtons);
+			std::vector<std::unique_ptr<ItemCategoryButton>>& buttonRef = itemButtons[curItemCategory];
+			UINT position = 0;
+			for (auto& button : buttonRef)
+			{
+				button.get()->itemIcon.get()->UpdatePosition(DirectX::XMFLOAT3(280, WinMaxHeight - 75 - position++ * 57, 0));
+				button.get()->itemIcon.get()->Update();
+			}
+		}
+			
+		else if (UIstate == UIState::MenuLevel2)
+		{
+			std::vector<std::unique_ptr<Button>>& buttonRef = reinterpret_cast<std::vector<std::unique_ptr<Button>>&>(itemButtons[curItemCategory]);
+			UpdateCursorAndButton(mainGameCursor_2nd, buttonRef);
+		}
+			
 		UpdateUIState();
+		break;
+
+	case SAVEDATA:
+	{
+		saveDataTitleBase->Update();
+		for (int i = 0; i < SAVE_SLOTS_PER_PAGE; i++)
+			saveSlotBases[i]->Update();
+
+		// update save data buttons for current page
+		int start = curSaveSlotPage * SAVE_SLOTS_PER_PAGE;
+		std::vector<std::unique_ptr<Button>> curPageButtons;
+		for (int i = 0; i < SAVE_SLOTS_PER_PAGE; ++i)
+		{
+			curPageButtons.push_back(std::move(saveDataButtons[start + i]));
+		}
+		UpdateSaveSlotCursor(mainGameCursor_1st, curPageButtons);
+		// Move back the elements to data after processing
+		for (int i = 0; i < SAVE_SLOTS_PER_PAGE; ++i)
+		{
+			saveDataButtons[start + i] = std::move(curPageButtons[i]);
+		}
+
+		// in game menu switch
+		if (!keyboard.Press('X'))
+			mApp.SetAllowSwitch(true);
+		if (keyboard.Down('X') && mApp.AvailableToSwitch())
+		{
+			// reset cursor index
+			mainGameCursor_1st.curIdx = 0;
+			mainGameCursor_1st.Update(mainGameCursor_1st.curIdx);
+			// prvent from switching back to UI mode
+			mApp.SetAllowSwitch(false);
+			// switch to gameplay mode
+			mApp.SetGameMode(GameMode::GAMEPLAY);
+		}
+		break;
+	}
+
+	case DIALOGUE:
+		nameBase->Update();
+		dialogueBase->Update();
+		if (Keyboard::get_instance().Up('C') ||
+			Keyboard::get_instance().Up(VK_RETURN) ||
+			Keyboard::get_instance().Up(VK_SPACE))
+		{
+			mApp.DestroyGO(L"UIDialogueGO");
+			Player::player->SetAllowControl(true);
+		}
+		break;
+	case ITEMGET:
+		dialogueBase->Update();
+		if (Keyboard::get_instance().Up('C') ||
+			Keyboard::get_instance().Up(VK_RETURN) ||
+			Keyboard::get_instance().Up(VK_SPACE))
+		{
+			mApp.DestroyGO(L"UIDialogueGO");
+			Player::player->SetAllowControl(true);
+		}
+		break;
+	default:
 		break;
 	}
 }
 
-D2D1_RECT_F GameUI::GetTextRect(float left, float top, float right, float bottom)
+void GameUI::UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons)
 {
-	D2D1_RECT_F textRect;
-	float textWidth = (right - left) * curWinSize->width;
-	float textHeight = (bottom - top) * curWinSize->height;
-	textRect.left = curWinSize->width * left;
-	textRect.top = curWinSize->height * top;
-	textRect.right = textRect.left + textWidth;
-	textRect.bottom = textRect.top + textHeight;
-	return textRect;
+	curTime = Timer::TotalTime();
+	if (cursor.isPressed)
+	{
+		// wait for key up
+		if (Keyboard::get_instance().Up(VK_UP))
+		{
+			if (cursor.curIdx == 0)
+			{
+				curSaveSlotPage = (curSaveSlotPage - 1 + totalSaveSlotPages) % totalSaveSlotPages;
+			}
+			cursor.MoveUp(buttons);
+			cursor.isPressed = false;
+
+		}
+		else if (Keyboard::get_instance().Up(VK_DOWN))
+		{
+			if (cursor.curIdx == SAVE_SLOTS_PER_PAGE - 1)
+			{
+				curSaveSlotPage = (curSaveSlotPage + 1) % totalSaveSlotPages;
+			}
+			cursor.MoveDown(buttons);
+			cursor.isPressed = false;
+
+		}
+
+		// if still pressed, move cursor
+		curTime = Timer::TotalTime();
+		if (curTime - lastTime > cursor.cursorMoveTimeInterval)
+		{
+			lastTime = curTime;
+			if (cursor.moveDirection == Cursor::UP)
+			{
+				cursor.MoveUp(buttons);
+			}
+
+			else
+			{
+				cursor.MoveDown(buttons);
+			}
+
+		}
+	}
+	else if (Keyboard::get_instance().Press(VK_UP))
+	{
+
+		cursor.moveDirection = Cursor::UP;
+		cursor.isPressed = true;
+		lastTime = curTime;
+	}
+	else if (Keyboard::get_instance().Press(VK_DOWN))
+	{
+		cursor.moveDirection = Cursor::DOWN;
+		cursor.isPressed = true;
+		lastTime = curTime;
+	}
+
+	if (Keyboard::get_instance().Down('C') ||
+		Keyboard::get_instance().Down(VK_RETURN) ||
+		Keyboard::get_instance().Down(VK_SPACE))
+	{
+		cursor.Execute(buttons);
+	}
+
+	cursor.textureRect->Update();
 }
 
 void GameUI::UpdateMonsterCursor(Cursor& cursor)
@@ -477,7 +745,7 @@ void GameUI::UpdateMonsterCursor(Cursor& cursor)
 			int maxCount = 0;
 			if (monsters.size() != 0)
 				maxCount = std::get<0>(monsters.rbegin()->second) > MAX_MONSTER_STATE_COUNT ? MAX_MONSTER_STATE_COUNT: std::get<0>(monsters.rbegin()->second);
-			if (cursor.curIdx == 6)
+			if (cursor.curIdx == MAX_MONSTER_STATE_COUNT)
 			{
 				int countDown = MAX_MONSTER_STATE_COUNT;
 				for (auto rit = monsters.rbegin(); rit != monsters.rend(); ++rit)
@@ -587,9 +855,12 @@ void GameUI::UpdateUIState()
 
 		break;
 	case UIState::MenuLevel2:
-		UpdateMonsterCursor(mainGameCursor_2nd);
+		if (renderMode == UIRenderMode::INGAMEUI)	UpdateMonsterCursor(mainGameCursor_2nd);
 		if (keyboard.Press('X'))
 		{
+			// reset cursor index
+			mainGameCursor_2nd.curIdx = 0;
+			mainGameCursor_2nd.Update(mainGameCursor_2nd.curIdx);
 			UIstate = UIState::MenuLevel1;
 			mainGameCursor_1st.enabled = true;
 			mainGameCursor_1st.textureRect->SetCursorEnable(true);
@@ -607,9 +878,16 @@ void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<B
 	if (buttons.size() == 0)
 		return;
 
+	// update item icon if current button is item categoy button
+	UINT position = 0;
 	for (int i = 0; i < buttons.size(); i++)
 	{
 		buttons[i]->UpdateTextRect(curWinSize);
+		if (ItemCategoryButton* itemCategoryButton = dynamic_cast<ItemCategoryButton*>(buttons[i].get()))
+		{
+			itemCategoryButton->itemIcon.get()->UpdatePosition(DirectX::XMFLOAT3(280, WinMaxHeight - 75 - position++ * 57, 0));
+			itemCategoryButton->itemIcon.get()->Update();
+		}
 	}
 
 	curTime = Timer::TotalTime();
@@ -664,9 +942,67 @@ void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<B
 
 }
 
-void GameUI::RenderItem()
+void GameUI::RenderInGameUI()
 {
+	// buttons
+	for (int i = 0; i < gameMenuButtons.size(); i++)
+	{
+		mD2DResource->pD2DRenderTarget->DrawText(
+			gameMenuButtons[i]->text.c_str(),
+			gameMenuButtons[i]->text.size(),
+			mD2DResource->pTextFormat,
+			gameMenuButtons[i]->textRect,
+			mD2DResource->pSolidColorBrush);
+	}
 
+	// text
+	std::wstring timerText = L"プレイ時間";
+	D2D1_RECT_F timerTextRect = GetTextRect(0.03f, 0.52f, 0.15f, 0.62f);
+	IDWriteTextFormat* textFormat = DynamicTextFormat(timerText, &timerTextRect);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		timerText.c_str(),
+		timerText.length(),
+		textFormat,
+		timerTextRect,
+		mD2DResource->pSolidColorBrush);
+	SafeRelease(&textFormat);
+
+	std::wstring timer = GetFormattedTime();
+	D2D1_RECT_F timerRect = GetTextRect(0.13f, 0.62f, 0.25f, 0.72f);
+	textFormat = DynamicTextFormat(timer, &timerRect);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		timer.c_str(),
+		timer.length(),
+		textFormat,
+		timerRect,
+		mD2DResource->pSolidColorBrush);
+	SafeRelease(&textFormat);
+
+	std::wstring walkingStepsText = L"歩数";
+	D2D1_RECT_F walkingStepsTextRect = GetTextRect(0.01f, 0.77f, 0.15f, 0.87f);
+	textFormat = DynamicTextFormat(walkingStepsText, &walkingStepsTextRect);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		walkingStepsText.c_str(),
+		walkingStepsText.length(),
+		textFormat,
+		walkingStepsTextRect,
+		mD2DResource->pSolidColorBrush);
+	SafeRelease(&textFormat);
+
+	std::wstring walkingSteps = std::to_wstring(Player::player->GetWalkingSteps());
+	D2D1_RECT_F walkingStepsRect = GetTextRect(0.13f, 0.87f, 0.25f, 0.97f);
+	textFormat = DynamicTextFormat(walkingSteps, &walkingStepsTextRect);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		walkingSteps.c_str(),
+		walkingSteps.length(),
+		textFormat,
+		walkingStepsRect,
+		mD2DResource->pSolidColorBrush);
+	SafeRelease(&textFormat);
 }
 
 void GameUI::RenderMonsterStates()
@@ -682,12 +1018,12 @@ void GameUI::RenderMonsterStates()
 		if (std::get<0>(monster.second) == position)
 		{
 			// monster icon
-			std::get<1>(monster.second)->UpdatePosition(DirectX::XMFLOAT3(350, WinMaxHeight - 80 - position * 100, 0));
+			std::get<1>(monster.second)->UpdatePosition(DirectX::XMFLOAT3(350, WinMaxHeight - 80 - position * MONSTER_ICON_SPACING, 0));
 			std::get<1>(monster.second)->Render();
 
 			toggle = !toggle;
 			// monster status
-			float spacing = 0.1333f;
+			float spacing = MONSTER_STATUS_SPACING;
 			MonsterData data = std::get<2>(monster.second);
 
 			mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
@@ -879,6 +1215,52 @@ void GameUI::RenderMonsterStates()
 	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
 }
 
+void GameUI::RenderItemCheck()
+{
+	// item category button
+	for (int i = 0; i < itemCategoryButtons.size(); i++)
+	{
+		mD2DResource->pD2DRenderTarget->DrawText(
+			itemCategoryButtons[i]->text.c_str(),
+			itemCategoryButtons[i]->text.size(),
+			mD2DResource->pTextFormat,
+			itemCategoryButtons[i]->textRect,
+			mD2DResource->pSolidColorBrush);
+	}
+
+	// item button
+	for (int i = 0; i < itemButtons[curItemCategory].size(); i++)
+	{
+		// item texturex
+		itemButtons[curItemCategory][i].get()->itemIcon.get()->Render();
+
+		// gray unenabled button
+		if (itemButtons[curItemCategory][i].get()->pOnClick == nullptr)
+			mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Gray));
+
+		mD2DResource->pD2DRenderTarget->DrawText(
+			itemButtons[curItemCategory][i]->text.c_str(),
+			itemButtons[curItemCategory][i]->text.size(),
+			mD2DResource->pTextFormat,
+			itemButtons[curItemCategory][i]->textRect,
+			mD2DResource->pSolidColorBrush);
+	}
+	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
+
+	// title
+	std::wstring itemCheckTitle = L"アイテム";
+	D2D1_RECT_F itemCheckTitleRect = GetTextRect(0.045f, 0.03f, 0.16f, 0.095f);
+	IDWriteTextFormat* textFormat = DynamicTextFormat(itemCheckTitle, &itemCheckTitleRect);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		itemCheckTitle.c_str(),
+		itemCheckTitle.length(),
+		textFormat,
+		itemCheckTitleRect,
+		mD2DResource->pSolidColorBrush);
+	SafeRelease(&textFormat);
+}
+
 void GameUI::RenderPlayerStates()
 {
 	mD2DResource->pD2DRenderTarget->DrawText(
@@ -887,18 +1269,35 @@ void GameUI::RenderPlayerStates()
 		mD2DResource->pTextFormat,
 		D2D1::RectF(100, 40, 150, 40),
 		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(std::to_wstring(Player::player->GetCurFloor()).c_str()),
+		2,
+		mD2DResource->pTextFormat,
+		D2D1::RectF(155, 40, 155, 40),
+		mD2DResource->pSolidColorBrush);
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"階"),
 		2,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(180, 40, 180, 40),
 		mD2DResource->pSolidColorBrush);
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"レベル"),
 		4,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(40, 95, 150, 95),
 		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(std::to_wstring(Player::player->GetBattleData().level).c_str()),
+		2,
+		mD2DResource->pTextFormat,
+		D2D1::RectF(160, 95, 160, 95),
+		mD2DResource->pSolidColorBrush);
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"生命力"),
 		4,
@@ -941,6 +1340,24 @@ void GameUI::RenderPlayerStates()
 	blueKeyIcon->Render();
 	redKeyIcon->Render();
 	greenKeyIcon->Render();
+}
+
+void GameUI::RenderSaveSlot()
+{
+	float spacing = SAVE_SLOATS_SPACING;
+	for (int i = curSaveSlotPage * SAVE_SLOTS_PER_PAGE, j = 0; j < SAVE_SLOTS_PER_PAGE; i++, j++)
+	{
+		saveSlotBases[j]->Render();
+
+		saveDataButtons[i]->textRect = GetTextRect(0.02f, 0.1633f + spacing * j, 0.44f, 0.21f + spacing * j);
+
+		mD2DResource->pD2DRenderTarget->DrawText(
+			saveDataButtons[i]->text.c_str(),
+			saveDataButtons[i]->text.size(),
+			mD2DResource->pTextFormat,
+			saveDataButtons[i]->textRect,
+			mD2DResource->pSolidColorBrush);
+	}
 }
 
 IDWriteTextFormat* GameUI::DynamicTextFormat(const std::wstring& text, const D2D1_RECT_F* textRect, bool* isTransformed)
@@ -1073,4 +1490,16 @@ std::wstring GameUI::GetFormattedTime() const
 		<< std::setw(2) << std::setfill(L'0') << seconds;
 
 	return ss.str();
+}
+
+D2D1_RECT_F GameUI::GetTextRect(float left, float top, float right, float bottom)
+{
+	D2D1_RECT_F textRect;
+	float textWidth = (right - left) * curWinSize->width;
+	float textHeight = (bottom - top) * curWinSize->height;
+	textRect.left = curWinSize->width * left;
+	textRect.top = curWinSize->height * top;
+	textRect.right = textRect.left + textWidth;
+	textRect.bottom = textRect.top + textHeight;
+	return textRect;
 }

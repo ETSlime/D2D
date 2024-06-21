@@ -2,6 +2,8 @@
 #include "GameUIGO.h"
 #include "FloorGO.h"
 #include "PlayerGO.h"
+#include "Database.h"
+
 
 int main()
 {
@@ -115,23 +117,33 @@ void MagicTowerApp::Update()
             mGOs[L"PlayerGO"]->Update();
         break;
     case GameMode::GAMEPLAY:
-        //// Update Game Objs
-        //for (auto it = mGOs.begin(); it != mGOs.end();)
-        //{
-        //    if (it->second && it->second->IsDestroyed())
-        //    {
-        //        it->second->Destroy();
-        //        it = mGOs.erase(it);
-        //    }
-        //    else
-        //        it++;
-        //}
-        for (auto it = pushQueue.begin(); it != pushQueue.end();)
+        // processing queue
+        // push queue
+        while (!pushQueue.empty()) 
         {
-            Push(*it, std::make_unique<FloorGO>(std::stoi((*it).substr(7))));
-            it = pushQueue.erase(it);
+            std::wstring GOName = pushQueue.front();
+            if (GOName.compare(0, 6, L"FloorGO"))
+                Push(GOName, std::make_unique<FloorGO>(std::stoi(GOName.substr(7))));
+            pushQueue.pop();
+        }
+        // dialogue queue
+        if (!dialogueQueue.empty() && mGOs.find(L"UIDialogueGO") == mGOs.end())
+        {
+            Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::DIALOGUE));
+            // dialogue name
+            dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogueName(std::get<0>(dialogueQueue.front()));
+            // dialogue context
+            dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogue(std::get<1>(dialogueQueue.front()));
+            dialogueQueue.pop();
         }
 
+        //for (auto it = pushQueue.begin(); it != pushQueue.end();)
+        //{
+        //    Push(*it, std::make_unique<FloorGO>(std::stoi((*it).substr(7))));
+        //    it = pushQueue.erase(it);
+        //}
+
+        // update GO
         for (auto it = mGOs.begin(); it != mGOs.end();)
         {
             if (it->second)
@@ -264,7 +276,7 @@ void MagicTowerApp::DestroyGO(std::wstring name)
 void MagicTowerApp::LoadFloor(int floorNumber)
 {
     std::wstring floorGOName = L"FloorGO" + std::to_wstring(floorNumber);
-    pushQueue.push_back(floorGOName);
+    pushQueue.push(floorGOName);
     Push(L"MainGAMEUIGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::PLAYERSTATES));
 }
 
@@ -298,5 +310,20 @@ void MagicTowerApp::ReturnTitle()
         if (GO.second)
             GO.second->SetIsDestroyed(true);
     }
-    //Push(L"StartMenuGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU));
+}
+
+void MagicTowerApp::ShowItemGetDialogue(UINT itemID)
+{
+    Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::ITEMGET));
+    dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogue(Database::itemGetText[itemID]);
+}
+
+void MagicTowerApp::ShowNPCDialogue(UINT dialogueID)
+{
+    std::vector<std::tuple<std::wstring, std::wstring>>& dialogues = Database::dialogues[dialogueID];
+    
+    for (auto& dialogue : dialogues)
+    {
+        dialogueQueue.push(dialogue);
+    }
 }

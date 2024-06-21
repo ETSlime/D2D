@@ -160,6 +160,7 @@
     <ClCompile Include="MessageDispatcher.h" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="GameNPC.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PlayerControl.cpp" />
     <ClCompile Include="PixelShader.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="GameNPC.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PlayerControl.h" />
     <ClInclude Include="PixelShader.h" />

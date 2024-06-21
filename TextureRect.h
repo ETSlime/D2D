@@ -28,6 +28,7 @@ public:
 	void UnmapVertexBuffer();
 
 	DirectX::XMFLOAT3* GetPos() { return &position; }
+	void SetEnable(bool enable) { enabled = enable; }
 	void SetPos(DirectX::XMFLOAT3 Pos) { this->position = Pos; }
 
 	void SetCollisionLT(float x, float y) { this->CollisionEdge_LT = { x,y }; }

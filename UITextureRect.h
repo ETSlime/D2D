@@ -16,11 +16,10 @@ public:
 	void Update();
 	virtual void SetVertices() override;
 	virtual void SetIndices() override;
-
-	virtual void Move();
+	virtual void Render() override;
 
 	void GUI();
-
+	void SetDialogue(bool dialogue) { isDialogue = dialogue; }
 	std::string MakeLabel(std::string preFix);
 
 	void MapVertexBuffer();
@@ -29,6 +28,10 @@ public:
 protected:
 	std::vector<VertexTexture> vertices;
 	std::vector<UINT> indices;
+
+	UploadBuffer<float>* shaderBuffer;
+
+	float isDialogue;
 
 	D3D11_MAPPED_SUBRESOURCE subResource;
 

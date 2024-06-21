@@ -33,6 +33,9 @@ struct DrawingOrder
 {
     bool operator()(const std::wstring& lhs, const std::wstring& rhs) const 
     {
+        // Check if lhs and rhs start with "UI"
+        bool lhs_is_UI = lhs.compare(0, 2, L"UI") == 0;
+        bool rhs_is_UI = rhs.compare(0, 2, L"UI") == 0;
 
         // Check if lhs and rhs start with "Player"
         bool lhs_is_player = lhs.compare(0, 6, L"Player") == 0;
@@ -42,7 +45,11 @@ struct DrawingOrder
         bool lhs_is_event = lhs.compare(0, 5, L"Event") == 0;
         bool rhs_is_event = rhs.compare(0, 5, L"Event") == 0;
 
-        // Prioritize "Player" to be at the end
+        // Prioritize "UI" to be at the end
+        if (lhs_is_UI && !rhs_is_UI) return false;
+        if (!lhs_is_UI && rhs_is_UI) return true;
+
+        // "Player" should be after other strings but before "UI"
         if (lhs_is_player && !rhs_is_player) return false;
         if (!lhs_is_player && rhs_is_player) return true;
 
@@ -103,18 +110,21 @@ private:
     std::map<std::wstring, std::unique_ptr<IGameObj>, DrawingOrder> mGOs;
     std::unique_ptr<IGameObj> gameUI;
     std::unique_ptr<IGameObj> startMenuGO;
-    std::vector<std::wstring> pushQueue;
+    std::queue<std::wstring> pushQueue;
+    std::queue<std::tuple<std::wstring, std::wstring>> dialogueQueue;
 
     bool allowSwitchMode = true;
 
-    // public methods for other class
-public:
 
+
+public:
+    // public methods for other class
+    void ShowItemGetDialogue(UINT itemID);
+    void ShowNPCDialogue(UINT dialogueID);
     void ReturnTitle();
     void DestroyGO(std::wstring name);
     void Push(std::wstring name, std::unique_ptr<IGameObj> GO);
     void LoadFloor(int floorNum);
-
     void SetGameMode(GameMode mode);
     GameMode GetGameMode() { return gameMode; }
     bool AvailableToSwitch() { return allowSwitchMode; }

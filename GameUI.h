@@ -12,6 +12,13 @@
 #include "MagicTowerApp.h"
 #include "Database.h"
 
+#define GENERAL_BUTTON_SPACING		(0.075f)
+#define MAX_MONSTER_STATE_COUNT		(6)
+#define MONSTER_ICON_SPACING		(100)
+#define MONSTER_STATUS_SPACING		(0.1333f)
+#define SAVE_SLOTS_PER_PAGE			(4)
+#define SAVE_SLOATS_SPACING			(0.217f)
+#define SAVE_SLOT_SIZE				(12)
 
 enum class UIState 
 {
@@ -28,6 +35,10 @@ public:
 		INGAMEUI,
 		PLAYERSTATES,
 		ITEMCHECK,
+		SAVEDATA,
+		LOADDATA,
+		DIALOGUE,
+		ITEMGET,
 	};
 public:
 
@@ -43,6 +54,9 @@ public:
 	void ChangeRenderMode(GameUI::UIRenderMode mode) { InitGameUI(mode); renderMode = mode; }
 	void SetRenderModeOnChanging() { renderModeOnChanging = true; }
 	void SetGameModeOnChanging(bool change) { gameModeOnChanging = change; }
+	void SetCurItemCategory(std::wstring itemCategory) { curItemCategory = itemCategory; }
+	void SetDialogueText(std::wstring text) { dialogueText = text; }
+	void SetDialogueName(std::wstring name) { dialogueName = name; }
 
 private:
 
@@ -117,6 +131,10 @@ private:
 	void InitInGameUI();
 	void InitPlayerState();
 	void InitItemCheck();
+	void InitSaveData();
+	void InitLoadData();
+	void InitDialogue();
+	void InitItemGet();
 
 	
 	// draw text
@@ -128,18 +146,25 @@ private:
 	// cursor & button
 	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd;
 	UINT itemCategoryIdx = 0;
+	UINT curSaveSlotPage = 0;
+	UINT totalSaveSlotPages = SAVE_SLOT_SIZE / SAVE_SLOTS_PER_PAGE;
+	std::wstring curItemCategory;
 	float curTime = 0, lastTime = 0;
-	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons;
-	std::unordered_set<ItemCategory> itemCategorySet;
+	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons, saveDataButtons;
+	std::unordered_map<std::wstring, std::vector<std::unique_ptr<ItemCategoryButton>>> itemButtons;
+	std::unordered_map<std::wstring, UINT> itemButtonIdx;
 	void UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
 	void UpdateMonsterCursor(Cursor& cursor);
-	void UpdateItemCursor(Cursor& cursor, std::vector<Button*>& buttons);
+	void UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
 	void UpdateUIState();
 
 	// render
-	void RenderItem();
 	void RenderPlayerStates();
 	void RenderMonsterStates();
+	void RenderSaveSlot();
+	void RenderInGameUI();
+	void RenderItemCheck();
+	
 
 	// start menu
 	UITextureRect* base = nullptr;
@@ -153,12 +178,21 @@ private:
 	UITextureRect* itemCheckDetailBase = nullptr;
 	UITextureRect* itemCheckCategoryBase = nullptr;
 	UITextureRect* itemCheckDescriptionBase = nullptr;
+	// save data
+	UITextureRect* saveDataTitleBase = nullptr;
+	std::vector<UITextureRect*> saveSlotBases;
+	// dialogue
+	UITextureRect* dialogueBase = nullptr;
+	UITextureRect* nameBase = nullptr;
+	std::wstring dialogueText;
+	std::wstring dialogueName;
 	// icon texture
 	TextureRect* playerIcon = nullptr;
 	TextureRect* yellowKeyIcon = nullptr;
 	TextureRect* blueKeyIcon = nullptr;
 	TextureRect* redKeyIcon = nullptr;
 	TextureRect* greenKeyIcon = nullptr;
+
 
 	// monster texture&data
 	std::map<UINT, std::tuple<int, std::unique_ptr<TextureRect>, MonsterData>> monsters;

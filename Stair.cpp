@@ -8,7 +8,7 @@ void Stair::OnPlayerCollision(Coroutine& coro, StairType type)
 {
 	if (coro.getState() == 0)
 	{
-		Player::player->allowControl = false;
+		Player::player->SetAllowControl(false);
 		Player::player->PlayFadeEffect(true);
 		coro.yield(Player::player->fadeEffect->GetFadeSpeed());
 	}
@@ -25,7 +25,7 @@ void Stair::OnPlayerCollision(Coroutine& coro, StairType type)
 			mApp.LoadFloor(floorNumber - 1);
 		Player::player->GetanimRect()->SetFacingWhere(PlayerControl::Down);
 		Player::player->PlayFadeEffect(false);
-		Player::player->allowControl = true;
+		Player::player->SetAllowControl(true);
 		destroy = true;
 		coro.setComplete();
 	}

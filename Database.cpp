@@ -1,12 +1,30 @@
 #include "Database.h"
 
-std::unordered_map<ItemID, std::tuple<std::wstring, ItemCategory>> Database::itemCategoryMap = 
+std::unordered_map<ItemID, std::tuple<std::wstring, std::wstring>> Database::itemCategoryMap = 
 {
-	{ ItemID::YELLOW_KEY, std::make_tuple(L"鍵類", ItemCategory::KEYS)},
-	{ ItemID::BLUE_KEY,  std::make_tuple(L"鍵類", ItemCategory::KEYS) },
-	{ ItemID::RED_KEY,  std::make_tuple(L"鍵類", ItemCategory::KEYS) },
-	{ ItemID::BOOK,  std::make_tuple(L"工具類",ItemCategory::AUXILIARIES) },
-	{ ItemID::BOOMB,  std::make_tuple(L"重要類",ItemCategory::TREASURES) }
+	{ ItemID::YELLOW_KEY, std::make_tuple(L"鍵類", L"黄色の鍵")},
+	{ ItemID::BLUE_KEY,  std::make_tuple(L"鍵類", L"紫の鍵")},
+	{ ItemID::RED_KEY,  std::make_tuple(L"鍵類", L"赤い鍵")},
+	{ ItemID::BOOK,  std::make_tuple(L"工具類",L"本")},
+	{ ItemID::BOOMB,  std::make_tuple(L"重要類",L"爆弾")}
+};
+
+std::unordered_map<UINT, std::wstring> Database::itemGetText =
+{
+	{static_cast<UINT>(ItemID::YELLOW_KEY), L""},
+	{static_cast<UINT>(ItemID::BLUE_KEY), L""},
+	{static_cast<UINT>(ItemID::RED_KEY), L""},
+	{static_cast<UINT>(ItemID::BOOK),  L"あなたは「モンスターマニュアル」を手に入れました\n\n所持するとモンスター情報を確認できます "},
+};
+
+std::unordered_map<UINT, std::vector<std::tuple<std::wstring, std::wstring>>> Database::dialogues =
+{
+	{0, 
+		std::vector<std::tuple<std::wstring, std::wstring>>({std::make_tuple(L"n1", L"a"),std::make_tuple(L"n1", L"b")}),
+	},
+	{1,
+		std::vector<std::tuple<std::wstring, std::wstring>>({std::make_tuple(L"n1", L"c"),std::make_tuple(L"n2", L"d")}),
+	},
 };
 
 std::unordered_map<UINT, MonsterData> Database::monsterDatabase =

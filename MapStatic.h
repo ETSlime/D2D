@@ -50,6 +50,13 @@ struct StairParams : public EventParams {
 		: EventParams(type, coord), stairType(stairType), newPlayerCoord(newPlayerCoord) {}
 };
 
+struct NPCParams : public EventParams {
+	UINT NPCID;
+	UINT dialogueID;
+	NPCParams(EventType type, Coord coord, UINT NPCID, UINT dialogueID)
+		: EventParams(type, coord), NPCID(NPCID), dialogueID(dialogueID) {}
+};
+
 class MapStatic
 {
 public:

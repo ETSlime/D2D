@@ -5,7 +5,7 @@
 #include "PlayerGO.h"
 #include "Player.h"
 
-typedef int (*OnClick)();
+typedef std::function<int()> OnClick;
 
 struct Button
 {
@@ -14,6 +14,15 @@ struct Button
 	{
 		UpdateTextRect(curWinSize);
 	};
+
+	template<typename Callable, typename... Args>
+	void overrideOnClick(Callable&& func, Args&&... args)
+	{
+		pOnClick = std::bind(std::forward<Callable>(func), std::forward<Args>(args)...);
+	}
+
+	virtual ~Button() = default;
+
 	DirectX::XMFLOAT3 position;
 	float textWidth;
 	float textHeight;
@@ -35,15 +44,22 @@ struct Button
 
 };
 
-struct ItemButton : Button
+struct ItemCategoryButton : Button
 {
-	ItemButton(std::wstring text, DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 size, const WinSize* curWinSize, OnClick pOnClick, TextureRect* icon, bool Selected = false) :
+	ItemCategoryButton(std::wstring text, DirectX::XMFLOAT3 position, DirectX::XMFLOAT2 size, const WinSize* curWinSize, OnClick pOnClick, TextureRect* icon, bool Selected = false) :
 		Button(text, position, size, curWinSize, pOnClick, Selected), itemIcon(icon) {}
-	~ItemButton()
+
+	void UpdateCount(UINT count)
 	{
-		SAFE_DELETE(itemIcon);
+		itemCount = count;
+		if (itemCount <= 1)
+			return;
+		text = text + L"   X " +  std::to_wstring(itemCount);
 	}
-	TextureRect* itemIcon;
+
+	UINT itemCount = 0;
+
+	std::unique_ptr<TextureRect> itemIcon;
 };
 
 class ButtonOnClick
@@ -65,11 +81,13 @@ public:
 
 	static int exitGame();
 
-	static int save();
-
-	static int load();
-
 	static int itemCheck();
 
+	static int saveData();
+
+	static int loadData();
+
 	static int title();
+
+	static int showItemList(std::wstring itemCategory);
 };

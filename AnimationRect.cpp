@@ -83,7 +83,7 @@ void AnimationRect::Move()
 {
 	if (control)
 	{
-		if (Player::player->allowControl == true)
+		if (Player::player->GetAllowControl() == true)
 			Map::get_instance().UpdateCollisionBoxes();
 		control->UpdatePlayerPosition(position);
 	}

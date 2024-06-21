@@ -55,6 +55,14 @@ Player::Player(Coord coord, std::wstring playerTexture, DirectX::XMFLOAT3 size)
 
 	SAFE_DELETE(playerTex);
 
+	// InitPlayerStatus
+	playerData.HP = 1000;
+	playerData.atk = 10;
+	playerData.def = 10;
+	playerData.mdf = 0;
+	playerData.exp = 0;
+	playerData.gold = 0;
+	playerData.level = 1;
 	player = this;
 }
 
@@ -129,6 +137,27 @@ void Player::Render()
 		sword->RenderAttackEffect();
 	if (fadeEffect->GetFading())
 		fadeEffect->Render();
+}
+
+void Player::AddItem(ItemID itemID)
+{
+	if (items.find(itemID) == items.end())
+	{
+		mApp.ShowItemGetDialogue(static_cast<int>(itemID));
+	}
+		
+	items[itemID]++;
+}
+
+bool Player::UseItem(ItemID itemID)
+{
+	if (items[itemID] > 0) 
+	{ 
+		items[itemID]--; 
+		return true; 
+	}
+	else 
+		return false;
 }
 
 bool Player::CanMove(const DirectX::XMFLOAT3& move)

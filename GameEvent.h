@@ -31,7 +31,7 @@ enum class StairType
 	DOWN
 };
 
-enum class ItemID
+enum class ItemID : UINT
 {
 	YELLOW_KEY,
 	BLUE_KEY,
@@ -131,13 +131,25 @@ struct ItemEventDescriptor : public EventDescriptor
 
 struct StairEventDescriptor : public EventDescriptor
 {
-	StairType stairType;;
+	StairType stairType;
 	Coord newPlayerCoord;
 	StairEventDescriptor() = default;
 	StairEventDescriptor(StairType type, Coord coord)
 	{
 		stairType = type;
 		newPlayerCoord = coord;
+	}
+};
+
+struct NPCEventDescriptor : public EventDescriptor
+{
+	UINT NPCID;
+	UINT dialogueID;
+	NPCEventDescriptor() = default;
+	NPCEventDescriptor(UINT npc, UINT dialogue)
+	{
+		NPCID = npc;
+		dialogueID = dialogue;
 	}
 };
 

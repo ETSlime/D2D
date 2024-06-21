@@ -7,6 +7,11 @@
 class AnimationRect;
 class ChangeMapEffect;
 
+struct PlayerData
+{
+	int HP, MP, atk, def, mdf, exp, gold, level;
+};
+
 class Player : public GameEvent
 {
 public:
@@ -22,11 +27,12 @@ public:
 
 	bool CanMove(const DirectX::XMFLOAT3& move);
 	void PlayFadeEffect(bool fade);
-
+	void SetAllowControl(bool allow) { allowControl = allow; }
+	bool GetAllowControl() { return allowControl; }
 	static Player* player;
 	
 	bool playAttackAnim = false;
-	bool allowControl = true;
+	
 	bool renderPlayer = false;
 	ChangeMapEffect* fadeEffect;
 
@@ -36,18 +42,24 @@ public:
 	void SetCurFLoor(int newFloorNum) { curFloor = newFloorNum; }
 	const std::map<ItemID, UINT>& GetItems() const { return items; }
 
-	void AddItem(ItemID itemID) { items[itemID]++; }
-	bool UseItem(ItemID itemID) { if (items[itemID] > 0) { items[itemID]--; return true; } else return false; }
-	void ChangeHP(UINT amout) { HP += amout; }
+	void AddItem(ItemID itemID);
+	bool UseItem(ItemID itemID);
+	void ChangeHP(int amount) { playerData.HP += amount; }
+	void ChangeAtk(int amount) { playerData.atk += amount; }
+	void ChangeDef(int amount) { playerData.def += amount; }
+	void ChangeMdf(int amount) { playerData.mdf += amount; }
+	void ChangeExp(int amount) { playerData.exp += amount; }
+	void ChangeGold(int amount) { playerData.gold += amount; }
+	const PlayerData GetBattleData() { return playerData; }
 
 private:
 
 	// player attributes
-	int HP, MP, atk, def;
+	PlayerData playerData;
 	UINT walkingSteps = 0;
 	std::map<ItemID, UINT> items;
 	int curFloor = 0;
-
+	bool allowControl = true;
 	// player weapons
 	Weapon* armor = nullptr;
 	Weapon* sword = nullptr;

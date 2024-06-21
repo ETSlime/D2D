@@ -5,8 +5,10 @@
 #include "Door.h"
 #include "Item.h"
 #include "Stair.h"
+#include "GameNPC.h"
 
-class EventFactory {
+class EventFactory 
+{
 public:
     static std::shared_ptr<GameEvent> CreateGameEvent(const EventDescriptor& descriptor) 
     {
@@ -31,6 +33,11 @@ public:
         {
             const StairEventDescriptor& stairDesc = static_cast<const StairEventDescriptor&>(descriptor);
             return std::make_shared<Stair>(stairDesc.coord, stairDesc.stairType, stairDesc.newPlayerCoord, stairDesc.eventName);
+        }
+        case EventType::NPC:
+        {
+            const NPCEventDescriptor& NPCDesc = static_cast<const NPCEventDescriptor&>(descriptor);
+            return std::make_shared<GameNPC>(NPCDesc.coord, NPCDesc.NPCID, NPCDesc.dialogueID, NPCDesc.eventName);
         }
         //case EventType::TERRAIN: 
         //{
