@@ -160,6 +160,7 @@
     <ClCompile Include="MessageDispatcher.h" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="GameNPC.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PlayerControl.cpp" />
     <ClCompile Include="PixelShader.cpp" />
@@ -183,6 +184,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationRect.h" />
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="Battle.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="ButtonOnClick.h" />
     <ClInclude Include="Camera.h" />
@@ -209,6 +211,7 @@
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="GameNPC.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PlayerControl.h" />
     <ClInclude Include="PixelShader.h" />
@@ -216,6 +219,7 @@
     <ClInclude Include="PlayerGO.h" />
     <ClInclude Include="RectBase.h" />
     <ClInclude Include="CursorTextureRect.h" />
+    <ClInclude Include="SaveData.h" />
     <ClInclude Include="SingletonBase.h" />
     <ClInclude Include="MagicTowerApp.h" />
     <ClInclude Include="Stair.h" />

@@ -23,6 +23,9 @@ public:
 	void ChangeUIMode(GameUI::UIRenderMode mode);
 	void SetChangeUIMode() { gameUI->SetRenderModeOnChanging(); }
 	void SetChangeGameMode(bool change) { gameUI->SetGameModeOnChanging(change); }
+	void SetItemCategory(std::wstring itemCategory) { gameUI->SetCurItemCategory(itemCategory); }
+	void SetDialogue(std::wstring text, const std::vector<DialogueButtonEvent>& events = std::vector<DialogueButtonEvent>()) { gameUI->SetDialogueText(text, events); }
+	void SetDialogueName(std::wstring name) { gameUI->SetDialogueName(name); }
 private:
 
 	class GameUI* gameUI = nullptr;

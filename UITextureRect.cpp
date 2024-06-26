@@ -17,6 +17,9 @@ UITextureRect::UITextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size,
 	// Create shader resource view
 	hr = mDevice->CreateShaderResourceView(texture, nullptr, &srv);
 
+	shaderBuffer = new UploadBuffer<float>(mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
+	isDialogue = 0;
+
 	Assert(SUCCEEDED(hr));
 }
 
@@ -124,13 +127,15 @@ UITextureRect::~UITextureRect()
 
 void UITextureRect::Update()
 {
+	shaderBuffer->MapData(mDeviceContext, isDialogue);
 	UpdateWorld();
-	Move();
 }
 
-void UITextureRect::Move()
-{
 
+void UITextureRect::Render()
+{
+	mDeviceContext->PSSetConstantBuffers(2, 1, shaderBuffer->Resource());
+	__super::Render();
 }
 
 void UITextureRect::GUI()

@@ -171,6 +171,9 @@
     <ClCompile Include="Database.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="GameNPC.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DApp.h">
@@ -330,6 +333,15 @@
       <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Database.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameNPC.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Battle.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveData.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

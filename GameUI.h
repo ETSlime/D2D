@@ -12,6 +12,22 @@
 #include "MagicTowerApp.h"
 #include "Database.h"
 
+#define GENERAL_BUTTON_SPACING		(0.075f)
+#define MAX_MONSTER_STATE_COUNT		(6)
+#define MONSTER_ICON_SPACING		(100)
+#define MONSTER_STATUS_SPACING		(0.1333f)
+#define SAVE_SLOTS_PER_PAGE			(4)
+#define SAVE_SLOATS_SPACING			(0.217f)
+#define SAVE_SLOT_SIZE				(12)
+#define DIALOGUE_RECT_LEFT			(0.27f)
+#define DIALOGUE_NAME_RECT_TOP		(0.55f)
+#define DIALOGUE_RECT_RIGHT			(0.99f)
+#define DIALOGUE_RECT_NAME_RIGHT	(0.55f)
+#define DIALOGUE_NAME_RECT_BOTTOM	(0.67f)
+#define DIALOGUE_ITEM_RECT_TOP		(0.37f)
+#define DIALOGUE_ITEM_RECT_BOTTOM	(0.62f)
+#define DIALOGUE_RECT_TOP			(0.64f)
+#define DIALOGUE_RECT_BOTTOM		(0.82f)
 
 enum class UIState 
 {
@@ -28,6 +44,10 @@ public:
 		INGAMEUI,
 		PLAYERSTATES,
 		ITEMCHECK,
+		SAVEDATA,
+		LOADDATA,
+		DIALOGUE,
+		ITEMGET,
 	};
 public:
 
@@ -43,6 +63,9 @@ public:
 	void ChangeRenderMode(GameUI::UIRenderMode mode) { InitGameUI(mode); renderMode = mode; }
 	void SetRenderModeOnChanging() { renderModeOnChanging = true; }
 	void SetGameModeOnChanging(bool change) { gameModeOnChanging = change; }
+	void SetCurItemCategory(std::wstring itemCategory) { curItemCategory = itemCategory; }
+	void SetDialogueText(std::wstring text, const std::vector<DialogueButtonEvent>& event = std::vector<DialogueButtonEvent>());
+	void SetDialogueName(std::wstring name) { dialogueName = name; }
 
 private:
 
@@ -117,6 +140,10 @@ private:
 	void InitInGameUI();
 	void InitPlayerState();
 	void InitItemCheck();
+	void InitSaveData();
+	void InitLoadData();
+	void InitDialogue();
+	void InitItemGet();
 
 	
 	// draw text
@@ -124,22 +151,30 @@ private:
 	void DrawTextWithSpacing(IDWriteTextFormat* pTextFormat, const std::wstring& text, const D2D1_RECT_F* rect);
 	D2D1_RECT_F GetTextRect(float left, float top, float right, float bottom);
 	std::wstring GetFormattedTime() const;
+	DWRITE_TEXT_METRICS CalculateTextMetrics(const std::wstring& text, float maxWidth);
 
 	// cursor & button
-	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd;
+	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd, dialogueCursor;
 	UINT itemCategoryIdx = 0;
+	UINT curSaveSlotPage = 0;
+	UINT totalSaveSlotPages = SAVE_SLOT_SIZE / SAVE_SLOTS_PER_PAGE;
+	std::wstring curItemCategory;
 	float curTime = 0, lastTime = 0;
-	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons;
-	std::unordered_set<ItemCategory> itemCategorySet;
+	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons, saveDataButtons, dialogueButtons;
+	std::unordered_map<std::wstring, std::vector<std::unique_ptr<ItemCategoryButton>>> itemButtons;
+	std::unordered_map<std::wstring, UINT> itemButtonIdx;
 	void UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
 	void UpdateMonsterCursor(Cursor& cursor);
-	void UpdateItemCursor(Cursor& cursor, std::vector<Button*>& buttons);
+	void UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
 	void UpdateUIState();
 
 	// render
-	void RenderItem();
 	void RenderPlayerStates();
 	void RenderMonsterStates();
+	void RenderSaveSlot();
+	void RenderInGameUI();
+	void RenderItemCheck();
+	
 
 	// start menu
 	UITextureRect* base = nullptr;
@@ -153,6 +188,14 @@ private:
 	UITextureRect* itemCheckDetailBase = nullptr;
 	UITextureRect* itemCheckCategoryBase = nullptr;
 	UITextureRect* itemCheckDescriptionBase = nullptr;
+	// save data
+	UITextureRect* saveDataTitleBase = nullptr;
+	std::vector<UITextureRect*> saveSlotBases;
+	// dialogue
+	UITextureRect* dialogueBase = nullptr;
+	UITextureRect* nameBase = nullptr;
+	std::wstring dialogueText;
+	std::wstring dialogueName;
 	// icon texture
 	TextureRect* playerIcon = nullptr;
 	TextureRect* yellowKeyIcon = nullptr;
@@ -160,7 +203,8 @@ private:
 	TextureRect* redKeyIcon = nullptr;
 	TextureRect* greenKeyIcon = nullptr;
 
-	// monster texture&data
+
+	// monster texture&data 
 	std::map<UINT, std::tuple<int, std::unique_ptr<TextureRect>, MonsterData>> monsters;
 
 	// Render mode/UI states

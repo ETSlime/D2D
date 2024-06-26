@@ -115,7 +115,7 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 		player->StepsCountOne();
 		elapsedTime = 0;
 		// if still pressed, keep moving by setting next movement
-		if (keyboard.Press(key) && Player::player->allowControl == true)
+		if (keyboard.Press(key) && Player::player->GetAllowControl() == true)
 		{
 			DirectX::XMFLOAT3 move;
 			switch (key)
@@ -178,7 +178,7 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 
 void PlayerControl::UpdatePlayerPosition(DirectX::XMFLOAT3& position)
 {
-	if (CHECKMOVE && Player::player->allowControl == false)
+	if (CHECKMOVE && Player::player->GetAllowControl() == false)
 	{
 		Idle();
 		return;

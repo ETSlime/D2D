@@ -3,13 +3,6 @@
 #include "GameEvent.h"
 #include "AnimationRect.h"
 
-enum class ItemCategory
-{
-	KEYS,
-	AUXILIARIES,
-	TREASURES,
-};
-
 
 class Item : public GameEvent
 {

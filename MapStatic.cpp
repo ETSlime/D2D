@@ -1,6 +1,6 @@
 #include "MapStatic.h"
 #include "Tile.h"
-
+#include "Database.h"
 
 // define here to prevent link error
 std::vector<std::unique_ptr<EventDescriptor>> MapStatic::eventFloor[numFloor];
@@ -34,13 +34,13 @@ std::unique_ptr<EventDescriptor> MapStatic::CreateEventDescriptor(EventType even
 	{
 	case EventType::MONSTER:
 	{
-		auto battleDesc = std::make_unique<BattleEventDescriptor>();
+		std::unique_ptr<BattleEventDescriptor> battleDesc = std::make_unique<BattleEventDescriptor>();
 		battleDesc.get()->coord = coord;
 		battleDesc.get()->eventID = eventID++;
 		battleDesc.get()->eventName = eventName;
 		battleDesc.get()->eventType = eventType;
 		battleDesc.get()->monsterID = ID;
-		battleDesc.get()->monsterName = L"Slime";
+		battleDesc.get()->monsterName = Database::monsterDatabase[ID].name;
 		eventDescriptor = std::move(battleDesc);
 		break;
 	}
@@ -70,7 +70,16 @@ std::unique_ptr<EventDescriptor> MapStatic::CreateEventDescriptor(EventType even
 	case EventType::STAIR:
 	{
 		Coord newPlayerCoord;
-		(void)std::initializer_list<int>{(newPlayerCoord = args, 0)...};
+		(void)std::initializer_list<int>{
+			([&](auto&& arg)
+			{
+				if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<decltype(arg)>>, Coord>)
+				{
+					newPlayerCoord = arg;
+				}
+				return 0;
+			}(args), 0)...
+		};
 		std::unique_ptr<StairEventDescriptor> stairDesc = std::make_unique<StairEventDescriptor>();
 		stairDesc.get()->coord = coord;
 		stairDesc.get()->eventID = eventID++;
@@ -79,6 +88,29 @@ std::unique_ptr<EventDescriptor> MapStatic::CreateEventDescriptor(EventType even
 		stairDesc.get()->stairType = static_cast<StairType>(ID);
 		stairDesc.get()->newPlayerCoord = newPlayerCoord;
 		eventDescriptor = std::move(stairDesc);
+		break;
+	}
+	case EventType::NPC:
+	{
+		UINT dialogueID = 0;
+		(void)std::initializer_list<int>{
+			([&](auto&& arg)
+				{
+					if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<decltype(arg)>>, UINT>)
+					{
+						dialogueID = arg;
+					}
+					return 0;
+				}(args), 0)...
+		};
+		std::unique_ptr<NPCEventDescriptor> NPCDesc = std::make_unique<NPCEventDescriptor>();
+		NPCDesc.get()->coord = coord;
+		NPCDesc.get()->eventID = eventID++;
+		NPCDesc.get()->eventName = eventName;
+		NPCDesc.get()->eventType = eventType;
+		NPCDesc.get()->NPCID = ID;
+		NPCDesc.get()->dialogueID = dialogueID;
+		eventDescriptor = std::move(NPCDesc);
 		break;
 	}
 	default:
@@ -106,6 +138,9 @@ void MapStatic::BuildFloor(int floorNum)
 		else if (auto doorParams = dynamic_cast<DoorParams*>(params.get())) {
 			eventFloor[floorNum].push_back(CreateEventDescriptor(doorParams->type, doorParams->coord, static_cast<UINT>(doorParams->doorType), name));
 		}
+		else if (auto npcParams = dynamic_cast<NPCParams*>(params.get())) {
+			eventFloor[floorNum].push_back(CreateEventDescriptor(npcParams->type, npcParams->coord, npcParams->NPCID, name, npcParams->dialogueID));
+		}
 	}
 	
 }
@@ -121,6 +156,8 @@ std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventPa
 	std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> tempEventParams;
 	
 	// Using emplace to avoid copying std::unique_ptr, which is non-copyable.
+	tempEventParams[0].emplace(L"NPC001", std::make_unique<NPCParams>(EventType::NPC, Coord{ 12, 1 }, 0, 2));
+	tempEventParams[0].emplace(L"Monster1", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 2 }, 0));
 	tempEventParams[0].emplace(L"Monster001", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 5 }, 0));
 	tempEventParams[0].emplace(L"Monster002", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 5 }, 1));
 	tempEventParams[0].emplace(L"Monster003", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 6 }, 2));
@@ -173,7 +210,7 @@ std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventPa
 	tempEventParams[0].emplace(L"Monster050", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 10 }, 0));
 	tempEventParams[0].emplace(L"Monster051", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 6, 11 }, 0));
 	tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::YELLOW_KEY));
-	tempEventParams[0].emplace(L"Item002", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 7 }, ItemID::BLUE_KEY));
+	tempEventParams[0].emplace(L"Item002", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 7 }, ItemID::YELLOW_KEY));
 	tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::RED_KEY)); 
 	tempEventParams[0].emplace(L"Door001", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 6 }, DoorType::YELLOW));
 	tempEventParams[0].emplace(L"Item004", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 4, 10 }, ItemID::BOOK));

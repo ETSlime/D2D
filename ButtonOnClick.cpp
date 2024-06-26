@@ -14,7 +14,7 @@ void ButtonOnClick::startGameFadeCallback(Coroutine& coro)
 		dynamic_cast<GameUIGO*>(mApp.startMenuGO.get())->SetChangeGameMode(true);
 		// create player GO
 		mApp.Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(0, 0)));
-		Player::player->allowControl = false;
+		Player::player->SetAllowControl(false);
 		Player::player->PlayFadeEffect(true);
 		// fade in effect
 		coro.yield(Player::player->fadeEffect->GetFadeSpeed());
@@ -27,7 +27,7 @@ void ButtonOnClick::startGameFadeCallback(Coroutine& coro)
 		Player::player->renderPlayer = true;
 		mApp.LoadFloor(0);
 		Player::player->PlayFadeEffect(false);
-		Player::player->allowControl = true;
+		Player::player->SetAllowControl(true);
 		// finish changing game mode
 		dynamic_cast<GameUIGO*>(mApp.startMenuGO.get())->SetChangeGameMode(false);
 		coro.setComplete();
@@ -39,7 +39,7 @@ void ButtonOnClick::returnTitleFadeCallback(Coroutine& coro)
 	// start fade in
 	if (coro.getState() == 0)
 	{
-		Player::player->allowControl = false;
+		Player::player->SetAllowControl(false);
 		Player::player->PlayFadeEffect(true);
 		coro.yield(Player::player->fadeEffect->GetFadeSpeed());
 	}
@@ -85,20 +85,22 @@ int ButtonOnClick::exitGame()
 	return 0;
 }
 
-int ButtonOnClick::save()
-{
-	return 0;
-}
-
-int ButtonOnClick::load()
-{
-	return 0;
-}
-
 int ButtonOnClick::itemCheck()
 {
 	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->ChangeUIMode(GameUI::UIRenderMode::ITEMCHECK);
 	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetChangeUIMode();
+	return 0;
+}
+
+int ButtonOnClick::saveData()
+{
+	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->ChangeUIMode(GameUI::UIRenderMode::SAVEDATA);
+	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetChangeUIMode();
+	return 0;
+}
+
+int ButtonOnClick::loadData()
+{
 	return 0;
 }
 
@@ -110,5 +112,11 @@ int ButtonOnClick::title()
 		{ returnTitleFadeCallback(coro); });
 	(*coro.get())();
 
+	return 0;
+}
+
+int ButtonOnClick::showItemList(std::wstring itemCategory)
+{
+	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetItemCategory(itemCategory);
 	return 0;
 }
