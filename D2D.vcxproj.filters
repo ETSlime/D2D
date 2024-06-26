@@ -338,6 +338,12 @@
     <ClInclude Include="GameNPC.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Battle.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveData.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

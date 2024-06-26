@@ -156,8 +156,8 @@ std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventPa
 	std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> tempEventParams;
 	
 	// Using emplace to avoid copying std::unique_ptr, which is non-copyable.
-	tempEventParams[0].emplace(L"NPC001", std::make_unique<NPCParams>(EventType::NPC, Coord{ 12, 1 }, 0, 1));
-	tempEventParams[0].emplace(L"Monster1211", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 2 }, 0));
+	tempEventParams[0].emplace(L"NPC001", std::make_unique<NPCParams>(EventType::NPC, Coord{ 12, 1 }, 0, 2));
+	tempEventParams[0].emplace(L"Monster1", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 2 }, 0));
 	tempEventParams[0].emplace(L"Monster001", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 5 }, 0));
 	tempEventParams[0].emplace(L"Monster002", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 5 }, 1));
 	tempEventParams[0].emplace(L"Monster003", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 5, 6 }, 2));

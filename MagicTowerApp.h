@@ -11,6 +11,7 @@
 #include "Keyboard.h"
 #include "Timer.h"
 #include "Coroutine.h"
+#include "Database.h"
 
 enum class GameMode
 {
@@ -111,7 +112,7 @@ private:
     std::unique_ptr<IGameObj> gameUI;
     std::unique_ptr<IGameObj> startMenuGO;
     std::queue<std::wstring> pushQueue;
-    std::queue<std::tuple<std::wstring, std::wstring>> dialogueQueue;
+    std::queue<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>> dialogueQueue;
 
     bool allowSwitchMode = true;
 

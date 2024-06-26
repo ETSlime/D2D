@@ -56,13 +56,14 @@ Player::Player(Coord coord, std::wstring playerTexture, DirectX::XMFLOAT3 size)
 	SAFE_DELETE(playerTex);
 
 	// InitPlayerStatus
-	playerData.HP = 1000;
+	playerData.HP = 10000;
 	playerData.atk = 10;
 	playerData.def = 10;
 	playerData.mdf = 0;
 	playerData.exp = 0;
 	playerData.gold = 0;
 	playerData.level = 1;
+	allowControl = true;
 	player = this;
 }
 

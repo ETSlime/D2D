@@ -30,6 +30,19 @@ void TextureRect::SetVertices()
 	vertices[3].position = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 	vertices[3].uv = DirectX::XMFLOAT2(0, 0);
 
+	//vertices[0].position = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+	//vertices[0].uv = DirectX::XMFLOAT2(0, 1);
+
+
+	//vertices[1].position = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+	//vertices[1].uv = DirectX::XMFLOAT2(1, 0);
+
+	//vertices[2].position = DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f);
+	//vertices[2].uv = DirectX::XMFLOAT2(1, 1);
+
+	//vertices[3].position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	//vertices[3].uv = DirectX::XMFLOAT2(0, 0);
+
 	if (centered)
 	{
 		for (auto&v : vertices)
@@ -40,6 +53,7 @@ void TextureRect::SetVertices()
 void TextureRect::SetIndices()
 {
 	indices = { 0, 1, 2, 0, 3, 1 };
+	//indices = { 3, 1, 2, 3, 2, 0 };
 }
 
 

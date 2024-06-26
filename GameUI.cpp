@@ -1,6 +1,6 @@
 #include "GameUI.h"
 #include "Monster.h"
-
+#include "Battle.h"
 
 GameUI::GameUI(const D2DResource* D2DResource, const WinSize* winSize, UIRenderMode mode)
 	:mD2DResource(D2DResource), curWinSize(winSize), renderMode(mode)
@@ -189,7 +189,7 @@ void GameUI::InitPlayerState()
 	// yellow key icon
 	if (yellowKeyIcon == nullptr)
 	{
-		DirectX::XMFLOAT3 yellowKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 10, WinMaxHeight - 510, 0);
+		DirectX::XMFLOAT3 yellowKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 525, 0);
 		DirectX::XMFLOAT3 yellowKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
 		Texture2D* yellowKeyIconTex = new Texture2D(IconsPath + L"‰©F‚ÌŒ®.png");
 		yellowKeyIcon = new TextureRect(yellowKeyIonPosition, yellowKeyIonSize, 0.0f);
@@ -200,7 +200,7 @@ void GameUI::InitPlayerState()
 	// blue key icon
 	if (blueKeyIcon == nullptr)
 	{
-		DirectX::XMFLOAT3 blueKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 10, WinMaxHeight - 560, 0);
+		DirectX::XMFLOAT3 blueKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 575, 0);
 		DirectX::XMFLOAT3 blueKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
 		Texture2D* blueKeyIconTex = new Texture2D(IconsPath + L"Ž‡‚ÌŒ®.png");
 		blueKeyIcon = new TextureRect(blueKeyIonPosition, blueKeyIonSize, 0.0f);
@@ -210,7 +210,7 @@ void GameUI::InitPlayerState()
 	// red key icon
 	if (redKeyIcon == nullptr)
 	{
-		DirectX::XMFLOAT3 redKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 10, WinMaxHeight - 610, 0);
+		DirectX::XMFLOAT3 redKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 625, 0);
 		DirectX::XMFLOAT3 redKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
 		Texture2D* redKeyIconTex = new Texture2D(IconsPath + L"Ô‚¢Œ®.png");
 		redKeyIcon = new TextureRect(redKeyIonPosition, redKeyIonSize, 0.0f);
@@ -220,7 +220,7 @@ void GameUI::InitPlayerState()
 	// green key icon
 	if (greenKeyIcon == nullptr)
 	{
-		DirectX::XMFLOAT3 greenKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 10, WinMaxHeight - 660, 0);
+		DirectX::XMFLOAT3 greenKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 675, 0);
 		DirectX::XMFLOAT3 greenKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
 		Texture2D* greenKeyIconTex = new Texture2D(IconsPath + L"greenkey.png");
 		greenKeyIcon = new TextureRect(greenKeyIonPosition, greenKeyIonSize, 0.0f);
@@ -374,12 +374,12 @@ void GameUI::InitDialogue()
 
 	// init UI base
 	DirectX::XMFLOAT3 position{}, size{};
-	position = DirectX::XMFLOAT3(WinMaxWidth * 0.63, WinMaxHeight * 0.2, 0);
-	size = DirectX::XMFLOAT3(WinMaxWidth * 0.7, WinMaxHeight * 0.35, 1);
+	position = DirectX::XMFLOAT3(WinMaxWidth * 0.622, WinMaxHeight * 0.2, 0);
+	size = DirectX::XMFLOAT3(WinMaxWidth * 0.745, WinMaxHeight * 0.35, 1);
 	dialogueBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 	dialogueBase->SetDialogue(true);
-	position = DirectX::XMFLOAT3(WinMaxWidth * 0.34, WinMaxHeight * 0.41, 0);
-	size = DirectX::XMFLOAT3(WinMaxWidth * 0.12, WinMaxHeight * 0.1, 1);
+	position = DirectX::XMFLOAT3(WinMaxWidth * 0.3, WinMaxHeight * 0.42, 0);
+	size = DirectX::XMFLOAT3(WinMaxWidth * 0.11, WinMaxHeight * 0.09, 1);
 	nameBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 	nameBase->SetDialogue(true);
 }
@@ -390,8 +390,8 @@ void GameUI::InitItemGet()
 	Player::player->SetAllowControl(false);
 
 	// init UI base
-	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3(WinMaxWidth * 0.63, WinMaxHeight * 0.5, 0);
-	DirectX::XMFLOAT3 size = DirectX::XMFLOAT3(WinMaxWidth * 0.7, WinMaxHeight * 0.35, 1);
+	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3(WinMaxWidth * 0.622, WinMaxHeight * 0.5, 0);
+	DirectX::XMFLOAT3 size = DirectX::XMFLOAT3(WinMaxWidth * 0.745, WinMaxHeight * 0.35, 1);
 	dialogueBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 	dialogueBase->SetDialogue(true);
 }
@@ -431,7 +431,7 @@ void GameUI::Render()
 	}
 
 	case PLAYERSTATES:
-		//RenderPlayerStates();
+		RenderPlayerStates();
 		break;
 
 	case ITEMCHECK:
@@ -478,7 +478,7 @@ void GameUI::Render()
 		nameBase->Render();
 		dialogueBase->Render();
 
-		D2D1_RECT_F TextRect = GetTextRect(0.31f, 0.64f, 0.95f, 0.82f);
+		D2D1_RECT_F TextRect = GetTextRect(DIALOGUE_RECT_LEFT, DIALOGUE_RECT_TOP, DIALOGUE_RECT_RIGHT, DIALOGUE_RECT_BOTTOM);
 
 		mD2DResource->pD2DRenderTarget->DrawText(
 			dialogueText.c_str(),
@@ -487,7 +487,7 @@ void GameUI::Render()
 			TextRect,
 			mD2DResource->pSolidColorBrush);
 
-		TextRect = GetTextRect(0.31f, 0.56f, 0.55f, 0.67f);
+		TextRect = GetTextRect(DIALOGUE_RECT_LEFT, DIALOGUE_NAME_RECT_TOP, DIALOGUE_RECT_NAME_RIGHT, DIALOGUE_NAME_RECT_BOTTOM);
 
 		mD2DResource->pD2DRenderTarget->DrawText(
 			dialogueName.c_str(),
@@ -496,13 +496,24 @@ void GameUI::Render()
 			TextRect,
 			mD2DResource->pSolidColorBrush);
 
+		for (int i = 0; i < dialogueButtons.size(); i++)
+		{
+			mD2DResource->pD2DRenderTarget->DrawText(
+				dialogueButtons[i]->text.c_str(),
+				dialogueButtons[i]->text.size(),
+				mD2DResource->pTextFormat,
+				dialogueButtons[i]->textRect,
+				mD2DResource->pSolidColorBrush);
+		}
+		if (dialogueCursor.textureRect) dialogueCursor.textureRect->Render();
 		break;
 	}
 
 	case ITEMGET:
 	{
 		dialogueBase->Render();
-		D2D1_RECT_F TextRect = GetTextRect(0.31f, 0.37f, 0.95f, 0.62f);
+
+		D2D1_RECT_F TextRect = GetTextRect(DIALOGUE_RECT_LEFT, DIALOGUE_ITEM_RECT_TOP, DIALOGUE_RECT_RIGHT, DIALOGUE_ITEM_RECT_BOTTOM);
 
 		mD2DResource->pD2DRenderTarget->DrawText(
 			dialogueText.c_str(),
@@ -625,6 +636,9 @@ void GameUI::Update()
 	case DIALOGUE:
 		nameBase->Update();
 		dialogueBase->Update();
+
+		if (dialogueButtons.size() != 0) UpdateCursorAndButton(dialogueCursor, dialogueButtons);
+
 		if (Keyboard::get_instance().Up('C') ||
 			Keyboard::get_instance().Up(VK_RETURN) ||
 			Keyboard::get_instance().Up(VK_SPACE))
@@ -1007,6 +1021,8 @@ void GameUI::RenderInGameUI()
 
 void GameUI::RenderMonsterStates()
 {
+	if (Player::player->GetItems().find(ItemID::BOOK) == Player::player->GetItems().end())
+		return;
 
 	UINT position = 0;
 	// for text color
@@ -1024,11 +1040,10 @@ void GameUI::RenderMonsterStates()
 			toggle = !toggle;
 			// monster status
 			float spacing = MONSTER_STATUS_SPACING;
-			MonsterData data = std::get<2>(monster.second);
+			MonsterData monsterData = std::get<2>(monster.second);
 
 			mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
-			std::wstring name = data.name;
-			//D2D1_RECT_F nameTextRect = D2D1::RectF(400, 30 + position * spacing, 500, 63 + position * spacing);
+			std::wstring name = monsterData.name;
 			D2D1_RECT_F nameTextRect = GetTextRect(0.4082f, 0.04f + position * spacing, 0.5102f, 0.084 + position * spacing);
 			bool isTransformed;
 			IDWriteTextFormat* textFormat = DynamicTextFormat(name, &nameTextRect, &isTransformed);
@@ -1051,7 +1066,6 @@ void GameUI::RenderMonsterStates()
 			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
 			std::wstring attribute = L"•’Ê";
-			//D2D1_RECT_F attributeTextRect = D2D1::RectF(400, 63 + position * spacing, 500, 98 + position * spacing);
 			D2D1_RECT_F attributeTextRect = GetTextRect(0.4082f, 0.084f + position * spacing, 0.5102f, 0.1306 + position * spacing);
 			textFormat = DynamicTextFormat(attribute, &attributeTextRect);
 			DrawTextWithSpacing(textFormat, attribute, &attributeTextRect);
@@ -1063,7 +1077,6 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::LightGreen));
 
 			std::wstring HP = L"¶–½";
-			//D2D1_RECT_F HPTextRect = D2D1::RectF(505, 25 + position * spacing, 560, 60 + position * spacing);
 			D2D1_RECT_F HPTextRect = GetTextRect(0.5153f, 0.0333f + position * spacing, 0.5714f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(HP, &HPTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1074,8 +1087,7 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
-			std::wstring v1 = std::to_wstring(data.HP);
-			//D2D1_RECT_F v1TextRect = D2D1::RectF(570, 25 + position * spacing, 640, 60 + position * spacing);
+			std::wstring v1 = std::to_wstring(monsterData.HP);
 			D2D1_RECT_F v1TextRect = GetTextRect(0.5816f, 0.0333f + position * spacing, 0.6531f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(v1, &v1TextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1086,8 +1098,10 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
+			//Reset transformation matrix
+			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
 			std::wstring attack = L"UŒ‚";
-			//D2D1_RECT_F attackTextRect = D2D1::RectF(650, 25 + position * spacing, 705, 60 + position * spacing);
 			D2D1_RECT_F attackTextRect = GetTextRect(0.6633f, 0.0333f + position * spacing, 0.7194f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(attack, &attackTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1098,8 +1112,7 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
-			std::wstring v2 = std::to_wstring(data.attack);
-			//D2D1_RECT_F v2TextRect = D2D1::RectF(715, 25 + position * spacing, 785, 60 + position * spacing);
+			std::wstring v2 = std::to_wstring(monsterData.attack);
 			D2D1_RECT_F v2TextRect = GetTextRect(0.7296f, 0.0333f + position * spacing, 0.8010f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(v2, &v2TextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1110,8 +1123,10 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
+			//Reset transformation matrix
+			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
 			std::wstring defense = L"–hŒä";
-			//D2D1_RECT_F defenseTextRect = D2D1::RectF(795, 25 + position * spacing, 850, 60 + position * spacing);
 			D2D1_RECT_F defenseTextRect = GetTextRect(0.8112f, 0.0333f + position * spacing, 0.8673f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(defense, &defenseTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1122,8 +1137,7 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
-			std::wstring v3 = std::to_wstring(data.defense);
-			//D2D1_RECT_F v3TextRect = D2D1::RectF(860, 25 + position * spacing, 930, 60 + position * spacing);
+			std::wstring v3 = std::to_wstring(monsterData.defense);
 			D2D1_RECT_F v3TextRect = GetTextRect(0.8775f, 0.0333f + position * spacing, 0.9490f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(v3, &v3TextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1134,8 +1148,10 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
+			//Reset transformation matrix
+			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
 			std::wstring gold = L"GOLD";
-			//D2D1_RECT_F goldTextRect = D2D1::RectF(505, 65 + position * spacing, 560, 100 + position * spacing);
 			D2D1_RECT_F goldTextRect = GetTextRect(0.5153f, 0.08667f + position * spacing, 0.5714f, 0.1333f + position * spacing);
 			textFormat = DynamicTextFormat(HP, &HPTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1146,8 +1162,7 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
-			std::wstring v4 = std::to_wstring(data.gold);
-			//D2D1_RECT_F v4TextRect = D2D1::RectF(570, 65 + position * spacing, 640, 100 + position * spacing);
+			std::wstring v4 = std::to_wstring(monsterData.gold);
 			D2D1_RECT_F v4TextRect = GetTextRect(0.5816f, 0.08667f + position * spacing, 0.6531f, 0.1333f + position * spacing);
 			textFormat = DynamicTextFormat(v4, &v4TextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1158,8 +1173,10 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
+			//Reset transformation matrix
+			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
 			std::wstring exp = L"EXP";
-			//D2D1_RECT_F expTextRect = D2D1::RectF(650, 65 + position * spacing, 705, 100 + position * spacing);
 			D2D1_RECT_F expTextRect = GetTextRect(0.6633f, 0.08667f + position * spacing, 0.7194f, 0.1333f + position * spacing);
 			textFormat = DynamicTextFormat(exp, &expTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1170,7 +1187,7 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
-			std::wstring v5 = std::to_wstring(data.exp);
+			std::wstring v5 = std::to_wstring(monsterData.exp);
 			//D2D1_RECT_F v5TextRect = D2D1::RectF(715, 65 + position * spacing, 785, 100 + position * spacing);
 			D2D1_RECT_F v5TextRect = GetTextRect(0.7296f, 0.08667f + position * spacing, 0.8010f, 0.1333f + position * spacing);
 			textFormat = DynamicTextFormat(v5, &v5TextRect);
@@ -1182,21 +1199,40 @@ void GameUI::RenderMonsterStates()
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
-			std::wstring damage = L"ƒ_ƒ[ƒW";
-			//D2D1_RECT_F damageTextRect = D2D1::RectF(795, 65 + position * spacing, 850, 100 + position * spacing);
+			//Reset transformation matrix
+			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+			std::wstring damageText = L"ƒ_ƒ[ƒW";
 			D2D1_RECT_F damageTextRect = GetTextRect(0.8112f, 0.08667f + position * spacing, 0.8673f, 0.1333f + position * spacing);
-			textFormat = DynamicTextFormat(damage, &damageTextRect);
+			textFormat = DynamicTextFormat(damageText, &damageTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
-				damage.c_str(),
-				damage.length(),
+				damageText.c_str(),
+				damageText.length(),
 				textFormat,
 				damageTextRect,
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
 
-			mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::IndianRed));
-			std::wstring v6 = L"10000";
-			//D2D1_RECT_F v6TextRect = D2D1::RectF(860, 65 + position * spacing, 930, 100 + position * spacing);
+			//Reset transformation matrix
+			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+			
+			int damage = Battle::CalculateDamage(monsterData);
+			std::wstring v6;
+			if (damage == 0)
+			{
+				mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
+				v6 = std::to_wstring(0);
+			}
+			else if (damage == -1)
+			{
+				mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Gray));
+				v6 = L"????";
+			}
+			else
+			{
+				mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::IndianRed));
+				v6 = std::to_wstring(damage);
+			}
 			D2D1_RECT_F v6TextRect = GetTextRect(0.8775f, 0.08667f + position * spacing, 0.9490f, 0.1333f + position * spacing);
 			textFormat = DynamicTextFormat(v6, &v6TextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1206,6 +1242,9 @@ void GameUI::RenderMonsterStates()
 				v6TextRect,
 				mD2DResource->pSolidColorBrush);
 			SafeRelease(&textFormat);
+
+			//Reset transformation matrix
+			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
 			position++;
 		}
@@ -1263,6 +1302,8 @@ void GameUI::RenderItemCheck()
 
 void GameUI::RenderPlayerStates()
 {
+	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Pink));
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"“ƒ"),
 		2,
@@ -1271,69 +1312,183 @@ void GameUI::RenderPlayerStates()
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
-		(std::to_wstring(Player::player->GetCurFloor()).c_str()),
-		2,
-		mD2DResource->pTextFormat,
-		D2D1::RectF(155, 40, 155, 40),
-		mD2DResource->pSolidColorBrush);
-
-	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"ŠK"),
 		2,
 		mD2DResource->pTextFormat,
-		D2D1::RectF(180, 40, 180, 40),
+		D2D1::RectF(220, 40, 240, 40),
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"ƒŒƒxƒ‹"),
 		4,
 		mD2DResource->pTextFormat,
-		D2D1::RectF(40, 95, 150, 95),
-		mD2DResource->pSolidColorBrush);
-
-	mD2DResource->pD2DRenderTarget->DrawText(
-		(std::to_wstring(Player::player->GetBattleData().level).c_str()),
-		2,
-		mD2DResource->pTextFormat,
-		D2D1::RectF(160, 95, 160, 95),
+		D2D1::RectF(35, 95, 150, 95),
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"¶–½—Í"),
 		4,
 		mD2DResource->pTextFormat,
-		D2D1::RectF(40, 150, 150, 150),
+		D2D1::RectF(35, 150, 150, 150),
 		mD2DResource->pSolidColorBrush);
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"UŒ‚—Í"),
 		4,
 		mD2DResource->pTextFormat,
-		D2D1::RectF(40, 205, 150, 205),
+		D2D1::RectF(35, 205, 150, 205),
 		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(std::to_wstring(Player::player->GetCurFloor()).c_str()),
+		2,
+		mD2DResource->pTextFormat,
+		D2D1::RectF(175, 40, 175, 40),
+		mD2DResource->pSolidColorBrush);
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"–hŒä—Í"),
 		4,
 		mD2DResource->pTextFormat,
-		D2D1::RectF(40, 260, 150, 260),
+		D2D1::RectF(35, 260, 150, 260),
 		mD2DResource->pSolidColorBrush);
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"–‚–h—Í"),
 		4,
 		mD2DResource->pTextFormat,
-		D2D1::RectF(40, 315, 150, 315),
+		D2D1::RectF(35, 315, 150, 315),
 		mD2DResource->pSolidColorBrush);
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"EXP"),
 		4,
 		mD2DResource->pTextFormat,
-		D2D1::RectF(40, 370, 150, 370),
+		D2D1::RectF(35, 370, 150, 370),
 		mD2DResource->pSolidColorBrush);
+
 	mD2DResource->pD2DRenderTarget->DrawText(
 		(L"GOLD"),
 		5,
 		mD2DResource->pTextFormat,
-		D2D1::RectF(40, 425, 150, 425),
+		D2D1::RectF(35, 425, 150, 425),
 		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
+
+	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
+
+	std::wstring Lv = std::to_wstring(Player::player->GetBattleData().level);
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(Lv.c_str()),
+		Lv.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(215, 95, 240, 95),
+		mD2DResource->pSolidColorBrush);
+
+	std::wstring HP = std::to_wstring(Player::player->GetBattleData().HP);
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(HP.c_str()),
+		HP.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 150, 240, 150),
+		mD2DResource->pSolidColorBrush);
+
+	std::wstring ATK = std::to_wstring(Player::player->GetBattleData().atk);
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(ATK.c_str()),
+		ATK.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 205, 240, 205),
+		mD2DResource->pSolidColorBrush);
+
+	std::wstring DEF = std::to_wstring(Player::player->GetBattleData().def);
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(DEF.c_str()),
+		DEF.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 260, 240, 260),
+		mD2DResource->pSolidColorBrush);
+
+	std::wstring MDF = std::to_wstring(Player::player->GetBattleData().mdf);
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(MDF.c_str()),
+		MDF.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 315, 240, 315),
+		mD2DResource->pSolidColorBrush);
+
+	std::wstring EXP = std::to_wstring(Player::player->GetBattleData().exp);
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(EXP.c_str()),
+		EXP.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 370, 240, 370),
+		mD2DResource->pSolidColorBrush);
+
+	std::wstring GOLD = std::to_wstring(Player::player->GetBattleData().gold);
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(GOLD.c_str()),
+		GOLD.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 425, 240, 425),
+		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::LightYellow));
+	std::wstring yellowKeyCount;
+	if (Player::player->GetItems().find(ItemID::YELLOW_KEY) == Player::player->GetItems().end())
+		yellowKeyCount = std::to_wstring(0);
+	else
+		yellowKeyCount = std::to_wstring(Player::player->GetItems().at(ItemID::YELLOW_KEY));
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(yellowKeyCount.c_str()),
+		yellowKeyCount.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 473, 240, 473),
+		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::LightBlue));
+	std::wstring blueKeyCount;
+	if (Player::player->GetItems().find(ItemID::BLUE_KEY) == Player::player->GetItems().end())
+		blueKeyCount = std::to_wstring(0);
+	else
+		blueKeyCount = std::to_wstring(Player::player->GetItems().at(ItemID::BLUE_KEY));
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(blueKeyCount.c_str()),
+		blueKeyCount.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 523, 240, 523),
+		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::LightPink));
+	std::wstring RedKeyCount;
+	if (Player::player->GetItems().find(ItemID::RED_KEY) == Player::player->GetItems().end())
+		RedKeyCount = std::to_wstring(0);
+	else
+		RedKeyCount = std::to_wstring(Player::player->GetItems().at(ItemID::RED_KEY));
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(RedKeyCount.c_str()),
+		RedKeyCount.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 573, 240, 573),
+		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::LightGreen));
+	std::wstring greenKeyCount;
+	if (Player::player->GetItems().find(ItemID::GREEN_KEY) == Player::player->GetItems().end())
+		greenKeyCount = std::to_wstring(0);
+	else
+		greenKeyCount = std::to_wstring(Player::player->GetItems().at(ItemID::GREEN_KEY));
+	mD2DResource->pD2DRenderTarget->DrawText(
+		(greenKeyCount.c_str()),
+		greenKeyCount.size(),
+		mD2DResource->pTextFormat,
+		D2D1::RectF(110, 623, 240, 623),
+		mD2DResource->pSolidColorBrush);
+
+	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
+
+	mD2DResource->pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 
 	playerIcon->Render();
 	yellowKeyIcon->Render();
@@ -1344,12 +1499,11 @@ void GameUI::RenderPlayerStates()
 
 void GameUI::RenderSaveSlot()
 {
-	float spacing = SAVE_SLOATS_SPACING;
 	for (int i = curSaveSlotPage * SAVE_SLOTS_PER_PAGE, j = 0; j < SAVE_SLOTS_PER_PAGE; i++, j++)
 	{
 		saveSlotBases[j]->Render();
 
-		saveDataButtons[i]->textRect = GetTextRect(0.02f, 0.1633f + spacing * j, 0.44f, 0.21f + spacing * j);
+		saveDataButtons[i]->textRect = GetTextRect(0.02f, 0.1633f + SAVE_SLOATS_SPACING * j, 0.44f, 0.21f + SAVE_SLOATS_SPACING * j);
 
 		mD2DResource->pD2DRenderTarget->DrawText(
 			saveDataButtons[i]->text.c_str(),
@@ -1358,6 +1512,61 @@ void GameUI::RenderSaveSlot()
 			saveDataButtons[i]->textRect,
 			mD2DResource->pSolidColorBrush);
 	}
+}
+
+void GameUI::SetDialogueText(std::wstring text, const std::vector<DialogueButtonEvent>& events)
+{
+	size_t pos = 0;
+	std::wstring branch = DIALOGUE_BRANCH;
+	if ((pos = text.find(L'\n', 0)) != std::wstring::npos &&
+		text.compare(pos + 1, branch.size(), branch) == 0)
+	{
+		dialogueText = text.substr(0, pos);
+		size_t prev_pos = pos + 1;
+		UINT spacing = GENERAL_BUTTON_SPACING;
+		UINT idx = 0;
+
+		DWRITE_TEXT_METRICS textMetrics = CalculateTextMetrics(dialogueText, (DIALOGUE_RECT_RIGHT - DIALOGUE_RECT_LEFT) * curWinSize->width);
+		float dialogueButtonBaseY = DIALOGUE_RECT_TOP + textMetrics.height / curWinSize->height;
+
+		// init cursor
+		dialogueCursor.baseX = 0.417;
+		dialogueCursor.baseY = 1 - dialogueButtonBaseY - 0.03;
+		dialogueCursor.position = DirectX::XMFLOAT3(dialogueCursor.baseX * curWinSize->width, dialogueCursor.baseY * curWinSize->height, 0.0f);
+		dialogueCursor.size = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+		dialogueCursor.curIdx = 0;
+		dialogueCursor.spacing = GENERAL_BUTTON_SPACING;
+		if (dialogueCursor.textureRect == nullptr)
+			dialogueCursor.textureRect = new CursorTextureRect(dialogueCursor.position,
+				dialogueCursor.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+
+		dialogueButtons.clear();
+		UINT dialogueButtonIdx = 0;
+		while ((pos = text.find(L'\n', prev_pos)) != std::wstring::npos)
+		{
+			size_t start = pos + 1;
+			size_t end = text.find(L'\n', start);
+			if (end == std::wstring::npos)
+			{
+				end = text.length();
+			}
+			std::unique_ptr<DialogueButton> dialogueButton = std::make_unique<DialogueButton>(text.substr(start, end - start),
+				DirectX::XMFLOAT3(0.27f, dialogueButtonBaseY + dialogueCursor.spacing * idx++, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, events[dialogueButtonIdx++]);
+			dialogueCursor.textureRect->UpdateSize(DirectX::XMFLOAT3(300, 50.0f, 1.0f));
+			dialogueButtons.push_back(std::move(dialogueButton));
+			prev_pos = end;
+		}
+
+		// add the last part ending without \n
+		if (prev_pos < text.length())
+		{
+			dialogueButtons.push_back(std::make_unique<Button>(text.substr(prev_pos),
+				DirectX::XMFLOAT3(0.4f, 0.835f + dialogueCursor.spacing * idx, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
+		}
+		dialogueButtons[0].get()->isSelected = true;
+	}
+	else
+		dialogueText = text;
 }
 
 IDWriteTextFormat* GameUI::DynamicTextFormat(const std::wstring& text, const D2D1_RECT_F* textRect, bool* isTransformed)
@@ -1502,4 +1711,24 @@ D2D1_RECT_F GameUI::GetTextRect(float left, float top, float right, float bottom
 	textRect.right = textRect.left + textWidth;
 	textRect.bottom = textRect.top + textHeight;
 	return textRect;
+}
+
+DWRITE_TEXT_METRICS GameUI::CalculateTextMetrics(const std::wstring& text, float maxWidth)
+{
+	IDWriteTextLayout* textLayout = nullptr;
+
+	mD2DResource->pD2DWriteFactory->CreateTextLayout(
+		text.c_str(),
+		(UINT32)text.length(),
+		mD2DResource->pTextFormat,
+		maxWidth,
+		FLT_MAX,
+		&textLayout
+	);
+
+	DWRITE_TEXT_METRICS textMetrics;
+	textLayout->GetMetrics(&textMetrics);
+
+	return textMetrics;
+
 }

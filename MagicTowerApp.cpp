@@ -2,7 +2,6 @@
 #include "GameUIGO.h"
 #include "FloorGO.h"
 #include "PlayerGO.h"
-#include "Database.h"
 
 
 int main()
@@ -131,9 +130,9 @@ void MagicTowerApp::Update()
         {
             Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::DIALOGUE));
             // dialogue name
-            dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogueName(std::get<0>(dialogueQueue.front()));
+            dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogueName(std::get<1>(dialogueQueue.front()));
             // dialogue context
-            dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogue(std::get<1>(dialogueQueue.front()));
+            dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogue(std::get<2>(dialogueQueue.front()), std::get<0>(dialogueQueue.front()));
             dialogueQueue.pop();
         }
 
@@ -320,7 +319,7 @@ void MagicTowerApp::ShowItemGetDialogue(UINT itemID)
 
 void MagicTowerApp::ShowNPCDialogue(UINT dialogueID)
 {
-    std::vector<std::tuple<std::wstring, std::wstring>>& dialogues = Database::dialogues[dialogueID];
+    std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>& dialogues = Database::dialogues[dialogueID];
     
     for (auto& dialogue : dialogues)
     {

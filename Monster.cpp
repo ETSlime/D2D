@@ -1,17 +1,29 @@
 #include "Monster.h"
 #include "MapStatic.h"
+#include "Battle.h"
 
 constexpr UINT IDLE_ANIM_FRAME = 4;
 constexpr float ANIM_PLAY_SPEED = 10.0f;
 
 void Monster::OnPlayerCollision(Coroutine& coro)
 {
+
 	std::shared_ptr<Message> eventUpdate = std::make_shared<MessageEventUpdate>(this->eventName);
 	
 	if (coro.getState() == 0)
 	{
-		Player::player->playAttackAnim = true;
-		coro.yield(0.2f);
+		int damage = Battle::CalculateDamage(monsterData);
+		if (damage == -1 || damage > Player::player->GetBattleData().HP)
+		{
+			coro.setComplete();
+		}
+		else
+		{
+			Player::player->playAttackAnim = true;
+			Player::player->ChangeHP(-1 * damage);
+			coro.yield(0.2f);
+		}
+
 	}
 	if (coro.getState() == 1)
 	{

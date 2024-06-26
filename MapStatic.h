@@ -16,6 +16,11 @@ struct EventParams {
 };
 
 
+/*
+* Event type: Monster
+* Coordinate
+* Monster ID
+*/
 struct MonsterParams : public EventParams {
 	UINT monsterID;
 
@@ -23,7 +28,11 @@ struct MonsterParams : public EventParams {
 		: EventParams(type, coord), monsterID(monsterID) {}
 };
 
-
+/*
+* Event type: Item
+* Coordinate
+* Item ID
+*/
 struct ItemParams : public EventParams {
 	ItemID itemID;
 
@@ -34,6 +43,11 @@ struct ItemParams : public EventParams {
 };
 
 
+/*
+* Event type: Door
+* Coordinate
+* Door type
+*/
 struct DoorParams : public EventParams {
 	DoorType doorType;
 
@@ -41,7 +55,12 @@ struct DoorParams : public EventParams {
 		: EventParams(type, coord), doorType(doorType) {}
 };
 
-
+/*
+* Event type: Stair
+* Coordinate
+* Stair type
+* new player coord after up/down stair
+*/
 struct StairParams : public EventParams {
 	StairType stairType;
 	Coord newPlayerCoord;
@@ -50,6 +69,12 @@ struct StairParams : public EventParams {
 		: EventParams(type, coord), stairType(stairType), newPlayerCoord(newPlayerCoord) {}
 };
 
+/*
+* Event type: NPC
+* Coordinate
+* NPC ID
+* dialogue ID
+*/
 struct NPCParams : public EventParams {
 	UINT NPCID;
 	UINT dialogueID;

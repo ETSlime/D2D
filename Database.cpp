@@ -1,5 +1,7 @@
 #include "Database.h"
 
+std::wstring Database::branch = DIALOGUE_BRANCH;
+
 std::unordered_map<ItemID, std::tuple<std::wstring, std::wstring>> Database::itemCategoryMap = 
 {
 	{ ItemID::YELLOW_KEY, std::make_tuple(L"鍵類", L"黄色の鍵")},
@@ -17,13 +19,31 @@ std::unordered_map<UINT, std::wstring> Database::itemGetText =
 	{static_cast<UINT>(ItemID::BOOK),  L"あなたは「モンスターマニュアル」を手に入れました\n\n所持するとモンスター情報を確認できます "},
 };
 
-std::unordered_map<UINT, std::vector<std::tuple<std::wstring, std::wstring>>> Database::dialogues =
+std::unordered_map<UINT, std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>> Database::dialogues =
 {
 	{0, 
-		std::vector<std::tuple<std::wstring, std::wstring>>({std::make_tuple(L"n1", L"a"),std::make_tuple(L"n1", L"b")}),
+		std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>(
+			{std::make_tuple(std::vector<DialogueButtonEvent>(),
+				L"n1", L"a"),
+			std::make_tuple(std::vector<DialogueButtonEvent>(),
+				L"n1", L"b")}),
 	},
 	{1,
-		std::vector<std::tuple<std::wstring, std::wstring>>({std::make_tuple(L"n1", L"c"),std::make_tuple(L"n2", L"d")}),
+		std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>(
+			{std::make_tuple(std::vector<DialogueButtonEvent>(),
+				L"n1", L"c"),
+			std::make_tuple(std::vector<DialogueButtonEvent>(),
+				L"n2", L"d")}),
+	},
+	{2,
+		std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>(
+			{std::make_tuple(std::vector<DialogueButtonEvent>(),
+				L"n1", L"あああああああああああああああああああああああああああああああああああああああああああああああああああああああ"),
+			std::make_tuple(std::vector<DialogueButtonEvent>{DialogueButtonEvent::ADDHP, DialogueButtonEvent::ADDMP},
+				L"n1", L"ああああああああ: \n" + branch + L"あああああああ:\nああああ:"),
+			std::make_tuple(std::vector<DialogueButtonEvent>(),
+				L"n2", L"d")
+			}),
 	},
 };
 

@@ -19,6 +19,15 @@
 #define SAVE_SLOTS_PER_PAGE			(4)
 #define SAVE_SLOATS_SPACING			(0.217f)
 #define SAVE_SLOT_SIZE				(12)
+#define DIALOGUE_RECT_LEFT			(0.27f)
+#define DIALOGUE_NAME_RECT_TOP		(0.55f)
+#define DIALOGUE_RECT_RIGHT			(0.99f)
+#define DIALOGUE_RECT_NAME_RIGHT	(0.55f)
+#define DIALOGUE_NAME_RECT_BOTTOM	(0.67f)
+#define DIALOGUE_ITEM_RECT_TOP		(0.37f)
+#define DIALOGUE_ITEM_RECT_BOTTOM	(0.62f)
+#define DIALOGUE_RECT_TOP			(0.64f)
+#define DIALOGUE_RECT_BOTTOM		(0.82f)
 
 enum class UIState 
 {
@@ -55,7 +64,7 @@ public:
 	void SetRenderModeOnChanging() { renderModeOnChanging = true; }
 	void SetGameModeOnChanging(bool change) { gameModeOnChanging = change; }
 	void SetCurItemCategory(std::wstring itemCategory) { curItemCategory = itemCategory; }
-	void SetDialogueText(std::wstring text) { dialogueText = text; }
+	void SetDialogueText(std::wstring text, const std::vector<DialogueButtonEvent>& event = std::vector<DialogueButtonEvent>());
 	void SetDialogueName(std::wstring name) { dialogueName = name; }
 
 private:
@@ -142,15 +151,16 @@ private:
 	void DrawTextWithSpacing(IDWriteTextFormat* pTextFormat, const std::wstring& text, const D2D1_RECT_F* rect);
 	D2D1_RECT_F GetTextRect(float left, float top, float right, float bottom);
 	std::wstring GetFormattedTime() const;
+	DWRITE_TEXT_METRICS CalculateTextMetrics(const std::wstring& text, float maxWidth);
 
 	// cursor & button
-	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd;
+	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd, dialogueCursor;
 	UINT itemCategoryIdx = 0;
 	UINT curSaveSlotPage = 0;
 	UINT totalSaveSlotPages = SAVE_SLOT_SIZE / SAVE_SLOTS_PER_PAGE;
 	std::wstring curItemCategory;
 	float curTime = 0, lastTime = 0;
-	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons, saveDataButtons;
+	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons, saveDataButtons, dialogueButtons;
 	std::unordered_map<std::wstring, std::vector<std::unique_ptr<ItemCategoryButton>>> itemButtons;
 	std::unordered_map<std::wstring, UINT> itemButtonIdx;
 	void UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
@@ -194,7 +204,7 @@ private:
 	TextureRect* greenKeyIcon = nullptr;
 
 
-	// monster texture&data
+	// monster texture&data 
 	std::map<UINT, std::tuple<int, std::unique_ptr<TextureRect>, MonsterData>> monsters;
 
 	// Render mode/UI states
