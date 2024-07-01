@@ -11,6 +11,8 @@ public:
 	static bool Stopped() { return isTimerStopped; }
 	static float Delta() { return isTimerStopped ? 0.0f : timeElapsed; }
 	static float TotalTime() { return runningTime; }
+	static void ClearTotalTime() { runningTime = 0; }
+	static void SetTotalTime(float totalTime) { runningTime = totalTime; }
 
 	void Update();
 

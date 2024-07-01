@@ -52,6 +52,6 @@ private:
 
 	MessageDispatcher& dispatcher = MessageDispatcher::get_instance();
 
-	void UpdateEventsHandler(std::shared_ptr<Message> event);
+	void DestroyEventsHandler(std::shared_ptr<Message> event);
 };
 

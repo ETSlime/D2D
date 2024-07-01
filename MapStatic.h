@@ -39,7 +39,7 @@ struct ItemParams : public EventParams {
 	ItemParams(EventType type, Coord coord, ItemID itemID)
 		: EventParams(type, coord), itemID(itemID) {}
 
-	~ItemParams() { std::cout << "item destroyed"; }
+	~ItemParams() {}
 };
 
 
@@ -106,6 +106,8 @@ public:
 	static std::unique_ptr<EventDescriptor> CreateEventDescriptor(EventType eventType, 
 		Coord coord, UINT eventID, std::wstring eventName = L"DefaultEventName", Args... args);
 	static void GenerateTileMap(UINT floor);
+
+	static void InitMap();
 
 };
 

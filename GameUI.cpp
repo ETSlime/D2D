@@ -1,6 +1,7 @@
 #include "GameUI.h"
 #include "Monster.h"
 #include "Battle.h"
+#include "SaveData.h"
 
 GameUI::GameUI(const D2DResource* D2DResource, const WinSize* winSize, UIRenderMode mode)
 	:mD2DResource(D2DResource), curWinSize(winSize), renderMode(mode)
@@ -28,17 +29,20 @@ GameUI::~GameUI()
 		SAFE_DELETE(saveSlotBase);
 	saveSlotBases.clear();
 	SAFE_DELETE(dialogueBase);
+
 	//monsters.clear();
 	//startButtons.clear();
 	//gameMenuButtons.clear();
 	//itemCategoryButtons.clear();
-
+	//playerIcons.clear();
 }
 
 void GameUI::InitGameUI(GameUI::UIRenderMode mode)
 {
+	renderMode = mode;
+
 	// Initialize UI components based on render mode
-	switch (mode)
+	switch (renderMode)
 	{
 	case STARTMENU:
 		this->InitMainMenu();
@@ -53,10 +57,10 @@ void GameUI::InitGameUI(GameUI::UIRenderMode mode)
 		this->InitItemCheck();
 		break;
 	case SAVEDATA:
-		this->InitSaveData();
+		this->InitSaveLoadData();
 		break;
 	case LOADDATA:
-		this->InitLoadData();
+		this->InitSaveLoadData();
 		break;
 	case DIALOGUE:
 		this->InitDialogue();
@@ -81,8 +85,8 @@ void GameUI::InitMainMenu()
 			startCursor.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 
 	startButtons.clear();
-	startButtons.push_back(std::make_unique<Button>(L"始めから", DirectX::XMFLOAT3(0.4f, 0.535f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::startGame, true));
-	startButtons.push_back(std::make_unique<Button>(L"続きから", DirectX::XMFLOAT3(0.4f, 0.635f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
+	startButtons.push_back(std::make_unique<Button>(L"始めから", DirectX::XMFLOAT3(0.4f, 0.535f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::startNewGame, true));
+	startButtons.push_back(std::make_unique<Button>(L"続きから", DirectX::XMFLOAT3(0.4f, 0.635f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::loadGameUI));
 	startButtons.push_back(std::make_unique<Button>(L"ゲーム終了", DirectX::XMFLOAT3(0.4f, 0.735f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
 	startButtons.push_back(std::make_unique<Button>(L"遊ぶ方法説明", DirectX::XMFLOAT3(0.4f, 0.835f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
 
@@ -168,8 +172,8 @@ void GameUI::InitInGameUI()
 	gameMenuButtons.clear();
 	gameMenuButtons.push_back(std::make_unique<Button>(L"資料", DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true));
 	gameMenuButtons.push_back(std::make_unique<Button>(L"アイテム", DirectX::XMFLOAT3(0.035f, 0.1f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::itemCheck));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"セーブ", DirectX::XMFLOAT3(0.035f, 0.175f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::saveData));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"ロード", DirectX::XMFLOAT3(0.035f, 0.25f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::loadData));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"セーブ", DirectX::XMFLOAT3(0.035f, 0.175f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::saveGameUI));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"ロード", DirectX::XMFLOAT3(0.035f, 0.25f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::loadGameUI));
 	gameMenuButtons.push_back(std::make_unique<Button>(L"タイトルへ戻る", DirectX::XMFLOAT3(0.035f, 0.325f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::title));
 	gameMenuButtons.push_back(std::make_unique<Button>(L"ゲーム終了", DirectX::XMFLOAT3(0.035f, 0.40f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
 }
@@ -295,7 +299,7 @@ void GameUI::InitItemCheck()
 				itemCategory, DirectX::XMFLOAT3(0.04f, 0.175f + mainGameCursor_2nd.spacing * itemCategoryIdx++, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true);
 			itemButton.get()->overrideOnClick(ButtonOnClick::showItemList, itemCategory);
 			itemCategoryButtons.push_back(std::move(itemButton));
-			
+			 
 		}
 		// item button
 		std::wstring itemName = std::get<1>(Database::itemCategoryMap[item.first]);
@@ -323,7 +327,7 @@ void GameUI::InitItemCheck()
 	mainGameCursor_1st.textureRect->SetCursorEnable(true);
 }
 
-void GameUI::InitSaveData()
+void GameUI::InitSaveLoadData()
 {
 	DirectX::XMFLOAT3 position, size;
 	if (saveDataTitleBase == nullptr)
@@ -336,36 +340,52 @@ void GameUI::InitSaveData()
 	if (saveSlotBases.empty())
 	{
 		float saveSlotBaseX = WinMaxHeight * 0.748;
-		float spacing = WinMaxHeight * SAVE_SLOATS_SPACING;
+		float spacing = WinMaxHeight * SAVE_SLOTS_SPACING;
 		for (int i = 0; i < SAVE_SLOTS_PER_PAGE; i++)
 		{
 			position = DirectX::XMFLOAT3(WinMaxWidth / 2, saveSlotBaseX - spacing * i, 0);
-			size = DirectX::XMFLOAT3(WinMaxWidth, WinMaxHeight * SAVE_SLOATS_SPACING, 1);
+			size = DirectX::XMFLOAT3(WinMaxWidth, WinMaxHeight * SAVE_SLOTS_SPACING, 1);
 			saveSlotBases.push_back(new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png"));
 		}
 		
 	}
 
+	saveDataButtons.clear();
 	for (int i = 0; i < SAVE_SLOT_SIZE; i++)
 	{
-		saveDataButtons.push_back(std::make_unique<Button>(L"ファイル " + std::to_wstring(i), DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr));
+		std::unique_ptr<Button> saveDataButton = std::make_unique<Button>(L"ファイル " + std::to_wstring(i), DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr);
+		if (renderMode == SAVEDATA)
+		{
+			saveDataButton.get()->overrideOnClick(&ButtonOnClick::saveData, i);
+			saveDataButtons.push_back(std::move(saveDataButton));
+		}
+			
+		else if (renderMode == LOADDATA)
+		{
+			saveDataButton.get()->overrideOnClick(&ButtonOnClick::loadData, i);
+			saveDataButtons.push_back(std::move(saveDataButton));
+		}
+			
 	}
 	saveDataButtons[0].get()->isSelected = true;
 
+	if (mainGameCursor_1st.textureRect == nullptr)
+		mainGameCursor_1st.textureRect = new CursorTextureRect(mainGameCursor_1st.position,
+			mainGameCursor_1st.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 	mainGameCursor_1st.baseX = 0.086f;
 	mainGameCursor_1st.baseY = 0.81f;
 	mainGameCursor_1st.position = DirectX::XMFLOAT3(mainGameCursor_1st.baseX * curWinSize->width, mainGameCursor_1st.baseY * curWinSize->height, 0.0f);
 	mainGameCursor_1st.size = DirectX::XMFLOAT3(140, 46, 1.0f);
 	mainGameCursor_1st.curIdx = 0;
-	mainGameCursor_1st.spacing = SAVE_SLOATS_SPACING;
+	mainGameCursor_1st.spacing = SAVE_SLOTS_SPACING;
 	mainGameCursor_1st.textureRect->UpdateSize(mainGameCursor_1st.size);
 	mainGameCursor_1st.Update(mainGameCursor_1st.curIdx);
 
 	mainGameCursor_1st.enabled = true;
 	mainGameCursor_1st.textureRect->SetCursorEnable(true);
-}
 
-void GameUI::InitLoadData(){}
+	playerIcons.resize(SAVE_SLOTS_PER_PAGE);
+}
 
 void GameUI::InitDialogue()
 {
@@ -449,27 +469,9 @@ void GameUI::Render()
 	}
 
 	case SAVEDATA:
+	case LOADDATA:
 	{
-		// title
-		saveDataTitleBase->Render();
-
-		std::wstring saveDataTitle = L"このファイルにセーブデータを保存しますか";
-		D2D1_RECT_F saveDataTitleRect = GetTextRect(0.045f, 0.03f, 0.56f, 0.095f);
-		IDWriteTextFormat* textFormat = DynamicTextFormat(saveDataTitle, &saveDataTitleRect);
-
-		mD2DResource->pD2DRenderTarget->DrawText(
-			saveDataTitle.c_str(),
-			saveDataTitle.length(),
-			textFormat,
-			saveDataTitleRect,
-			mD2DResource->pSolidColorBrush);
-		SafeRelease(&textFormat);
-
-		// save slots
-		RenderSaveSlot();
-
-		mainGameCursor_1st.textureRect->Render();
-
+		RenderSaveLoadUI(renderMode);
 		break;
 	}
 
@@ -598,6 +600,7 @@ void GameUI::Update()
 		break;
 
 	case SAVEDATA:
+	case LOADDATA:
 	{
 		saveDataTitleBase->Update();
 		for (int i = 0; i < SAVE_SLOTS_PER_PAGE; i++)
@@ -627,8 +630,17 @@ void GameUI::Update()
 			mainGameCursor_1st.Update(mainGameCursor_1st.curIdx);
 			// prvent from switching back to UI mode
 			mApp.SetAllowSwitch(false);
-			// switch to gameplay mode
-			mApp.SetGameMode(GameMode::GAMEPLAY);
+			// switch game mode
+			if (mApp.GetGameMode() == GameMode::TITLE)
+			{
+				mApp.SetGameMode(GameMode::TITLE);
+				mApp.SetValidGO(L"StartMenuGO", true);
+				mApp.SetValidGO(L"GameUIGO", false);
+			}
+				
+			else
+				mApp.SetGameMode(GameMode::GAMEPLAY);
+
 		}
 		break;
 	}
@@ -664,6 +676,10 @@ void GameUI::Update()
 
 void GameUI::UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons)
 {
+	// disable button and cursor when changing game mode
+	if (gameModeOnChanging)	return;
+
+
 	curTime = Timer::TotalTime();
 	if (cursor.isPressed)
 	{
@@ -1497,13 +1513,39 @@ void GameUI::RenderPlayerStates()
 	greenKeyIcon->Render();
 }
 
+void GameUI::RenderSaveLoadUI(UIRenderMode mode)
+{
+	std::wstring saveDataTitle;
+	if (mode == SAVEDATA)	saveDataTitle = L"このファイルにセーブデータを保存しますか";
+	else if (mode == LOADDATA)	saveDataTitle = L"どのファイルをロードしますか";
+
+	// title
+	saveDataTitleBase->Render();
+
+	D2D1_RECT_F saveDataTitleRect = GetTextRect(0.045f, 0.03f, 0.56f, 0.095f);
+	IDWriteTextFormat* textFormat = DynamicTextFormat(saveDataTitle, &saveDataTitleRect);
+
+	mD2DResource->pD2DRenderTarget->DrawText(
+		saveDataTitle.c_str(),
+		saveDataTitle.length(),
+		textFormat,
+		saveDataTitleRect,
+		mD2DResource->pSolidColorBrush);
+	SafeRelease(&textFormat);
+
+	// save slots
+	RenderSaveSlot();
+
+	mainGameCursor_1st.textureRect->Render();
+}
+
 void GameUI::RenderSaveSlot()
 {
 	for (int i = curSaveSlotPage * SAVE_SLOTS_PER_PAGE, j = 0; j < SAVE_SLOTS_PER_PAGE; i++, j++)
 	{
 		saveSlotBases[j]->Render();
 
-		saveDataButtons[i]->textRect = GetTextRect(0.02f, 0.1633f + SAVE_SLOATS_SPACING * j, 0.44f, 0.21f + SAVE_SLOATS_SPACING * j);
+		saveDataButtons[i]->textRect = GetTextRect(0.02f, 0.1633f + SAVE_SLOTS_SPACING * j, 0.44f, 0.21f + SAVE_SLOTS_SPACING * j);
 
 		mD2DResource->pD2DRenderTarget->DrawText(
 			saveDataButtons[i]->text.c_str(),
@@ -1511,6 +1553,48 @@ void GameUI::RenderSaveSlot()
 			mD2DResource->pTextFormat,
 			saveDataButtons[i]->textRect,
 			mD2DResource->pSolidColorBrush);
+
+		float totalTime = 0;
+		std::wstring timestamp;
+		if (SaveData::LoadPreviewData(i, totalTime, timestamp))
+		{
+			std::wstring timer = GetFormattedTime(totalTime);
+
+			D2D1_RECT_F timerRect = GetTextRect(0.78f, 0.2133f + SAVE_SLOTS_SPACING * j, 0.99f, 0.26f + SAVE_SLOTS_SPACING * j);
+			IDWriteTextFormat* textFormat = DynamicTextFormat(timer, &timerRect);
+
+			mD2DResource->pD2DRenderTarget->DrawText(
+				timer.c_str(),
+				timer.length(),
+				textFormat,
+				timerRect,
+				mD2DResource->pSolidColorBrush);
+			SafeRelease(&textFormat);
+
+			D2D1_RECT_F timestampRect = GetTextRect(0.67f, 0.2733f + SAVE_SLOTS_SPACING * j, 0.99f, 0.32f + SAVE_SLOTS_SPACING * j);
+			textFormat = DynamicTextFormat(timestamp, &timerRect);
+			mD2DResource->pD2DRenderTarget->DrawText(
+				timestamp.c_str(),
+				timestamp.length(),
+				textFormat,
+				timestampRect,
+				mD2DResource->pSolidColorBrush);
+			SafeRelease(&textFormat);
+
+			if (playerIcons[j] == nullptr)
+			{
+				DirectX::XMFLOAT3 playerIonPosition = DirectX::XMFLOAT3(450, 10 + SAVE_SLOTS_SPACING * curWinSize->height * (SAVE_SLOTS_PER_PAGE - j - 1), 0);
+				DirectX::XMFLOAT3 playerIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
+				std::unique_ptr<TextureRect> playerIcon = std::make_unique<TextureRect>(playerIonPosition, playerIonSize, 0.0f);
+				Texture2D* playerIconTex = new Texture2D(PicturesPath + L"1.png");
+				playerIcon->SetSRV(playerIconTex->GetSRV());
+				playerIcons[j] = std::move(playerIcon);
+
+			}
+			playerIcons[j]->Update();
+			playerIcons[j]->Render();
+
+		}
 	}
 }
 
@@ -1685,13 +1769,11 @@ void GameUI::DrawTextWithSpacing(IDWriteTextFormat* pTextFormat, const std::wstr
 }
 
 // Get formatted time string in HH:MM:SS format
-std::wstring GameUI::GetFormattedTime() const 
+std::wstring GameUI::GetFormattedTime(float time) const 
 {
-	float elapsed = Timer::TotalTime();
-
-	int hours = static_cast<int>(elapsed / 3600);
-	int minutes = static_cast<int>((elapsed) / 60) % 60;
-	int seconds = static_cast<int>(elapsed) % 60;
+	int hours = static_cast<int>(time / 3600);
+	int minutes = static_cast<int>((time) / 60) % 60;
+	int seconds = static_cast<int>(time) % 60;
 
 	std::wstringstream ss;
 	ss << std::setw(2) << std::setfill(L'0') << hours << L":"

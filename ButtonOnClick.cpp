@@ -1,6 +1,7 @@
 #include "ButtonOnClick.h"
 #include "ChangeMapEffect.h"
 #include "GameUIGO.h"
+#include "SaveData.h"
 
 std::unique_ptr<Coroutine> ButtonOnClick::coro;
 MagicTowerApp& ButtonOnClick::mApp = MagicTowerApp::get_instance();
@@ -12,6 +13,7 @@ void ButtonOnClick::startGameFadeCallback(Coroutine& coro)
 	{
 		// changing game mode
 		dynamic_cast<GameUIGO*>(mApp.startMenuGO.get())->SetChangeGameMode(true);
+		dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetChangeGameMode(true);
 		// create player GO
 		mApp.Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(0, 0)));
 		Player::player->SetAllowControl(false);
@@ -25,11 +27,12 @@ void ButtonOnClick::startGameFadeCallback(Coroutine& coro)
 		mApp.SetGameMode(GameMode::GAMEPLAY);
 		//mApp.DestroyGO(L"StartMenuGO");
 		Player::player->renderPlayer = true;
-		mApp.LoadFloor(0);
+		mApp.LoadFloor(Player::player->GetCurFloor());
 		Player::player->PlayFadeEffect(false);
 		Player::player->SetAllowControl(true);
 		// finish changing game mode
 		dynamic_cast<GameUIGO*>(mApp.startMenuGO.get())->SetChangeGameMode(false);
+		dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetChangeGameMode(false);
 		coro.setComplete();
 	}
 }
@@ -49,6 +52,7 @@ void ButtonOnClick::returnTitleFadeCallback(Coroutine& coro)
 		mApp.SetGameMode(GameMode::TITLE);
 		Player::player->PlayFadeEffect(false);
 		mApp.ReturnTitle();
+		mApp.startMenuGO.get()->SetIsValid(true);
 		coro.setComplete();
 	}
 
@@ -78,6 +82,15 @@ int ButtonOnClick::startGame()
 	return 0;
 }
 
+int ButtonOnClick::startNewGame()
+{
+	MapStatic::InitMap();
+	Timer::ClearTotalTime();
+	startGame();
+
+	return 0;
+}
+
 int ButtonOnClick::exitGame()
 {
 	PostQuitMessage(0);
@@ -92,15 +105,23 @@ int ButtonOnClick::itemCheck()
 	return 0;
 }
 
-int ButtonOnClick::saveData()
+int ButtonOnClick::saveGameUI()
 {
 	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->ChangeUIMode(GameUI::UIRenderMode::SAVEDATA);
 	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetChangeUIMode();
 	return 0;
 }
 
-int ButtonOnClick::loadData()
+int ButtonOnClick::loadGameUI()
 {
+	if (mApp.startMenuGO)
+		mApp.startMenuGO.get()->SetIsValid(false);
+	if (mApp.gameUI)
+		mApp.gameUI.get()->SetIsValid(true);
+	else
+		mApp.gameUI = std::make_unique<GameUIGO>(&mApp.mD2DResource, &mApp.curWindowSize, GameUI::LOADDATA);
+	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->ChangeUIMode(GameUI::UIRenderMode::LOADDATA);
+	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetChangeUIMode();
 	return 0;
 }
 
@@ -118,5 +139,43 @@ int ButtonOnClick::title()
 int ButtonOnClick::showItemList(std::wstring itemCategory)
 {
 	dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetItemCategory(itemCategory);
+	return 0;
+}
+
+int ButtonOnClick::saveData(UINT slotNum)
+{
+	char buffer[16]; // Enough to hold "SaveData" + 3 digits + ".dat" + null terminator
+	std::snprintf(buffer, sizeof(buffer), "SaveData%03d.dat", slotNum);
+	std::string filename(buffer);
+	SaveData::SaveGame(filename);
+
+	return 0;
+}
+
+int ButtonOnClick::loadData(UINT slotNum)
+{
+	char buffer[16]; // Enough to hold "SaveData" + 3 digits + ".dat" + null terminator
+	std::snprintf(buffer, sizeof(buffer), "SaveData%03d.dat", slotNum);
+	std::string fileName(buffer);
+	GameState gameState;
+	if (SaveData::LoadGame(fileName, gameState) == -1)
+		return 0;
+
+	mApp.ReturnTitle();
+	startGame();
+
+	Player::player->playerData = gameState.playerData;
+	Player::player->SetCoord(gameState.playerCoord);
+	Player::player->UpdatePositionByCoord(gameState.playerCoord);
+	Player::player->walkingSteps = gameState.walkingSteps;
+	Player::player->curFloor = gameState.curFloor;
+	Player::player->items = gameState.inventoryItems;
+
+	MapStatic::mapTileIdx.clear();
+	MapStatic::mapTileIdx = gameState.mapTileIdx;
+	MapStatic::eventParams.clear();
+	MapStatic::eventParams = std::move(gameState.eventParams);
+
+	Timer::SetTotalTime(gameState.totalTime);
 	return 0;
 }

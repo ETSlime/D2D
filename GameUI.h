@@ -17,7 +17,7 @@
 #define MONSTER_ICON_SPACING		(100)
 #define MONSTER_STATUS_SPACING		(0.1333f)
 #define SAVE_SLOTS_PER_PAGE			(4)
-#define SAVE_SLOATS_SPACING			(0.217f)
+#define SAVE_SLOTS_SPACING			(0.217f)
 #define SAVE_SLOT_SIZE				(12)
 #define DIALOGUE_RECT_LEFT			(0.27f)
 #define DIALOGUE_NAME_RECT_TOP		(0.55f)
@@ -140,8 +140,7 @@ private:
 	void InitInGameUI();
 	void InitPlayerState();
 	void InitItemCheck();
-	void InitSaveData();
-	void InitLoadData();
+	void InitSaveLoadData();
 	void InitDialogue();
 	void InitItemGet();
 
@@ -150,7 +149,7 @@ private:
 	IDWriteTextFormat* DynamicTextFormat(const std::wstring& text, const D2D1_RECT_F* textRect, bool* isTransformed = nullptr);
 	void DrawTextWithSpacing(IDWriteTextFormat* pTextFormat, const std::wstring& text, const D2D1_RECT_F* rect);
 	D2D1_RECT_F GetTextRect(float left, float top, float right, float bottom);
-	std::wstring GetFormattedTime() const;
+	std::wstring GetFormattedTime(float time = Timer::TotalTime()) const;
 	DWRITE_TEXT_METRICS CalculateTextMetrics(const std::wstring& text, float maxWidth);
 
 	// cursor & button
@@ -174,7 +173,7 @@ private:
 	void RenderSaveSlot();
 	void RenderInGameUI();
 	void RenderItemCheck();
-	
+	void RenderSaveLoadUI(UIRenderMode renderMode);
 
 	// start menu
 	UITextureRect* base = nullptr;
@@ -202,6 +201,7 @@ private:
 	TextureRect* blueKeyIcon = nullptr;
 	TextureRect* redKeyIcon = nullptr;
 	TextureRect* greenKeyIcon = nullptr;
+	std::vector<std::unique_ptr<TextureRect>> playerIcons;
 
 
 	// monster texture&data 

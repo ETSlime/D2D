@@ -101,6 +101,7 @@ const std::wstring GameEventsPath = L"Graphics/Events/";
 const std::wstring BattlersPath = L"Graphics/Battlers/";
 const std::wstring AutotilesPath = L"Graphics/Autotiles/";
 const std::wstring AnimationsPath = L"Graphics/Animations/";
+const std::string SavePath = "Save/";
 
 // Font
 const std::wstring FontPath = L"Fonts/";

@@ -95,6 +95,16 @@ void MagicTowerApp::Update()
     switch (gameMode)
     {
     case GameMode::TITLE:
+        if (gameUI)
+        {
+            if (gameUI->IsDestroyed())
+            {
+                gameUI->Destroy();
+                gameUI.release();
+            }
+            else if (gameUI->IsValid())
+                gameUI->Update();
+        }
         if (startMenuGO)
         {
             if (startMenuGO->IsDestroyed())
@@ -102,17 +112,11 @@ void MagicTowerApp::Update()
                 startMenuGO->Destroy();
                 startMenuGO.release();
             }
-            else
+            else if (startMenuGO->IsValid())
                 startMenuGO->Update();
         }
 
-        if (gameUI && gameUI->IsDestroyed())
-        {
-            gameUI->Destroy();
-            gameUI.release();
-        }
-
-        if (mGOs[L"PlayerGO"])
+        if (mGOs[L"PlayerGO"] && mGOs[L"PlayerGO"].get()->IsValid())
             mGOs[L"PlayerGO"]->Update();
         break;
     case GameMode::GAMEPLAY:
@@ -135,12 +139,6 @@ void MagicTowerApp::Update()
             dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogue(std::get<2>(dialogueQueue.front()), std::get<0>(dialogueQueue.front()));
             dialogueQueue.pop();
         }
-
-        //for (auto it = pushQueue.begin(); it != pushQueue.end();)
-        //{
-        //    Push(*it, std::make_unique<FloorGO>(std::stoi((*it).substr(7))));
-        //    it = pushQueue.erase(it);
-        //}
 
         // update GO
         for (auto it = mGOs.begin(); it != mGOs.end();)
@@ -178,7 +176,7 @@ void MagicTowerApp::Draw()
 
 void MagicTowerApp::BuildResources()
 {
-
+    gameUI = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::INGAMEUI);
     startMenuGO = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU);
     startMenuGO->Init();
     PassCB = std::make_unique<UploadBuffer<PassConstants>>(
@@ -238,6 +236,8 @@ void MagicTowerApp::DrawRenderItems()
             startMenuGO->Render();
         if (mGOs[L"PlayerGO"])
             mGOs[L"PlayerGO"]->Render();
+        if (gameUI && gameUI->IsValid() == true)
+            gameUI->Render();
         break;
     case GameMode::GAMEPLAY:
         // render
@@ -272,6 +272,17 @@ void MagicTowerApp::DestroyGO(std::wstring name)
         startMenuGO->SetIsDestroyed(true);
 }
 
+void MagicTowerApp::SetValidGO(std::wstring name, bool valid)
+{
+    if (mGOs[name])
+        mGOs[name]->SetIsValid(valid);
+    else if (name == L"StartMenuGO")
+        startMenuGO->SetIsValid(valid);
+    else if (name == L"GameUIGO")
+        gameUI->SetIsValid(valid);
+        
+}
+
 void MagicTowerApp::LoadFloor(int floorNumber)
 {
     std::wstring floorGOName = L"FloorGO" + std::to_wstring(floorNumber);
@@ -303,6 +314,7 @@ void MagicTowerApp::SetGameMode(GameMode mode)
 
 void MagicTowerApp::ReturnTitle()
 {
+    MapStatic::eventFloor->clear();
     gameUI->SetIsDestroyed(true);
     for (auto& GO : mGOs)
     {

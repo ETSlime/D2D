@@ -168,6 +168,7 @@
     <ClCompile Include="PlayerGO.cpp" />
     <ClCompile Include="RectBase.cpp" />
     <ClCompile Include="CursorTextureRect.cpp" />
+    <ClCompile Include="SaveData.cpp" />
     <ClCompile Include="Stair.cpp" />
     <ClCompile Include="States.cpp" />
     <ClCompile Include="String.cpp" />

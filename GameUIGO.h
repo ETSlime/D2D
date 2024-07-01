@@ -21,11 +21,11 @@ public:
 	GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIRenderMode mode);
 
 	void ChangeUIMode(GameUI::UIRenderMode mode);
-	void SetChangeUIMode() { gameUI->SetRenderModeOnChanging(); }
-	void SetChangeGameMode(bool change) { gameUI->SetGameModeOnChanging(change); }
-	void SetItemCategory(std::wstring itemCategory) { gameUI->SetCurItemCategory(itemCategory); }
+	void SetChangeUIMode() { if (gameUI) gameUI->SetRenderModeOnChanging(); }
+	void SetChangeGameMode(bool change) { if (gameUI) gameUI->SetGameModeOnChanging(change); }
+	void SetItemCategory(std::wstring itemCategory) { if (gameUI) gameUI->SetCurItemCategory(itemCategory); }
 	void SetDialogue(std::wstring text, const std::vector<DialogueButtonEvent>& events = std::vector<DialogueButtonEvent>()) { gameUI->SetDialogueText(text, events); }
-	void SetDialogueName(std::wstring name) { gameUI->SetDialogueName(name); }
+	void SetDialogueName(std::wstring name) { if (gameUI) gameUI->SetDialogueName(name); }
 private:
 
 	class GameUI* gameUI = nullptr;

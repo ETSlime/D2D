@@ -16,6 +16,8 @@ class Player : public GameEvent
 {
 public:
 
+	friend class ButtonOnClick;
+
 	Player(Coord coord, std::wstring PlayerTexture, DirectX::XMFLOAT3 size = { TileWidth, TileHeight, 1 });
 	~Player();
 

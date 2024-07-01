@@ -25,15 +25,25 @@ public:
 
 	static int startGame();
 
+	static int startNewGame();
+
 	static int exitGame();
+
+	// main game UI
 
 	static int itemCheck();
 
-	static int saveData();
+	static int saveGameUI();
 
-	static int loadData();
+	static int loadGameUI();
 
 	static int title();
+
+	// save/load
+
+	static int saveData(UINT slotNum);
+
+	static int loadData(UINT slotNum);
 
 	static int showItemList(std::wstring itemCategory);
 };

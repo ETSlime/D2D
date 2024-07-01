@@ -5,7 +5,7 @@
 #include "Tile.h"
 #include "EventFactory.h"
 
-void Map::UpdateEventsHandler(std::shared_ptr<Message> event)
+void Map::DestroyEventsHandler(std::shared_ptr<Message> event)
 {
 	auto updateEvent = std::dynamic_pointer_cast<MessageEventUpdate>(event);
 	if (updateEvent && curEvents.find(updateEvent->eventName) != curEvents.end())
@@ -16,8 +16,8 @@ void Map::UpdateEventsHandler(std::shared_ptr<Message> event)
 
 Map::Map()
 {
-	dispatcher.registerHandler("UpdateEvents", static_cast<MessageHandler>(
-		std::bind(&Map::UpdateEventsHandler, this, std::placeholders::_1)));
+	dispatcher.registerHandler("DestroyEvents", static_cast<MessageHandler>(
+		std::bind(&Map::DestroyEventsHandler, this, std::placeholders::_1)));
 
 	mapBuilder = MapStatic::BuildFloor;
 	//mapBuilder[0] = MapStatic::BuildFloor0;

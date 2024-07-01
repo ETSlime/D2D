@@ -124,6 +124,7 @@ public:
     void ShowNPCDialogue(UINT dialogueID);
     void ReturnTitle();
     void DestroyGO(std::wstring name);
+    void SetValidGO(std::wstring name, bool valid);
     void Push(std::wstring name, std::unique_ptr<IGameObj> GO);
     void LoadFloor(int floorNum);
     void SetGameMode(GameMode mode);

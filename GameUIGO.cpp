@@ -19,12 +19,14 @@ void GameUIGO::Destroy()
 
 void GameUIGO::Update()
 {
-	gameUI->Update();
+	if (gameUI)
+		gameUI->Update();
 }
 
 void GameUIGO::Render()
 {
-	gameUI->Render();
+	if (gameUI)
+		gameUI->Render();
 }
 
 void GameUIGO::PostRender()

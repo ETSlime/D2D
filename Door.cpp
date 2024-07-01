@@ -45,7 +45,7 @@ void Door::OnPlayerCollision(Coroutine& coro)
 	}
 	if (coro.getState() == 1)
 	{
-		MessageDispatcher::get_instance().dispatch("UpdateEvents", eventUpdate);
+		MessageDispatcher::get_instance().dispatch("DestroyEvents", eventUpdate);
 		destroy = true;
 		MapStatic::eventParams[Player::player->GetCurFloor()].erase(eventName);
 		// final state, complete the coroutine, otherwise will cause memory leak

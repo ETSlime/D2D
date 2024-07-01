@@ -7,8 +7,9 @@ constexpr float ANIM_PLAY_SPEED = 10.0f;
 
 void Item::OnPlayerCollision(Coroutine& coro)
 {
+	// update event message to destroy the event
 	std::shared_ptr<Message> eventUpdate = std::make_shared<MessageEventUpdate>(this->eventName);
-	MessageDispatcher::get_instance().dispatch("UpdateEvents", eventUpdate);
+	MessageDispatcher::get_instance().dispatch("DestroyEvents", eventUpdate);
 	Player::player->AddItem(itemID);
 	destroy = true;
 	MapStatic::eventParams[Player::player->GetCurFloor()].erase(eventName);
