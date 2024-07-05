@@ -177,6 +177,9 @@
     <ClCompile Include="SaveData.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="OffScreenRenderer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DApp.h">
@@ -346,6 +349,9 @@
     </ClInclude>
     <ClInclude Include="SaveData.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="OffScreenRenderer.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

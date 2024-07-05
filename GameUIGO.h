@@ -18,7 +18,7 @@ public:
 	virtual void SetIsDestroyed(bool _destroy) override;
 	virtual void SetIsValid(bool _valid) override;
 
-	GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIRenderMode mode);
+	GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIRenderMode mode, bool allowChange  = true);
 
 	void ChangeUIMode(GameUI::UIRenderMode mode);
 	void SetChangeUIMode() { if (gameUI) gameUI->SetRenderModeOnChanging(); }
@@ -32,6 +32,7 @@ private:
 	GameUI::UIRenderMode UImode;
 	bool valid = true;
 	bool destroy = false;
+	bool allowChange = true;
 
 	ID3D11Device* mDevice = MagicTowerApp::get_instance().mDevice;
 	ID3D11DeviceContext* mDeviceContext = MagicTowerApp::get_instance().mDeviceContext;

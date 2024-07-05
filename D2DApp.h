@@ -82,9 +82,11 @@ protected:
     IDXGISwapChain* mSwapChain = nullptr;
     ID3D11RenderTargetView* rtv = nullptr;
     D3D11_VIEWPORT mScreenViewport;
+    ID3D11BlendState* blendState = nullptr;
 
     // Direct2D
     ID2D1Factory* pD2DFactory = nullptr;
+    IDXGISurface* pBackBufferSurface = nullptr;
     D2DResource mD2DResource;
     float baseFontSize = 40.0f;
     float aspectRatio = 1.0f;

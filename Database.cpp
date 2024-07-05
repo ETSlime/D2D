@@ -1,22 +1,30 @@
-#include "Database.h"
+ï»¿#include "Database.h"
+#include "ButtonOnClick.h"
 
 std::wstring Database::branch = DIALOGUE_BRANCH;
 
 std::unordered_map<ItemID, std::tuple<std::wstring, std::wstring>> Database::itemCategoryMap = 
 {
-	{ ItemID::YELLOW_KEY, std::make_tuple(L"Œ®—Ş", L"‰©F‚ÌŒ®")},
-	{ ItemID::BLUE_KEY,  std::make_tuple(L"Œ®—Ş", L"‡‚ÌŒ®")},
-	{ ItemID::RED_KEY,  std::make_tuple(L"Œ®—Ş", L"Ô‚¢Œ®")},
-	{ ItemID::BOOK,  std::make_tuple(L"H‹ï—Ş",L"–{")},
-	{ ItemID::BOOMB,  std::make_tuple(L"d—v—Ş",L"”š’e")}
+	{ ItemID::YELLOW_KEY, std::make_tuple(L"éµé¡", L"é»„è‰²ã®éµ")},
+	{ ItemID::BLUE_KEY,  std::make_tuple(L"éµé¡", L"ç´«ã®éµ")},
+	{ ItemID::RED_KEY,  std::make_tuple(L"éµé¡", L"èµ¤ã„éµ")},
+	{ ItemID::BOOK,  std::make_tuple(L"å·¥å…·é¡",L"æœ¬")},
+	{ ItemID::TELEWARP,  std::make_tuple(L"å·¥å…·é¡",L"ãƒ¯ãƒ¼ãƒ—è£…ç½®")},
+	{ ItemID::HOE,  std::make_tuple(L"é‡è¦é¡",L"å£ç ´ã‚Šã®ã¤ã‚‹ã¯ã—")},
+	{ ItemID::CROSS,  std::make_tuple(L"å·¥å…·é¡",L"è–åå­—æ¶")},
+	{ ItemID::BOOMB,  std::make_tuple(L"é‡è¦é¡",L"çˆ†å¼¾")},
+	{ ItemID::SYMMETRIC_FLYER,  std::make_tuple(L"é‡è¦é¡",L"ä¸­å¿ƒå¯¾ç§°é£›è¡Œæ©Ÿ")},
 };
 
 std::unordered_map<UINT, std::wstring> Database::itemGetText =
 {
-	{static_cast<UINT>(ItemID::YELLOW_KEY), L""},
-	{static_cast<UINT>(ItemID::BLUE_KEY), L""},
-	{static_cast<UINT>(ItemID::RED_KEY), L""},
-	{static_cast<UINT>(ItemID::BOOK),  L"‚ ‚È‚½‚Íuƒ‚ƒ“ƒXƒ^[ƒ}ƒjƒ…ƒAƒ‹v‚ğè‚É“ü‚ê‚Ü‚µ‚½\n\nŠ‚·‚é‚Æƒ‚ƒ“ƒXƒ^[î•ñ‚ğŠm”F‚Å‚«‚Ü‚· "},
+	{static_cast<UINT>(ItemID::YELLOW_KEY), L"ã‚¢ã‚¤ãƒ†ãƒ ã€Œé»„ã®éµã€ã‚’æ‰‹ã«å…¥ã‚Œã¾ã—ãŸã€‚\n\né»„è‰²ã®æ‰‰ã‚’é–‹ã‘ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚"},
+	{static_cast<UINT>(ItemID::BLUE_KEY), L"ã‚¢ã‚¤ãƒ†ãƒ ã€Œç´«ã®éµã€ã‚’æ‰‹ã«å…¥ã‚Œã¾ã—ãŸã€‚\n\nç´«è‰²ã®æ‰‰ã‚’é–‹ã‘ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚"},
+	{static_cast<UINT>(ItemID::TELEWARP), L"ã‚¢ã‚¤ãƒ†ãƒ ã€Œãƒ¯ãƒ¼ãƒ—è£…ç½®ã€ã‚’æ‰‹ã«å…¥ã‚Œã¾ã—ãŸã€‚\n\nè¨ªã‚ŒãŸã“ã¨ã®ã‚ã‚‹ãƒ•ãƒ­ã‚¢é–“ã‚’è‡ªç”±ã«è¡Œãæ¥ã§ãã¾ã™ï¼ˆã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã‚­ãƒ¼gï¼‰ã€‚"},
+	{static_cast<UINT>(ItemID::HOE), L"ã‚¢ã‚¤ãƒ†ãƒ ã€Œå£ç ´ã‚Šã®ã¤ã‚‹ã¯ã—ã€ã‚’æ‰‹ã«å…¥ã‚Œã¾ã—ãŸã€‚\n\nä¸€ã¤ã®å£ã‚’ç ´å£Šã™ã‚‹ã“ã¨ãŒã§ãã¾ã™ï¼ˆæ¶ˆè€—å“ï¼‰ã€‚"},
+	{static_cast<UINT>(ItemID::SYMMETRIC_FLYER), L"ã‚¢ã‚¤ãƒ†ãƒ ã€Œä¸­å¿ƒå¯¾ç§°é£›è¡Œæ©Ÿã€ã‚’æ‰‹ã«å…¥ã‚Œã¾ã—ãŸã€‚\n\nå‹‡è€…ã®ç¾åœ¨ä½ç½®ã®ä¸­å¿ƒå¯¾ç§°ç‚¹ã¾ã§é£›ã¶ã“ã¨ãŒã§ãã¾ã™ï¼ˆæ¶ˆè€—å“ï¼‰ã€‚"},
+	{static_cast<UINT>(ItemID::CROSS), L"ã‚¢ã‚¤ãƒ†ãƒ ã€Œè–åå­—æ¶ã€ã‚’æ‰‹ã«å…¥ã‚Œã¾ã—ãŸã€‚\n\næŒã£ã¦ã„ã‚‹ã¨ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ã®ç„¡æ•µå±æ€§ã‚’ç„¡è¦–ã§ãã¾ã™ã€‚"},
+	{static_cast<UINT>(ItemID::BOOK),  L"ã‚¢ã‚¤ãƒ†ãƒ ã€Œãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ã€ã‚’æ‰‹ã«å…¥ã‚Œã¾ã—ãŸã€‚\n\næ‰€æŒã™ã‚‹ã¨ãƒ¢ãƒ³ã‚¹ã‚¿ãƒ¼æƒ…å ±ã‚’ç¢ºèªã§ãã¾ã™"},
 };
 
 std::unordered_map<UINT, std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>> Database::dialogues =
@@ -38,9 +46,9 @@ std::unordered_map<UINT, std::vector<std::tuple<std::vector<DialogueButtonEvent>
 	{2,
 		std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>(
 			{std::make_tuple(std::vector<DialogueButtonEvent>(),
-				L"n1", L"‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ "),
+				L"n1", L""),
 			std::make_tuple(std::vector<DialogueButtonEvent>{DialogueButtonEvent::ADDHP, DialogueButtonEvent::ADDMP},
-				L"n1", L"‚ ‚ ‚ ‚ ‚ ‚ ‚ ‚ : \n" + branch + L"‚ ‚ ‚ ‚ ‚ ‚ ‚ :\n‚ ‚ ‚ ‚ :"),
+				L"n1", L": \n" + branch + L":\n:"),
 			std::make_tuple(std::vector<DialogueButtonEvent>(),
 				L"n2", L"d")
 			}),
@@ -50,27 +58,32 @@ std::unordered_map<UINT, std::vector<std::tuple<std::vector<DialogueButtonEvent>
 std::unordered_map<UINT, MonsterData> Database::monsterDatabase =
 {
 	{0,
-		MonsterData(L"GƒXƒ‰ƒCƒ€", 0, 35, 18, 1, 1, 0)
+		MonsterData(L"Gã‚¹ãƒ©ã‚¤ãƒ ", 0, 35, 18, 1, 1, 0)
 	},
 	{1,
-		MonsterData(L"RƒXƒ‰ƒCƒ€", 1, 45, 20, 2, 2, 0)
+		MonsterData(L"Rã‚¹ãƒ©ã‚¤ãƒ ", 1, 45, 20, 2, 2, 0)
 	},
 	{2,
-		MonsterData(L"BƒXƒ‰ƒCƒ€", 2, 130, 60, 3, 8, 0)
+		MonsterData(L"Bã‚¹ãƒ©ã‚¤ãƒ ", 2, 130, 60, 3, 8, 0)
 	},
 	{3,
-		MonsterData(L"ƒXƒ‰ƒCƒ€ƒLƒ“ƒO", 3, 360, 310, 20, 40, 0)
+		MonsterData(L"ã‚¹ãƒ©ã‚¤ãƒ ã‚­ãƒ³ã‚°", 3, 360, 310, 20, 40, 0)
 	},
 	{4,
-		MonsterData(L"ƒoƒbƒg", 4, 35, 38, 3, 3, 0)
+		MonsterData(L"ãƒãƒƒãƒˆ", 4, 35, 38, 3, 3, 0)
 	},
 	{5,
-		MonsterData(L"‘åƒoƒbƒg", 5, 60, 100, 8, 12, 0)
+		MonsterData(L"å¤§ãƒãƒƒãƒˆ", 5, 60, 100, 8, 12, 0)
 	},
 	{6,
-		MonsterData(L"Rƒoƒbƒg", 6, 130, 60, 3, 8, 0)
+		MonsterData(L"Rãƒãƒƒãƒˆ", 6, 130, 60, 3, 8, 0)
 	},
 	{7,
-		MonsterData(L"ƒXƒPƒ‹ƒgƒ“", 7, 36000, 310, 20, 40, 0)
+		MonsterData(L"ã‚¹ã‚±ãƒ«ãƒˆãƒ³", 7, 36000, 310, 20, 40, 0)
 	},
+};
+
+std::unordered_map<ItemID, std::function<void()>> Database::buttonFuncMap =
+{
+	{ItemID::SYMMETRIC_FLYER, ButtonOnClick::symmetricFlyer},
 };

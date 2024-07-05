@@ -13,6 +13,8 @@
 #include "Coroutine.h"
 #include "Database.h"
 
+class OffScreenRenderer;
+
 enum class GameMode
 {
     TITLE,
@@ -73,7 +75,9 @@ private:
     Keyboard& mKeyboard = Keyboard::get_instance();
     Timer& mTimer = Timer::get_instance();
 
-    PassConstants mMainPassCB;
+    PassConstants mMainPassCB{};
+    OffScreenRenderer* offScreenRenderer = nullptr;
+    bool enableShakeEffect = false, enableFadeEffect = false, enableBlurEffect = false;
 
     // constant buffer
     std::unique_ptr<UploadBuffer<PassConstants>> PassCB = nullptr;
@@ -101,6 +105,7 @@ private:
 
     void DrawRenderItems();
 
+    void OffScreenEffectRender();
 
     //virtual void OnMouseDown(WPARAM btnState, int x, int y)override;
     //virtual void OnMouseUp(WPARAM btnState, int x, int y)override;
@@ -131,4 +136,7 @@ public:
     GameMode GetGameMode() { return gameMode; }
     bool AvailableToSwitch() { return allowSwitchMode; }
     void SetAllowSwitch(bool allow) { allowSwitchMode = allow; }
+    void SetShakeEffect(bool enable) { enableShakeEffect = enable; }
+    void SetFadeEffect(bool enable) { enableFadeEffect = enable; }
+    void SetBlueEffect(bool enable) { enableBlurEffect = enable; }
 };

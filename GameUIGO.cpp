@@ -3,13 +3,13 @@
 #include "TextureRect.h"
 
 
-GameUIGO::GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIRenderMode mode)
-	:mD2DResource(D2DResource), curWinSize(winSize), UImode(mode){}
+GameUIGO::GameUIGO(const D2DResource* D2DResource, const WinSize* winSize, GameUI::UIRenderMode mode, bool allowChange)
+	:mD2DResource(D2DResource), curWinSize(winSize), UImode(mode), allowChange(allowChange) {}
 
 void GameUIGO::Init()
 {
 	if (gameUI == nullptr)
-		gameUI = new GameUI(mD2DResource, curWinSize, UImode);
+		gameUI = new GameUI(mD2DResource, curWinSize, UImode, allowChange);
 }
 
 void GameUIGO::Destroy()

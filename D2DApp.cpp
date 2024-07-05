@@ -131,7 +131,7 @@ HRESULT D2DApp::Initialize()
         blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
         // 创建混合状态对象
-        ID3D11BlendState* blendState = nullptr;
+
         mDevice->CreateBlendState(&blendDesc, &blendState);
 
         // 设置混合状态
@@ -352,13 +352,12 @@ HRESULT D2DApp::CreateRenderTargetView()
     );
     assert(SUCCEEDED(hr));
 
-    IDXGISurface* pBackBufferSurface;
+
     backbuffer->QueryInterface(__uuidof(IDXGISurface), reinterpret_cast<void**>(&pBackBufferSurface));
     D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED));
     hr = pD2DFactory->CreateDxgiSurfaceRenderTarget(pBackBufferSurface, &props, &(mD2DResource.pD2DRenderTarget));
     assert(SUCCEEDED(hr));
 
-    SafeRelease(&pBackBufferSurface);
     SafeRelease(&backbuffer);
 
     return hr;
@@ -374,6 +373,7 @@ void D2DApp::DiscardDeviceResources()
     // D2D resources
     SafeRelease(&mD2DResource.pD2DRenderTarget);
     SafeRelease(&mD2DResource.pSolidColorBrush);
+    SafeRelease(&pBackBufferSurface);
 
     //SafeRelease(&m_pRenderTarget);
     //SafeRelease(&m_pLightSlateGrayBrush);

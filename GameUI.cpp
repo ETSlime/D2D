@@ -1,10 +1,10 @@
-#include "GameUI.h"
+Ôªø#include "GameUI.h"
 #include "Monster.h"
 #include "Battle.h"
 #include "SaveData.h"
 
-GameUI::GameUI(const D2DResource* D2DResource, const WinSize* winSize, UIRenderMode mode)
-	:mD2DResource(D2DResource), curWinSize(winSize), renderMode(mode)
+GameUI::GameUI(const D2DResource* D2DResource, const WinSize* winSize, UIRenderMode mode, bool allowChange)
+	:mD2DResource(D2DResource), curWinSize(winSize), renderMode(mode), allowChange(allowChange)
 {
 	InitGameUI(renderMode);
 }
@@ -85,10 +85,10 @@ void GameUI::InitMainMenu()
 			startCursor.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 
 	startButtons.clear();
-	startButtons.push_back(std::make_unique<Button>(L"énÇﬂÇ©ÇÁ", DirectX::XMFLOAT3(0.4f, 0.535f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::startNewGame, true));
-	startButtons.push_back(std::make_unique<Button>(L"ë±Ç´Ç©ÇÁ", DirectX::XMFLOAT3(0.4f, 0.635f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::loadGameUI));
-	startButtons.push_back(std::make_unique<Button>(L"ÉQÅ[ÉÄèIóπ", DirectX::XMFLOAT3(0.4f, 0.735f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
-	startButtons.push_back(std::make_unique<Button>(L"óVÇ‘ï˚ñ@ê‡ñæ", DirectX::XMFLOAT3(0.4f, 0.835f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
+	startButtons.push_back(std::make_unique<Button>(L"Âßã„ÇÅ„Åã„Çâ", DirectX::XMFLOAT3(0.4f, 0.535f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::startNewGame, true));
+	startButtons.push_back(std::make_unique<Button>(L"Á∂ö„Åç„Åã„Çâ", DirectX::XMFLOAT3(0.4f, 0.635f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::loadGameUI));
+	startButtons.push_back(std::make_unique<Button>(L"„Ç≤„Éº„É†ÁµÇ‰∫Ü", DirectX::XMFLOAT3(0.4f, 0.735f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
+	startButtons.push_back(std::make_unique<Button>(L"ÈÅä„Å∂ÊñπÊ≥ïË™¨Êòé", DirectX::XMFLOAT3(0.4f, 0.835f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::tutorial));
 
 	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3(490, 220, 0);
 	DirectX::XMFLOAT3 size = DirectX::XMFLOAT3(400, 320, 1);
@@ -170,12 +170,12 @@ void GameUI::InitInGameUI()
 
 
 	gameMenuButtons.clear();
-	gameMenuButtons.push_back(std::make_unique<Button>(L"éëóø", DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"ÉAÉCÉeÉÄ", DirectX::XMFLOAT3(0.035f, 0.1f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::itemCheck));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"ÉZÅ[Éu", DirectX::XMFLOAT3(0.035f, 0.175f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::saveGameUI));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"ÉçÅ[Éh", DirectX::XMFLOAT3(0.035f, 0.25f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::loadGameUI));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"É^ÉCÉgÉãÇ÷ñﬂÇÈ", DirectX::XMFLOAT3(0.035f, 0.325f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::title));
-	gameMenuButtons.push_back(std::make_unique<Button>(L"ÉQÅ[ÉÄèIóπ", DirectX::XMFLOAT3(0.035f, 0.40f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"Ë≥áÊñô", DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"„Ç¢„Ç§„ÉÜ„É†", DirectX::XMFLOAT3(0.035f, 0.1f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::itemCheck));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"„Çª„Éº„Éñ", DirectX::XMFLOAT3(0.035f, 0.175f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::saveGameUI));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"„É≠„Éº„Éâ", DirectX::XMFLOAT3(0.035f, 0.25f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::loadGameUI));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"„Çø„Ç§„Éà„É´„Å∏Êàª„Çã", DirectX::XMFLOAT3(0.035f, 0.325f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::title));
+	gameMenuButtons.push_back(std::make_unique<Button>(L"„Ç≤„Éº„É†ÁµÇ‰∫Ü", DirectX::XMFLOAT3(0.035f, 0.40f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, &ButtonOnClick::exitGame));
 }
 
 void GameUI::InitPlayerState()
@@ -195,7 +195,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 yellowKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 525, 0);
 		DirectX::XMFLOAT3 yellowKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* yellowKeyIconTex = new Texture2D(IconsPath + L"â©êFÇÃåÆ.png");
+		Texture2D* yellowKeyIconTex = new Texture2D(IconsPath + L"ÈªÑËâ≤„ÅÆÈçµ.png");
 		yellowKeyIcon = new TextureRect(yellowKeyIonPosition, yellowKeyIonSize, 0.0f);
 		yellowKeyIcon->SetSRV(yellowKeyIconTex->GetSRV());
 	}
@@ -206,7 +206,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 blueKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 575, 0);
 		DirectX::XMFLOAT3 blueKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* blueKeyIconTex = new Texture2D(IconsPath + L"éáÇÃåÆ.png");
+		Texture2D* blueKeyIconTex = new Texture2D(IconsPath + L"Á¥´„ÅÆÈçµ.png");
 		blueKeyIcon = new TextureRect(blueKeyIonPosition, blueKeyIonSize, 0.0f);
 		blueKeyIcon->SetSRV(blueKeyIconTex->GetSRV());
 	}
@@ -216,7 +216,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 redKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 625, 0);
 		DirectX::XMFLOAT3 redKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* redKeyIconTex = new Texture2D(IconsPath + L"ê‘Ç¢åÆ.png");
+		Texture2D* redKeyIconTex = new Texture2D(IconsPath + L"Ëµ§„ÅÑÈçµ.png");
 		redKeyIcon = new TextureRect(redKeyIonPosition, redKeyIonSize, 0.0f);
 		redKeyIcon->SetSRV(redKeyIconTex->GetSRV());
 	}
@@ -313,6 +313,7 @@ void GameUI::InitItemCheck()
 		itemIcon->SetSRV(itemIconTex->GetSRV());
 		itemButton.get()->itemIcon = std::move(itemIcon);
 		itemButton.get()->UpdateCount(item.second);
+		itemButton.get()->pOnClick = Database::buttonFuncMap[item.first];
 		if (itemButton.get()->pOnClick == nullptr)
 		{
 			itemButton.get()->itemIcon->SetEnable(false);
@@ -353,7 +354,7 @@ void GameUI::InitSaveLoadData()
 	saveDataButtons.clear();
 	for (int i = 0; i < SAVE_SLOT_SIZE; i++)
 	{
-		std::unique_ptr<Button> saveDataButton = std::make_unique<Button>(L"ÉtÉ@ÉCÉã " + std::to_wstring(i), DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr);
+		std::unique_ptr<Button> saveDataButton = std::make_unique<Button>(L"„Éï„Ç°„Ç§„É´ " + std::to_wstring(i), DirectX::XMFLOAT3(0.035f, 0.025f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr);
 		if (renderMode == SAVEDATA)
 		{
 			saveDataButton.get()->overrideOnClick(&ButtonOnClick::saveData, i);
@@ -651,9 +652,9 @@ void GameUI::Update()
 
 		if (dialogueButtons.size() != 0) UpdateCursorAndButton(dialogueCursor, dialogueButtons);
 
-		if (Keyboard::get_instance().Up('C') ||
-			Keyboard::get_instance().Up(VK_RETURN) ||
-			Keyboard::get_instance().Up(VK_SPACE))
+		if (keyboard.Up('C') ||
+			keyboard.Up(VK_RETURN) ||
+			keyboard.Up(VK_SPACE))
 		{
 			mApp.DestroyGO(L"UIDialogueGO");
 			Player::player->SetAllowControl(true);
@@ -661,9 +662,18 @@ void GameUI::Update()
 		break;
 	case ITEMGET:
 		dialogueBase->Update();
-		if (Keyboard::get_instance().Up('C') ||
-			Keyboard::get_instance().Up(VK_RETURN) ||
-			Keyboard::get_instance().Up(VK_SPACE))
+
+		if (keyboard.Up('C') ||
+			keyboard.Up(VK_RETURN) ||
+			keyboard.Up(VK_SPACE))
+		{
+			allowChange = true;
+			break;
+		}
+
+		if (allowChange && (keyboard.Press('C') ||
+			keyboard.Press(VK_RETURN) ||
+			keyboard.Press(VK_SPACE)))
 		{
 			mApp.DestroyGO(L"UIDialogueGO");
 			Player::player->SetAllowControl(true);
@@ -684,7 +694,7 @@ void GameUI::UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Bu
 	if (cursor.isPressed)
 	{
 		// wait for key up
-		if (Keyboard::get_instance().Up(VK_UP))
+		if (keyboard.Up(VK_UP))
 		{
 			if (cursor.curIdx == 0)
 			{
@@ -694,7 +704,7 @@ void GameUI::UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Bu
 			cursor.isPressed = false;
 
 		}
-		else if (Keyboard::get_instance().Up(VK_DOWN))
+		else if (keyboard.Up(VK_DOWN))
 		{
 			if (cursor.curIdx == SAVE_SLOTS_PER_PAGE - 1)
 			{
@@ -722,23 +732,23 @@ void GameUI::UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Bu
 
 		}
 	}
-	else if (Keyboard::get_instance().Press(VK_UP))
+	else if (keyboard.Press(VK_UP))
 	{
 
 		cursor.moveDirection = Cursor::UP;
 		cursor.isPressed = true;
 		lastTime = curTime;
 	}
-	else if (Keyboard::get_instance().Press(VK_DOWN))
+	else if (keyboard.Press(VK_DOWN))
 	{
 		cursor.moveDirection = Cursor::DOWN;
 		cursor.isPressed = true;
 		lastTime = curTime;
 	}
 
-	if (Keyboard::get_instance().Down('C') ||
-		Keyboard::get_instance().Down(VK_RETURN) ||
-		Keyboard::get_instance().Down(VK_SPACE))
+	if (keyboard.Down('C') ||
+		keyboard.Down(VK_RETURN) ||
+		keyboard.Down(VK_SPACE))
 	{
 		cursor.Execute(buttons);
 	}
@@ -752,7 +762,7 @@ void GameUI::UpdateMonsterCursor(Cursor& cursor)
 	if (cursor.isPressed)
 	{
 		// wait for key up
-		if (Keyboard::get_instance().Up(VK_UP))
+		if (keyboard.Up(VK_UP))
 		{
 			if (cursor.curIdx == 0)
 			{
@@ -769,7 +779,7 @@ void GameUI::UpdateMonsterCursor(Cursor& cursor)
 			cursor.MoveUp();
 			cursor.isPressed = false;
 		}
-		else if (Keyboard::get_instance().Up(VK_DOWN))
+		else if (keyboard.Up(VK_DOWN))
 		{
 
 			int maxCount = 0;
@@ -833,14 +843,14 @@ void GameUI::UpdateMonsterCursor(Cursor& cursor)
 				
 		}
 	}
-	else if (Keyboard::get_instance().Press(VK_UP))
+	else if (keyboard.Press(VK_UP))
 	{
 
 		cursor.moveDirection = Cursor::UP;
 		cursor.isPressed = true;
 		lastTime = curTime;
 	}
-	else if (Keyboard::get_instance().Press(VK_DOWN))
+	else if (keyboard.Press(VK_DOWN))
 	{
 		cursor.moveDirection = Cursor::DOWN;
 		cursor.isPressed = true;
@@ -875,7 +885,7 @@ void GameUI::UpdateUIState()
 			// switch to gameplay mode
 			mApp.SetGameMode(GameMode::GAMEPLAY);
 		}
-		else if (keyboard.Down('C'))
+		else if (keyboard.Down('C') || keyboard.Down(VK_RETURN) || keyboard.Down(VK_SPACE))
 		{
 			UIstate = UIState::MenuLevel2;
 			mainGameCursor_1st.enabled = false;
@@ -926,12 +936,12 @@ void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<B
 		if (cursor.isPressed)
 		{
 			// wait for key up
-			if (Keyboard::get_instance().Up(VK_UP))
+			if (keyboard.Up(VK_UP))
 			{
 				cursor.MoveUp(buttons);
 				cursor.isPressed = false;
 			}
-			else if (Keyboard::get_instance().Up(VK_DOWN))
+			else if (keyboard.Up(VK_DOWN))
 			{
 				cursor.MoveDown(buttons);
 				cursor.isPressed = false;
@@ -948,22 +958,22 @@ void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<B
 					cursor.MoveDown(buttons);
 			}
 		}
-		else if (Keyboard::get_instance().Press(VK_UP))
+		else if (keyboard.Press(VK_UP))
 		{
 			cursor.moveDirection = Cursor::UP;
 			cursor.isPressed = true;
 			lastTime = curTime;
 		}
-		else if (Keyboard::get_instance().Press(VK_DOWN))
+		else if (keyboard.Press(VK_DOWN))
 		{
 			cursor.moveDirection = Cursor::DOWN;
 			cursor.isPressed = true;
 			lastTime = curTime;
 		}
 
-		if (Keyboard::get_instance().Down('C') ||
-			Keyboard::get_instance().Down(VK_RETURN) ||
-			Keyboard::get_instance().Down(VK_SPACE))
+		if (keyboard.Down('C') ||
+			keyboard.Down(VK_RETURN) ||
+			keyboard.Down(VK_SPACE))
 		{
 			cursor.Execute(buttons);
 		}
@@ -986,7 +996,7 @@ void GameUI::RenderInGameUI()
 	}
 
 	// text
-	std::wstring timerText = L"ÉvÉåÉCéûä‘";
+	std::wstring timerText = L"„Éó„É¨„Ç§ÊôÇÈñì";
 	D2D1_RECT_F timerTextRect = GetTextRect(0.03f, 0.52f, 0.15f, 0.62f);
 	IDWriteTextFormat* textFormat = DynamicTextFormat(timerText, &timerTextRect);
 
@@ -1010,7 +1020,7 @@ void GameUI::RenderInGameUI()
 		mD2DResource->pSolidColorBrush);
 	SafeRelease(&textFormat);
 
-	std::wstring walkingStepsText = L"ï‡êî";
+	std::wstring walkingStepsText = L"Ê≠©Êï∞";
 	D2D1_RECT_F walkingStepsTextRect = GetTextRect(0.01f, 0.77f, 0.15f, 0.87f);
 	textFormat = DynamicTextFormat(walkingStepsText, &walkingStepsTextRect);
 
@@ -1081,7 +1091,7 @@ void GameUI::RenderMonsterStates()
 			//Reset transformation matrix
 			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-			std::wstring attribute = L"ïÅí ";
+			std::wstring attribute = L"ÊôÆÈÄö";
 			D2D1_RECT_F attributeTextRect = GetTextRect(0.4082f, 0.084f + position * spacing, 0.5102f, 0.1306 + position * spacing);
 			textFormat = DynamicTextFormat(attribute, &attributeTextRect);
 			DrawTextWithSpacing(textFormat, attribute, &attributeTextRect);
@@ -1092,7 +1102,7 @@ void GameUI::RenderMonsterStates()
 			else
 				mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::LightGreen));
 
-			std::wstring HP = L"ê∂ñΩ";
+			std::wstring HP = L"ÁîüÂëΩ";
 			D2D1_RECT_F HPTextRect = GetTextRect(0.5153f, 0.0333f + position * spacing, 0.5714f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(HP, &HPTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1117,7 +1127,7 @@ void GameUI::RenderMonsterStates()
 			//Reset transformation matrix
 			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-			std::wstring attack = L"çUåÇ";
+			std::wstring attack = L"ÊîªÊíÉ";
 			D2D1_RECT_F attackTextRect = GetTextRect(0.6633f, 0.0333f + position * spacing, 0.7194f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(attack, &attackTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1142,7 +1152,7 @@ void GameUI::RenderMonsterStates()
 			//Reset transformation matrix
 			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-			std::wstring defense = L"ñhå‰";
+			std::wstring defense = L"Èò≤Âæ°";
 			D2D1_RECT_F defenseTextRect = GetTextRect(0.8112f, 0.0333f + position * spacing, 0.8673f, 0.08f + position * spacing);
 			textFormat = DynamicTextFormat(defense, &defenseTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1218,7 +1228,7 @@ void GameUI::RenderMonsterStates()
 			//Reset transformation matrix
 			mD2DResource->pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-			std::wstring damageText = L"É_ÉÅÅ[ÉW";
+			std::wstring damageText = L"„ÉÄ„É°„Éº„Ç∏";
 			D2D1_RECT_F damageTextRect = GetTextRect(0.8112f, 0.08667f + position * spacing, 0.8673f, 0.1333f + position * spacing);
 			textFormat = DynamicTextFormat(damageText, &damageTextRect);
 			mD2DResource->pD2DRenderTarget->DrawText(
@@ -1303,7 +1313,7 @@ void GameUI::RenderItemCheck()
 	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::White));
 
 	// title
-	std::wstring itemCheckTitle = L"ÉAÉCÉeÉÄ";
+	std::wstring itemCheckTitle = L"„Ç¢„Ç§„ÉÜ„É†";
 	D2D1_RECT_F itemCheckTitleRect = GetTextRect(0.045f, 0.03f, 0.16f, 0.095f);
 	IDWriteTextFormat* textFormat = DynamicTextFormat(itemCheckTitle, &itemCheckTitleRect);
 
@@ -1321,35 +1331,35 @@ void GameUI::RenderPlayerStates()
 	mD2DResource->pSolidColorBrush->SetColor(D2D1::ColorF(D2D1::ColorF::Pink));
 
 	mD2DResource->pD2DRenderTarget->DrawText(
-		(L"ìÉ"),
+		(L"Â°î"),
 		2,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(100, 40, 150, 40),
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
-		(L"äK"),
+		(L"Èöé"),
 		2,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(220, 40, 240, 40),
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
-		(L"ÉåÉxÉã"),
+		(L"„É¨„Éô„É´"),
 		4,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(35, 95, 150, 95),
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
-		(L"ê∂ñΩóÕ"),
+		(L"ÁîüÂëΩÂäõ"),
 		4,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(35, 150, 150, 150),
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
-		(L"çUåÇóÕ"),
+		(L"ÊîªÊíÉÂäõ"),
 		4,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(35, 205, 150, 205),
@@ -1363,14 +1373,14 @@ void GameUI::RenderPlayerStates()
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
-		(L"ñhå‰óÕ"),
+		(L"Èò≤Âæ°Âäõ"),
 		4,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(35, 260, 150, 260),
 		mD2DResource->pSolidColorBrush);
 
 	mD2DResource->pD2DRenderTarget->DrawText(
-		(L"ñÇñhóÕ"),
+		(L"È≠îÈò≤Âäõ"),
 		4,
 		mD2DResource->pTextFormat,
 		D2D1::RectF(35, 315, 150, 315),
@@ -1516,8 +1526,8 @@ void GameUI::RenderPlayerStates()
 void GameUI::RenderSaveLoadUI(UIRenderMode mode)
 {
 	std::wstring saveDataTitle;
-	if (mode == SAVEDATA)	saveDataTitle = L"Ç±ÇÃÉtÉ@ÉCÉãÇ…ÉZÅ[ÉuÉfÅ[É^Çï€ë∂ÇµÇ‹Ç∑Ç©";
-	else if (mode == LOADDATA)	saveDataTitle = L"Ç«ÇÃÉtÉ@ÉCÉãÇÉçÅ[ÉhÇµÇ‹Ç∑Ç©";
+	if (mode == SAVEDATA)	saveDataTitle = L"„Åì„ÅÆ„Éï„Ç°„Ç§„É´„Å´„Çª„Éº„Éñ„Éá„Éº„Çø„Çí‰øùÂ≠ò„Åó„Åæ„Åô„Åã";
+	else if (mode == LOADDATA)	saveDataTitle = L"„Å©„ÅÆ„Éï„Ç°„Ç§„É´„Çí„É≠„Éº„Éâ„Åó„Åæ„Åô„Åã";
 
 	// title
 	saveDataTitleBase->Render();

@@ -52,7 +52,8 @@ void IRectBase::CreateRenderResource(const std::vector<VertexType>vertices,
 
 	//InputLayout
 	this->mInputLayout = new InputLayout(this->mDevice, this->mDeviceContext);
-	this->mInputLayout->Create(VertexType::descs, VertexType::count, this->mVertexShader->GetBlob());
+	if (this->mVertexShader->GetBlob())
+		this->mInputLayout->Create(VertexType::descs, VertexType::count, this->mVertexShader->GetBlob());
 
 	//WorldBuffer
 	this->mWorldBuffer = new UploadBuffer<DirectX::XMFLOAT4X4>(
@@ -86,11 +87,15 @@ RectBase<VertexTexture>::~RectBase()
 
 void IRectBase::SetShader(std::wstring shaderPath)
 {
-	this->mVertexShader->Clear();
-	this->mPixelShader->Clear();
+	if (shaderPath.length() != 0)
+	{
+		this->mVertexShader->Clear();
+		this->mPixelShader->Clear();
 
-	this->mVertexShader->Create(shaderPath, "VS");
-	this->mPixelShader->Create(shaderPath, "PS");
+		this->mVertexShader->Create(shaderPath, "VS");
+		this->mPixelShader->Create(shaderPath, "PS");
+	}
+
 }
 
 void RectBase<VertexTexture>::UpdateWorld()

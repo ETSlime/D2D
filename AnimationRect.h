@@ -15,8 +15,8 @@ public:
 		EventType type = EventType::DEFAULT, bool isCentered = false);
 	~AnimationRect();
 
-	void Update();
-	void Render();
+	void Update() override;
+	void Render() override;
 
 	virtual void Move() override;
 

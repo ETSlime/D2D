@@ -17,6 +17,7 @@ struct GameState
     UINT curFloor;
     float totalTime;
     std::map<ItemID, UINT> inventoryItems;
+    std::set<int> visitedFloor;
 
     // events
     std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> eventParams;
@@ -84,6 +85,10 @@ private:
     // serialize and deserialize inventory item map
     static void SerializeInventoryItemMap(std::ofstream& ofs, const std::map<ItemID, UINT>& inventoryItems);
     static void DeserializeInventoryItemMap(std::ifstream& ifs, std::map<ItemID, UINT>& inventoryItems);
+
+    // serialize and deserialize visited floor set
+    static void SerializeVisitedFloor(std::ofstream& ofs, const std::set<int>& visitedFloor);
+    static void DeserializeVisitedFloor(std::ifstream& ifs, std::set<int>& visitedFloor);
 
     // serialize and deserialize EventType, including derived types
     static void SerializeEventType(std::ofstream& ofs, const EventType& type);

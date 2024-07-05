@@ -6,7 +6,7 @@
 #include "Player.h"
 #include "Database.h"
 
-typedef std::function<int()> OnClick;
+typedef std::function<void()> OnClick;
 
 class ButtonOnClick
 {
@@ -20,6 +20,8 @@ public:
 	static void startGameFadeCallback(Coroutine& coro);
 
 	static void returnTitleFadeCallback(Coroutine& coro);
+
+	static void symmetricFlyerCallback(Coroutine& coro);
 
 	static int tutorial();
 
@@ -46,6 +48,10 @@ public:
 	static int loadData(UINT slotNum);
 
 	static int showItemList(std::wstring itemCategory);
+
+	// item buttons
+	
+	static void symmetricFlyer();
 };
 
 struct Button

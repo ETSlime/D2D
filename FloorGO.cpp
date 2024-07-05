@@ -7,6 +7,7 @@ FloorGO::FloorGO(int floor):floor(floor){}
 void FloorGO::Init()
 {
 	Player::player->SetCurFLoor(floor);
+	Player::player->VisitFloor(floor);
 	tileMap = new TMap(floor);
 	map.GenerateEvent(floor);
 	UINT eventGOID = 0;

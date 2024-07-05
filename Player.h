@@ -43,9 +43,11 @@ public:
 	void StepsCountOne() { walkingSteps++; }
 	void SetCurFLoor(int newFloorNum) { curFloor = newFloorNum; }
 	const std::map<ItemID, UINT>& GetItems() const { return items; }
+	const std::set<int>& GetVisitedFloor() const { return visitedFloor; }
 
 	void AddItem(ItemID itemID);
 	bool UseItem(ItemID itemID);
+	void VisitFloor(int curFloor) { visitedFloor.insert(curFloor); }
 	void ChangeHP(int amount) { playerData.HP += amount; }
 	void ChangeAtk(int amount) { playerData.atk += amount; }
 	void ChangeDef(int amount) { playerData.def += amount; }
@@ -60,6 +62,7 @@ private:
 	PlayerData playerData;
 	UINT walkingSteps = 0;
 	std::map<ItemID, UINT> items;
+	std::set<int> visitedFloor;
 	int curFloor = 0;
 	bool allowControl = true;
 	// player weapons

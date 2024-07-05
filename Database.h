@@ -2,6 +2,7 @@
 
 #include "Util.h"
 
+
 #define DIALOGUE_BRANCH				(L"branch:\n")
 
 /*
@@ -36,10 +37,10 @@ enum class ItemID : UINT
 	HOE_2,
 	ICE,
 	EARTHQUAKE_SCROLL,
-	FLYER,
+	SYMMETRIC_FLYER,
 	DOWNSTAIR_FLYER,
 	UPSTAIR_FLYER,
-	PLACEHOLDER,
+	CROSS,
 	BOOMB,
 	LARGE_BOOMB,
 	PLACEHOLDER2,
@@ -105,4 +106,7 @@ public:
 	// key: dialogue ID		value: tuple of speakers' name and dialogue context
 	static std::unordered_map<UINT, std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>> dialogues;
 	static std::wstring branch;
+
+	// item button function map
+	static std::unordered_map<ItemID, std::function<void()>> buttonFuncMap;
 };

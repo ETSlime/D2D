@@ -13,6 +13,10 @@ struct PixelInput
 cbuffer PSBuffer : register(b2)
 {
     float enabled;
+    float fadeIn;
+    float fadeOut;
+    float totalTime;
+    float startTime;
 };
 
 cbuffer WorldBuffer : register(b0)// 0 ~ 127
@@ -46,5 +50,28 @@ float4 PS(PixelInput input) : SV_Target
     float4 color = _sourceTex.Sample(_samp, (float2)input.uv);
     if (!enabled)
         color = color * 0.5;
+    
+    // fade
+    float fadeDuration = 2.0;
+    
+    // Calculate the relative time since the fade started
+    float relativeTime = totalTime - startTime;
+    
+    // Only change the alpha value if the pixel is originally not transparent
+    if (color.a > 0.5)
+    {
+        if (fadeIn)
+        {
+        // Fade in from 0 to original alpha
+            color.a = saturate(relativeTime / fadeDuration);
+        }
+        else if (fadeOut)
+        {
+        // Fade out but ensure alpha does not go below a small threshold to distinguish from fully transparent pixels
+            color.a = saturate(1.0 - (relativeTime / fadeDuration) * 0.99);
+        }
+    }
+
+    
     return color;
 }

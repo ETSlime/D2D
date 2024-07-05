@@ -51,7 +51,7 @@ public:
 	};
 public:
 
-	GameUI(const D2DResource* D2DResource, const WinSize* winSize, UIRenderMode mode);
+	GameUI(const D2DResource* D2DResource, const WinSize* winSize, UIRenderMode mode, bool allowChange = true);
 	~GameUI();
 
 
@@ -212,6 +212,7 @@ private:
 	UIRenderMode renderMode;
 	bool renderModeOnChanging = false;
 	bool gameModeOnChanging = false;
+	bool allowChange = false;
 
 	// instance & resource
 	Keyboard& keyboard = Keyboard::get_instance();

@@ -1,4 +1,5 @@
 #include "MagicTowerApp.h"
+#include "OffScreenRenderer.h"
 #include "GameUIGO.h"
 #include "FloorGO.h"
 #include "PlayerGO.h"
@@ -36,7 +37,7 @@ MagicTowerApp::MagicTowerApp():D2DApp()
 
 MagicTowerApp::~MagicTowerApp()
 {
-
+    SAFE_DELETE(offScreenRenderer);
 }
 
 HRESULT MagicTowerApp::Initialize()
@@ -59,6 +60,37 @@ HRESULT MagicTowerApp::Initialize()
 
     }
     return hr;
+}
+
+void MagicTowerApp::BuildResources()
+{
+    gameUI = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::INGAMEUI);
+    startMenuGO = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU);
+    startMenuGO->Init();
+    PassCB = std::make_unique<UploadBuffer<PassConstants>>(
+        mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
+
+    offScreenRenderer = new OffScreenRenderer(pD2DFactory, &mD2DResource, OffScreenRenderMode::NONE, EffectParameters(),
+        DirectX::XMFLOAT3(curWindowSize.width, 0.0f, 0.0f), DirectX::XMFLOAT3(curWindowSize.width, curWindowSize.height, 1.0f), 0.0f);
+}
+
+void MagicTowerApp::UpdateMainPassCB()
+{
+    DirectX::XMMATRIX view = mCamera.GetView();
+    DirectX::XMMATRIX proj = mCamera.GetProj();
+
+    // Update view port
+    XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
+    XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
+
+    PassCB->MapData(mDeviceContext, mMainPassCB);
+
+}
+
+void MagicTowerApp::Push(std::wstring name, std::unique_ptr<IGameObj> GO)
+{
+    GO->Init();
+    mGOs[name] = std::move(GO);
 }
 
 void MagicTowerApp::OnResize(UINT width, UINT height)
@@ -162,11 +194,49 @@ void MagicTowerApp::Draw()
 
     // Clear the back buffer (no depth buffer)
     mDeviceContext->ClearRenderTargetView(rtv, DirectX::Colors::Black);
-    // Specify the buffers we are going to render to.
-    mDeviceContext->OMSetRenderTargets(1, &rtv, nullptr);
 
-    // Do rendering stuffs...
-    DrawRenderItems();
+
+    if (enableShakeEffect)
+    {
+        EffectParameters effectParams;
+        effectParams.shakeIntensity = 0.01f; // Set shake intensity
+        offScreenRenderer->SetEffectMode(OffScreenRenderMode::SHAKE);
+        offScreenRenderer->SetEffectParameters(effectParams);
+        OffScreenEffectRender();
+    }
+    else if (enableFadeEffect)
+    {
+        EffectParameters effectParams;
+        effectParams.fadeAlpha = 0.5f; // Set fade alpha
+        offScreenRenderer->SetEffectMode(OffScreenRenderMode::FADE);
+        offScreenRenderer->SetEffectParameters(effectParams);
+        OffScreenEffectRender();
+    }
+    else if (enableBlurEffect)
+    {
+        EffectParameters effectParams;
+        effectParams.blurAmount = 0.5f; // Set blur amount
+        offScreenRenderer->SetEffectMode(OffScreenRenderMode::BLUR);
+        offScreenRenderer->SetEffectParameters(effectParams);
+        OffScreenEffectRender();
+    }
+    else 
+    {
+        // Switch pD2DRenderTarget back to swap chain back buffer
+        // Release the existing Direct2D render target if it exists
+        if (mD2DResource.pD2DRenderTarget)
+        {
+            SafeRelease(&mD2DResource.pD2DRenderTarget);
+        }
+        D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED));
+        pD2DFactory->CreateDxgiSurfaceRenderTarget(pBackBufferSurface, &props, &(mD2DResource.pD2DRenderTarget));
+
+        // Specify the buffers we are going to render to.
+        mDeviceContext->OMSetRenderTargets(1, &rtv, nullptr);
+
+        // Do rendering stuffs...
+        DrawRenderItems();
+    }
 
 
     // Swap the back and front buffers
@@ -174,38 +244,28 @@ void MagicTowerApp::Draw()
     assert(SUCCEEDED(hr));
 }
 
-void MagicTowerApp::BuildResources()
+
+void MagicTowerApp::OffScreenEffectRender()
 {
-    gameUI = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::INGAMEUI);
-    startMenuGO = std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::STARTMENU);
-    startMenuGO->Init();
-    PassCB = std::make_unique<UploadBuffer<PassConstants>>(
-        mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
-}
+    offScreenRenderer->Begin();
 
-void MagicTowerApp::UpdateMainPassCB()
-{
-    DirectX::XMMATRIX view = mCamera.GetView();
-    DirectX::XMMATRIX proj = mCamera.GetProj();
+    // Do rendering stuffs...
+    DrawRenderItems();
 
-    // Update view port
-    XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
-    XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
+    // Reset render target to the screen
+    mDeviceContext->OMSetRenderTargets(1, &rtv, nullptr);
 
-    PassCB->MapData(mDeviceContext,mMainPassCB);
+    // Update offScreenRenderer
+    offScreenRenderer->Update();
+    // Render
+    offScreenRenderer->ApplyEffect(offScreenRenderer->GetEffectParams());
 
-}
-
-void MagicTowerApp::Push(std::wstring name, std::unique_ptr<IGameObj> GO)
-{
-    GO->Init();
-    mGOs[name] = std::move(GO);
+    // Restore blend state
+    mDeviceContext->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);
 }
 
 void MagicTowerApp::DrawRenderItems()
 {
-    
-
     mDeviceContext->VSSetConstantBuffers(1, 1, PassCB->Resource());
 
     mKeyboard.Update();

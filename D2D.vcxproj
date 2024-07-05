@@ -161,6 +161,7 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="GameNPC.cpp" />
+    <ClCompile Include="OffScreenRenderer.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PlayerControl.cpp" />
     <ClCompile Include="PixelShader.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="GameNPC.h" />
+    <ClInclude Include="OffScreenRenderer.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PlayerControl.h" />
     <ClInclude Include="PixelShader.h" />

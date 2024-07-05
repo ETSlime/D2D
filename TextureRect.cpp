@@ -8,8 +8,12 @@ TextureRect::TextureRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, flo
 	SetIndices();
 	CreateRenderResource(vertices, indices, ShaderPath + L"VertexTexture.hlsl");
 
-	shaderBuffer = new UploadBuffer<float>(mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
-	enabled = 1.0f;
+	shaderBuffer = new UploadBuffer<ShaderData>(mDevice, mDeviceContext, 1, D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC);
+	shaderData.enabled = 1.0f;
+	shaderData.fadeIn = 0.0f;
+	shaderData.fadeOut = 0.0f;
+	shaderData.totalTime = 0.0f;
+	shaderData.startTime = 0.0f;
 
 }
 
@@ -65,7 +69,8 @@ TextureRect::~TextureRect()
 
 void TextureRect::Update()
 {
-	shaderBuffer->MapData(mDeviceContext, enabled);
+	shaderData.totalTime = Timer::TotalTime();
+	shaderBuffer->MapData(mDeviceContext, shaderData);
 	UpdateWorld();
 	Move();
 }

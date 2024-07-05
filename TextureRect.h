@@ -28,7 +28,10 @@ public:
 	void UnmapVertexBuffer();
 
 	DirectX::XMFLOAT3* GetPos() { return &position; }
-	void SetEnable(bool enable) { enabled = enable; }
+	void SetEnable(bool enable) { shaderData.enabled = enable; }
+	void StartFadeIn() { shaderData.fadeOut = false; shaderData.fadeIn = true; shaderData.startTime = Timer::TotalTime(); }
+	void StartFadeOut() { shaderData.fadeIn = false; shaderData.fadeOut = true; shaderData.startTime = Timer::TotalTime(); }
+	void StopFade() { shaderData.fadeOut = false; shaderData.fadeIn = false; }
 	void SetPos(DirectX::XMFLOAT3 Pos) { this->position = Pos; }
 
 	void SetCollisionLT(float x, float y) { this->CollisionEdge_LT = { x,y }; }
@@ -38,20 +41,28 @@ public:
 
 protected:
 
+	struct ShaderData
+	{
+		float enabled;
+		float fadeIn;
+		float fadeOut;
+		float totalTime;
+		float startTime;
+	};
+
 	std::vector<VertexTexture> vertices;
 
 	std::vector<UINT> indices;
-
+	ShaderData shaderData;
 	D3D11_MAPPED_SUBRESOURCE subResource;
 
 	BoundingBox* boundingBox = nullptr;
 
-	UploadBuffer<float>* shaderBuffer;
+	UploadBuffer<ShaderData>* shaderBuffer;
 
 
 	DirectX::XMFLOAT2 CollisionEdge_LT = { 0,0 };
 	DirectX::XMFLOAT2 CollisionEdge_RB = { 0,0 };
 
 	bool centered;
-	float enabled;
 };

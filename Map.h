@@ -21,6 +21,7 @@ public:
 	friend class MapStatic;
 	friend class FloorGO;
 	friend class GameUI;
+	friend class ButtonOnClick;
 
 	Map();
 	~Map();

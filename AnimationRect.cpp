@@ -5,7 +5,7 @@
 AnimationRect::AnimationRect(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size, EventType type, bool isCentered)
 	:TextureRect(position, size, 0.0f, isCentered)
 {
-	SetShader(ShaderPath + L"Animation.hlsl");
+	//SetShader(ShaderPath + L"Animation.hlsl");
 
 
 	//{

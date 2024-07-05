@@ -10,6 +10,7 @@ GameState SaveData::GetGameState()
     gameState.playerCoord = Player::player->GetCoord();
     gameState.walkingSteps = Player::player->GetWalkingSteps();
     gameState.inventoryItems = Player::player->GetItems();
+    gameState.visitedFloor = Player::player->GetVisitedFloor();
     gameState.curFloor = Player::player->GetCurFloor();
 
     gameState.mapTileIdx = MapStatic::mapTileIdx;
@@ -67,6 +68,9 @@ int SaveData::SaveGame(const std::string& filename)
     // item
     SerializeInventoryItemMap(ofs, state.inventoryItems);
 
+    // visited floor
+    SerializeVisitedFloor(ofs, state.visitedFloor);
+
     // event params
     SerializeEventParamsMap(ofs, state.eventParams);
 
@@ -114,6 +118,9 @@ int SaveData::LoadGame(const std::string& filename, GameState& gameState)
     // deserialize hash map
     // item
     DeserializeInventoryItemMap(ifs, gameState.inventoryItems);
+
+    // visited floor
+    DeserializeVisitedFloor(ifs, gameState.visitedFloor);
 
     // event params
     DeserializeEventParamsMap(ifs, gameState.eventParams);
@@ -215,6 +222,28 @@ void SaveData::DeserializeInventoryItemMap(std::ifstream& ifs, std::map<ItemID, 
         ReadHex(ifs, itemID);
         ReadHex(ifs, itemValue);
         inventoryItems[itemID] = itemValue;
+    }
+}
+
+void SaveData::SerializeVisitedFloor(std::ofstream& ofs, const std::set<int>& visitedFloor)
+{
+    size_t size = visitedFloor.size();
+    WriteHex(ofs, size);  // Write the size of the set
+    for (const int& floor : visitedFloor) 
+    {
+        WriteHex(ofs, floor);  // Write each element
+    }
+}
+void SaveData::DeserializeVisitedFloor(std::ifstream& ifs, std::set<int>& visitedFloor)
+{
+    size_t size;
+    ReadHex(ifs, size);  // Read the size of the set
+    visitedFloor.clear();
+    for (size_t i = 0; i < size; ++i) 
+    {
+        int floor;
+        ReadHex(ifs, floor);  // Read each element
+        visitedFloor.insert(floor);
     }
 }
 
