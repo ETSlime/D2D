@@ -6,6 +6,8 @@
 #include "Item.h"
 #include "Stair.h"
 #include "GameNPC.h"
+#include "Arrow.h"
+#include "GeneralEvent.h"
 
 class EventFactory 
 {
@@ -38,6 +40,17 @@ public:
         {
             const NPCEventDescriptor& NPCDesc = static_cast<const NPCEventDescriptor&>(descriptor);
             return std::make_shared<GameNPC>(NPCDesc.coord, NPCDesc.NPCID, NPCDesc.dialogueID, NPCDesc.eventName);
+        }
+        case EventType::ARROW:
+        {
+            const ArrowEventDescriptor& ArrowDesc = static_cast<const ArrowEventDescriptor&>(descriptor);
+            return std::make_shared<Arrow>(ArrowDesc.coord, ArrowDesc.arrowDir, ArrowDesc.eventName);
+        }
+        case EventType::DEFAULT:
+        {
+            const GeneralEventDescriptor& generalEventDesc = static_cast<const GeneralEventDescriptor&>(descriptor);
+            return std::make_shared<GeneralEvent>(generalEventDesc.coord, generalEventDesc.triggerID, 
+                generalEventDesc.colliderType, generalEventDesc.triggerOnce, generalEventDesc.eventName);
         }
         //case EventType::TERRAIN: 
         //{

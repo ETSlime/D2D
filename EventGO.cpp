@@ -13,27 +13,34 @@ void EventGO::Init()
 
 void EventGO::Destroy()
 {
-	this->event.reset();
+	if (this->event)
+		this->event.reset();
 }
 
 void EventGO::Update()
 {
-	event->Update();
-	if (event->GetDestroyed())
+	if (event)
 	{
-		SetIsDestroyed(true);
+		event->Update();
+		if (event->GetDestroyed())
+		{
+			SetIsDestroyed(true);
+		}
 	}
+
 		
 }
 
 void EventGO::Render()
 {
-	event->Render();
+	if (event)
+		event->Render();
 }
 
 void EventGO::PostRender()
 {
-	event->PostRender();
+	if (event)
+		event->PostRender();
 }
 
 void EventGO::GUI()

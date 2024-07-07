@@ -65,7 +65,7 @@ void GameUI::InitGameUI(GameUI::UIRenderMode mode)
 	case DIALOGUE:
 		this->InitDialogue();
 		break;
-	case ITEMGET:
+	case MESSAGE:
 		this->InitItemGet();
 		break;
 	default:
@@ -512,7 +512,7 @@ void GameUI::Render()
 		break;
 	}
 
-	case ITEMGET:
+	case MESSAGE:
 	{
 		dialogueBase->Render();
 
@@ -660,7 +660,7 @@ void GameUI::Update()
 			Player::player->SetAllowControl(true);
 		}
 		break;
-	case ITEMGET:
+	case MESSAGE:
 		dialogueBase->Update();
 
 		if (keyboard.Up('C') ||

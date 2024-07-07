@@ -50,7 +50,7 @@ void PlayerControl::SetMovement(DWORD key, DirectX::XMFLOAT3& position)
 	case VK_UP:
 		move = DirectX::XMFLOAT3(0.0f, TileHeight, 0.0f);
 		movingWhere = Up;
-		if (!player->CanMove(move))
+		if (!player->GetWalkable(Direction::Up) || !player->CanMove(move))
 		{
 			Idle();
 			return;
@@ -62,7 +62,7 @@ void PlayerControl::SetMovement(DWORD key, DirectX::XMFLOAT3& position)
 	case VK_DOWN:
 		move = DirectX::XMFLOAT3(0.0f, 0.0f - TileHeight, 0.0f);
 		movingWhere = Down;
-		if (!player->CanMove(move))
+		if (!player->GetWalkable(Direction::Down) || !player->CanMove(move))
 		{
 			Idle();
 			return;
@@ -74,7 +74,7 @@ void PlayerControl::SetMovement(DWORD key, DirectX::XMFLOAT3& position)
 	case VK_LEFT:
 		move = DirectX::XMFLOAT3(0.0f - TileWidth, 0.0f, 0.0f);
 		movingWhere = Left;
-		if (!player->CanMove(move))
+		if (!player->GetWalkable(Direction::Left) || !player->CanMove(move))
 		{
 			Idle();
 			return;
@@ -86,7 +86,7 @@ void PlayerControl::SetMovement(DWORD key, DirectX::XMFLOAT3& position)
 	case VK_RIGHT:
 		move = DirectX::XMFLOAT3(TileWidth, 0.0f, 0.0f);
 		movingWhere = Right;
-		if (!player->CanMove(move))
+		if (!player->GetWalkable(Direction::Right) || !player->CanMove(move))
 		{
 			Idle();
 			return;
@@ -99,6 +99,8 @@ void PlayerControl::SetMovement(DWORD key, DirectX::XMFLOAT3& position)
 		break;
 	}
 	UpdatePlayerCoord(key);
+	if (player->GetWalkRestricted())
+		player->UpdateWalkable();
 	prevPosition = position;
 }
 
@@ -122,10 +124,12 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 			{
 			case VK_UP:
 				move = DirectX::XMFLOAT3(0.0f, TileHeight, 0.0f);
-				if (!player->CanMove(move))
+				if (!player->GetWalkable(Direction::Up) || !player->CanMove(move))
 				{
 					moveDir = false;
 					player->UpdatePositionByCoord(player->GetCoord());
+					if (player->GetWalkRestricted())
+						player->UpdateWalkable();
 					Idle();
 					return;
 				}
@@ -133,10 +137,12 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 				break;
 			case VK_DOWN:
 				move = DirectX::XMFLOAT3(0.0f, 0.0f - TileHeight, 0.0f);
-				if (!player->CanMove(move))
+				if (!player->GetWalkable(Direction::Down) || !player->CanMove(move))
 				{
 					moveDir = false;
 					player->UpdatePositionByCoord(player->GetCoord());
+					if (player->GetWalkRestricted())
+						player->UpdateWalkable();
 					Idle();
 					return;
 				}
@@ -144,10 +150,12 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 				break;
 			case VK_LEFT:
 				move = DirectX::XMFLOAT3(0.0f - TileWidth, 0.0f, 0.0f);
-				if (!player->CanMove(move))
+				if (!player->GetWalkable(Direction::Left) || !player->CanMove(move))
 				{
 					moveDir = false;
 					player->UpdatePositionByCoord(player->GetCoord());
+					if (player->GetWalkRestricted())
+						player->UpdateWalkable();
 					Idle();
 					return;
 				}
@@ -155,10 +163,12 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 				break;
 			case VK_RIGHT:
 				move = DirectX::XMFLOAT3(TileWidth, 0.0f, 0.0f);
-				if (!player->CanMove(move))
+				if (!player->GetWalkable(Direction::Right) || !player->CanMove(move))
 				{
 					moveDir = false;
 					player->UpdatePositionByCoord(player->GetCoord());
+					if (player->GetWalkRestricted())
+						player->UpdateWalkable();
 					Idle();
 					return;
 				}
@@ -166,11 +176,15 @@ void PlayerControl::Move(bool& moveDir, DWORD key, DirectX::XMFLOAT3& position)
 				break;
 			}
 			UpdatePlayerCoord(key);
+			if (player->GetWalkRestricted())
+				player->UpdateWalkable();
 			prevPosition = position;
 		}
 		else
 		{
 			player->UpdatePositionByCoord(player->GetCoord());
+			if (player->GetWalkRestricted())
+				player->UpdateWalkable();
 			moveDir = false;
 		}
 	}

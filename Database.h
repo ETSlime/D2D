@@ -109,4 +109,7 @@ public:
 
 	// item button function map
 	static std::unordered_map<ItemID, std::function<void()>> buttonFuncMap;
+
+	// general event function pointer
+	static std::unordered_map<UINT, std::function<void()>> generalEventFuncMap;
 };

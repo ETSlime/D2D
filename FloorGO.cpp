@@ -14,7 +14,8 @@ void FloorGO::Init()
 	for (auto& event : map.curEvents)
 	{
 		std::wstring EventGOName;
-		if (event.second.get()->GetEventType() == EventType::STAIR)
+
+		if (event.second.get() && event.second.get()->GetEventType() == EventType::STAIR)
 			dynamic_cast<Stair*>(event.second.get())->SetCurrentFloor(floor);
 
 		EventGOName = L"EventGO" + std::to_wstring(eventGOID++);

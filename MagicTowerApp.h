@@ -70,6 +70,7 @@ class MagicTowerApp :public D2DApp, public SingletonBase<MagicTowerApp>
 private:
     friend class ButtonOnClick;
     friend class SingletonBase<MagicTowerApp>;
+    friend class GeneralEventOnTrigger;
 
     Camera& mCamera = Camera::get_instance();
     Keyboard& mKeyboard = Keyboard::get_instance();
@@ -125,7 +126,7 @@ private:
 
 public:
     // public methods for other class
-    void ShowItemGetDialogue(UINT itemID);
+    void ShowMessageDialogue(UINT itemID);
     void ShowNPCDialogue(UINT dialogueID);
     void ReturnTitle();
     void DestroyGO(std::wstring name);

@@ -291,6 +291,12 @@ void SaveData::SerializeEventParams(std::ofstream& ofs, const EventParams& param
     else if (dynamic_cast<const NPCParams*>(&params)) {
         typeIdentifier = EventTypeIdentifier::NPCParams;
     }
+    else if (dynamic_cast<const ArrowParams*>(&params)) {
+        typeIdentifier = EventTypeIdentifier::ArrowParams;
+    }
+    else if (dynamic_cast<const GeneralEventParams*>(&params)) {
+        typeIdentifier = EventTypeIdentifier::GeneralEventParams;
+    }
     else {
         throw std::runtime_error("Unknown EventParams type");
     }
@@ -329,6 +335,18 @@ void SaveData::SerializeEventParams(std::ofstream& ofs, const EventParams& param
         const NPCParams& np = static_cast<const NPCParams&>(params);
         WriteHex(ofs, np.NPCID);
         WriteHex(ofs, np.dialogueID);
+        break;
+    }
+    case EventTypeIdentifier::ArrowParams: {
+        const ArrowParams& ap = static_cast<const ArrowParams&>(params);
+        WriteHex(ofs, ap.arrowDir);
+        break;
+    }
+    case EventTypeIdentifier::GeneralEventParams: {
+        const GeneralEventParams& gp = static_cast<const GeneralEventParams&>(params);
+        WriteHex(ofs, gp.triggerID);
+        WriteHex(ofs, gp.triggerOnce);
+        WriteHex(ofs, gp.colliderType);
         break;
     }
     }
@@ -377,6 +395,22 @@ std::unique_ptr<EventParams> SaveData::DeserializeEventParams(std::ifstream& ifs
         ReadHex(ifs, NPCID);
         ReadHex(ifs, dialogueID);
         return std::make_unique<NPCParams>(type, coord, NPCID, dialogueID);
+    }
+    case EventTypeIdentifier::ArrowParams: {
+        ArrowDirection arrowDir;
+        ReadHex(ifs, arrowDir);
+        return std::make_unique<ArrowParams>(type, coord, arrowDir);
+        break;
+    }
+    case EventTypeIdentifier::GeneralEventParams: {
+        UINT triggerID;
+        bool triggerOnce;
+        ColliderType colliderType;
+        ReadHex(ifs, triggerID);
+        ReadHex(ifs, triggerOnce);
+        ReadHex(ifs, colliderType);
+        return std::make_unique<GeneralEventParams>(type, coord, triggerID, triggerOnce, colliderType);
+        break;
     }
     default:
         throw std::runtime_error("Unknown EventParams type");

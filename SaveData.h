@@ -52,7 +52,9 @@ enum class EventTypeIdentifier
     ItemParams,
     DoorParams,
     StairParams,
-    NPCParams
+    NPCParams,
+    ArrowParams,
+    GeneralEventParams
 };
 
 class SaveData

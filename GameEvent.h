@@ -14,6 +14,7 @@ enum class EventType
 	DOOR,
 	TERRAIN,
 	STAIR,
+	ARROW,
 	DEFAULT
 };
 
@@ -29,6 +30,14 @@ enum class StairType
 {
 	UP,
 	DOWN
+};
+
+enum class ArrowDirection
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
 };
 
 struct EventDescriptor 
@@ -100,6 +109,31 @@ struct NPCEventDescriptor : public EventDescriptor
 	}
 };
 
+struct ArrowEventDescriptor : public EventDescriptor
+{
+	ArrowDirection arrowDir;
+	ArrowEventDescriptor() = default;
+	ArrowEventDescriptor(ArrowDirection dir)
+	{
+		arrowDir = dir;
+	}
+};
+
+struct GeneralEventDescriptor : public EventDescriptor
+{
+	UINT triggerID;
+	bool triggerOnce;
+	ColliderType colliderType;
+
+	GeneralEventDescriptor() = default;
+	GeneralEventDescriptor(UINT ID, bool once, ColliderType type)
+	{
+		triggerID = ID;
+		triggerOnce = once;
+		colliderType = type;
+	}
+};
+
 class GameEvent
 {
 public:
@@ -113,7 +147,6 @@ public:
 
 	DirectX::XMFLOAT3* GetPosition();
 	void SetupAnimRect(ColliderType type);
-	void SetCollision(float LT_x, float LT_y, float RB_x, float RB_y);
 	void SetCoord(Coord newCoord);
 	void UpdatePositionByCoord(Coord newCoord);
 	Coord GetCoord() { return eventCoord; }

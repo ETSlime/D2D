@@ -31,6 +31,12 @@ public:
 	void PlayFadeEffect(bool fade);
 	void SetAllowControl(bool allow) { allowControl = allow; }
 	bool GetAllowControl() { return allowControl; }
+	bool GetWalkable(PlayerControl::Direction dir) { return walkable[dir]; }
+	// left/right/up/down
+	void SewWalkable(std::array<bool, 4> buffer) { walkableBuffer = buffer; walkRestricted = true; }
+	void UpdateWalkable() { walkable = walkableBuffer; }
+	void ResetWalkable() { walkable = { true, true, true, true }; walkRestricted = false; }
+	bool GetWalkRestricted() { return walkRestricted; }
 	static Player* player;
 	
 	bool playAttackAnim = false;
@@ -55,7 +61,7 @@ public:
 	void ChangeExp(int amount) { playerData.exp += amount; }
 	void ChangeGold(int amount) { playerData.gold += amount; }
 	const PlayerData GetBattleData() { return playerData; }
-
+	
 private:
 
 	// player attributes
@@ -65,6 +71,10 @@ private:
 	std::set<int> visitedFloor;
 	int curFloor = 0;
 	bool allowControl = true;
+	bool walkRestricted = false;
+	// left/right/up/down
+	std::array<bool, 4> walkable = { true, true, true, true };
+	std::array<bool, 4> walkableBuffer = { true, true, true, true };
 	// player weapons
 	Weapon* armor = nullptr;
 	Weapon* sword = nullptr;

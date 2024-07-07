@@ -53,7 +53,6 @@ Item::~Item()
 
 void Item::Update()
 {
-	animator->Update();
 	animRect->Update();
 }
 

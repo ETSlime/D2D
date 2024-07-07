@@ -67,13 +67,13 @@ void ButtonOnClick::symmetricFlyerCallback(Coroutine& coro)
 		Player::player->UseItem(ItemID::SYMMETRIC_FLYER);
 		Player::player->SetAllowControl(false);
 		Player::player->animRect->StartFadeOut();
-		coro.yield(2);
+		coro.yield(1);
 	}
 	if (coro.getState() == 1)
 	{
 		Player::player->UpdatePositionByCoord(Player::player->GetCoord());
 		Player::player->animRect->StartFadeIn();
-		coro.yield(2);
+		coro.yield(1);
 	}
 	if (coro.getState() == 2)
 	{
@@ -206,33 +206,32 @@ int ButtonOnClick::loadData(UINT slotNum)
 
 void ButtonOnClick::symmetricFlyer()
 {
-	mApp.SetShakeEffect(true);
 	mApp.SetGameMode(GameMode::GAMEPLAY);
 
-	//Coord oldCoord = Player::player->GetCoord();
-	//Coord newCoord = Coord(MapStatic::gameWidth - oldCoord.x, MapStatic::gameHeight - oldCoord.y);
+	Coord oldCoord = Player::player->GetCoord();
+	Coord newCoord = Coord(MapStatic::gameWidth - oldCoord.x, MapStatic::gameHeight - oldCoord.y);
 
-	//// check target position tile walkable
-	//if (!Map::get_instance().curMap[newCoord].get()->GetIsWalkable())
-	//{
-	//	mApp.Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mApp.mD2DResource, &mApp.curWindowSize, GameUI::ITEMGET, false));
-	//	dynamic_cast<GameUIGO*>(mApp.mGOs[L"UIDialogueGO"].get())->SetDialogue(L"その場所には到達できません。");
-	//	return;
-	//}
+	// check target position tile walkable
+	if (!Map::get_instance().curMap[newCoord].get()->GetIsWalkable())
+	{
+		mApp.Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mApp.mD2DResource, &mApp.curWindowSize, GameUI::MESSAGE, false));
+		dynamic_cast<GameUIGO*>(mApp.mGOs[L"UIDialogueGO"].get())->SetDialogue(L"その場所には到達できません。");
+		return;
+	}
 
-	//// check if events on target position
-	//for (auto& curEvent : Map::get_instance().curEvents)
-	//{
-	//	if (curEvent.second.get()->GetCoord() == newCoord)
-	//	{
-	//		mApp.Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mApp.mD2DResource, &mApp.curWindowSize, GameUI::ITEMGET, false));
-	//		dynamic_cast<GameUIGO*>(mApp.mGOs[L"UIDialogueGO"].get())->SetDialogue(L"その場所には到達できません。");
-	//		return;
-	//	}
-	//}
-	//Player::player->SetCoord(newCoord);
-	//coro = std::make_unique<Coroutine>();
-	//coro.get()->setCallback([](Coroutine& coro)
-	//	{ symmetricFlyerCallback(coro); });
-	//(*coro.get())();
+	// check if events on target position
+	for (auto& curEvent : Map::get_instance().curEvents)
+	{
+		if (curEvent.second.get()->GetCoord() == newCoord)
+		{
+			mApp.Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mApp.mD2DResource, &mApp.curWindowSize, GameUI::MESSAGE, false));
+			dynamic_cast<GameUIGO*>(mApp.mGOs[L"UIDialogueGO"].get())->SetDialogue(L"その場所には到達できません。");
+			return;
+		}
+	}
+	Player::player->SetCoord(newCoord);
+	coro = std::make_unique<Coroutine>();
+	coro.get()->setCallback([](Coroutine& coro)
+		{ symmetricFlyerCallback(coro); });
+	(*coro.get())();
 }

@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClCompile Include="AnimationRect.cpp" />
     <ClCompile Include="Animator.cpp" />
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="ButtonOnClick.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="DirectHelper.cpp" />
     <ClCompile Include="FloorGO.cpp" />
     <ClCompile Include="GameUI.cpp" />
+    <ClCompile Include="GeneralEvent.cpp" />
     <ClCompile Include="InputLayout.cpp" />
     <ClCompile Include="IShader.cpp" />
     <ClCompile Include="Item.cpp" />
@@ -186,6 +188,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationRect.h" />
     <ClInclude Include="Animator.h" />
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Battle.h" />
     <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="ButtonOnClick.h" />
@@ -203,6 +206,8 @@
     <ClInclude Include="DirectHelper.h" />
     <ClInclude Include="FloorGO.h" />
     <ClInclude Include="GameUI.h" />
+    <ClInclude Include="GeneralEvent.h" />
+    <ClInclude Include="GeneralEventOnTrigger.h" />
     <ClInclude Include="IGameObj.h" />
     <ClInclude Include="InputLayout.h" />
     <ClInclude Include="IShader.h" />

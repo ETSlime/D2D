@@ -75,16 +75,10 @@ Stair::~Stair()
 
 void Stair::Update()
 {
-	animator->Update();
 	animRect->Update();
 }
 
 void Stair::Render()
 {
 	animRect->Render();
-}
-
-void Stair::PostRender()
-{
-
 }

@@ -20,16 +20,6 @@ Map::Map()
 		std::bind(&Map::DestroyEventsHandler, this, std::placeholders::_1)));
 
 	mapBuilder = MapStatic::BuildFloor;
-	//mapBuilder[0] = MapStatic::BuildFloor0;
-	//mapBuilder[1] = MapStatic::BuildFloor1;
-	//mapBuilder[2] = MapStatic::BuildFloor2;
-	//mapBuilder[3] = MapStatic::BuildFloor3;
-	//mapBuilder[4] = MapStatic::BuildFloor4;
-	//mapBuilder[5] = MapStatic::BuildFloor5;
-	//mapBuilder[6] = MapStatic::BuildFloor6;
-	//mapBuilder[7] = MapStatic::BuildFloor7;
-	//mapBuilder[8] = MapStatic::BuildFloor8;
-	//mapBuilder[9] = MapStatic::BuildFloor9;
 }
 
 Map::~Map()
@@ -92,4 +82,14 @@ void Map::UpdateCollisionBoxes()
 		if (event.second)
 			collisionBoxes.push_back(event.second.get()->GetBoundingBox());
 	}
+}
+
+std::wstring Map::GetEventNameByCoord(Coord coord)
+{
+	for (auto& event : curEvents)
+	{
+		if (coord == event.second.get()->GetCoord())
+			return event.second.get()->GetEventName();
+	}
+	return std::wstring();
 }

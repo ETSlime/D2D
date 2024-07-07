@@ -47,7 +47,7 @@ public:
 		SAVEDATA,
 		LOADDATA,
 		DIALOGUE,
-		ITEMGET,
+		MESSAGE,
 	};
 public:
 

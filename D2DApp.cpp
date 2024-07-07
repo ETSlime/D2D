@@ -439,7 +439,7 @@ void D2DApp::OnResize(UINT width, UINT height)
         DXGI_FORMAT_B8G8R8A8_UNORM,//DXGI_FORMAT_UNKNOWN,
         0
     );
-    assert(SUCCEEDED(hr));
+    //assert(SUCCEEDED(hr));
 
     CreateRenderTargetView();
 

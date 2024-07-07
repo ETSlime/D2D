@@ -113,6 +113,46 @@ std::unique_ptr<EventDescriptor> MapStatic::CreateEventDescriptor(EventType even
 		eventDescriptor = std::move(NPCDesc);
 		break;
 	}
+	case EventType::ARROW:
+	{
+		std::unique_ptr<ArrowEventDescriptor> arrowDesc = std::make_unique<ArrowEventDescriptor>();
+		arrowDesc.get()->coord = coord;
+		arrowDesc.get()->eventID = eventID++;
+		arrowDesc.get()->eventName = eventName;
+		arrowDesc.get()->eventType = eventType;
+		arrowDesc.get()->arrowDir = static_cast<ArrowDirection>(ID);
+		eventDescriptor = std::move(arrowDesc);
+		break;
+	}
+	case EventType::DEFAULT:
+	{
+		bool triggerOnce = false;
+		ColliderType colliderType = ColliderType::BLOCKING;
+		(void)std::initializer_list<int>{
+			([&](auto&& arg)
+				{
+					if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<decltype(arg)>>, bool>)
+					{
+						triggerOnce = arg;
+					}
+					else if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<decltype(arg)>>, ColliderType>)
+					{
+						colliderType = arg;
+					}
+					return 0;
+				}(args), 0)...
+		};
+		std::unique_ptr<GeneralEventDescriptor> eventDesc = std::make_unique<GeneralEventDescriptor>();
+		eventDesc.get()->coord = coord;
+		eventDesc.get()->eventID = eventID++;
+		eventDesc.get()->eventName = eventName;
+		eventDesc.get()->eventType = eventType;
+		eventDesc.get()->triggerID = ID;
+		eventDesc.get()->triggerOnce = triggerOnce;
+		eventDesc.get()->colliderType = colliderType;
+		eventDescriptor = std::move(eventDesc);
+		break;
+	}
 	default:
 		return std::unique_ptr<EventDescriptor>(nullptr);
 	}
@@ -141,6 +181,12 @@ void MapStatic::BuildFloor(int floorNum)
 		else if (auto npcParams = dynamic_cast<NPCParams*>(params.get())) {
 			eventFloor[floorNum].push_back(CreateEventDescriptor(npcParams->type, npcParams->coord, npcParams->NPCID, name, npcParams->dialogueID));
 		}
+		else if (auto arrowParams = dynamic_cast<ArrowParams*>(params.get())) {
+			eventFloor[floorNum].push_back(CreateEventDescriptor(arrowParams->type, arrowParams->coord, static_cast<UINT>(arrowParams->arrowDir), name));
+		}
+		else if (auto generalEventParams = dynamic_cast<GeneralEventParams*>(params.get())) {
+			eventFloor[floorNum].push_back(CreateEventDescriptor(generalEventParams->type, generalEventParams->coord, generalEventParams->triggerID, name, generalEventParams->triggerOnce, generalEventParams->colliderType));
+		}
 	}
 	
 }
@@ -160,14 +206,19 @@ eventParams = []
 			// Using emplace to avoid copying std::unique_ptr, which is non-copyable.
 			//tempEventParams[0].emplace(L"NPC001", std::make_unique<NPCParams>(EventType::NPC, Coord{ 12, 1 }, 0, 2));
 			//tempEventParams[0].emplace(L"Monster001", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 5 }, 0));
-			//tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::YELLOW_KEY));
+			tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::YELLOW_KEY));
 			tempEventParams[0].emplace(L"Item002", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 7 }, ItemID::SYMMETRIC_FLYER));
-			//tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::RED_KEY));
+			tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::RED_KEY));
 			//tempEventParams[0].emplace(L"Door001", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 6 }, DoorType::YELLOW));
-			//tempEventParams[0].emplace(L"Item004", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 4, 10 }, ItemID::BOOK));
+			tempEventParams[0].emplace(L"Item004", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 4, 10 }, ItemID::BOOK));
 			//tempEventParams[0].emplace(L"Door002", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 7 }, DoorType::BLUE));
 			//tempEventParams[0].emplace(L"Door003", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 8 }, DoorType::RED));
 			tempEventParams[0].emplace(L"Stair001", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::UP, Coord{ 1, 1 }));
+			tempEventParams[0].emplace(L"General001", std::make_unique<GeneralEventParams>(EventType::DEFAULT, Coord{ 6, 6 }, 0, false, ColliderType::TRIGGER));
+			tempEventParams[0].emplace(L"Arrow001", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 6, 7 }, ArrowDirection::DOWN));
+			tempEventParams[0].emplace(L"Arrow002", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 7, 7 }, ArrowDirection::UP));
+			tempEventParams[0].emplace(L"Arrow003", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 8, 7 }, ArrowDirection::LEFT));
+			tempEventParams[0].emplace(L"Arrow004", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 9, 7 }, ArrowDirection::RIGHT));
 
 			//tempEventParams[1].emplace(L"Door003", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 8 }, DoorType::RED));
 			tempEventParams[1].emplace(L"Stair001", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::DOWN, Coord{ 2, 2 }));

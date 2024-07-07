@@ -82,6 +82,33 @@ struct NPCParams : public EventParams {
 		: EventParams(type, coord), NPCID(NPCID), dialogueID(dialogueID) {}
 };
 
+/*
+* Event type: Arrow
+* Coordinate
+* Arrow Dir
+*/
+struct ArrowParams : public EventParams {
+	ArrowDirection arrowDir;
+
+	ArrowParams(EventType type, Coord coord, ArrowDirection dir)
+		: EventParams(type, coord), arrowDir(dir) {}
+};
+
+/*
+* Event type: Default
+* Coordinate
+* Event trigger ID
+* Trigger repeat or not
+* Collider type
+*/
+struct GeneralEventParams : public EventParams {
+	UINT triggerID;
+	bool triggerOnce;
+	ColliderType colliderType;
+	GeneralEventParams(EventType type, Coord coord, UINT triggerID, bool triggerOnce, ColliderType colliderType)
+		: EventParams(type, coord), triggerID(triggerID), triggerOnce(triggerOnce), colliderType(colliderType) {}
+};
+
 class MapStatic
 {
 public:

@@ -15,7 +15,6 @@ public:
 
 	virtual void Update() override;
 	virtual void Render() override;
-	virtual void PostRender() override;
 
 	AnimationRect* GetanimRect() { return animRect; }
 	void OnPlayerCollision(Coroutine& coro, StairType type);

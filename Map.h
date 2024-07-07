@@ -40,6 +40,7 @@ public:
 
 	const std::vector<BoundingBox*>* GetUnwalkableTiles() { return &unwalkableTiles; }
 	const std::vector<BoundingBox*>* GetCollisionBoxes() { return &collisionBoxes; }
+	std::wstring GetEventNameByCoord(Coord coord);
 
 private:
 	std::unordered_map<Coord, std::shared_ptr<Tile>> curMap;

@@ -52,7 +52,7 @@ float4 PS(PixelInput input) : SV_Target
         color = color * 0.5;
     
     // fade
-    float fadeDuration = 2.0;
+    float fadeDuration = 1.0;
     
     // Calculate the relative time since the fade started
     float relativeTime = totalTime - startTime;

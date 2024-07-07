@@ -180,6 +180,12 @@
     <ClCompile Include="OffScreenRenderer.cpp">
       <Filter>Render</Filter>
     </ClCompile>
+    <ClCompile Include="GeneralEvent.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DApp.h">
@@ -352,6 +358,15 @@
     </ClInclude>
     <ClInclude Include="OffScreenRenderer.h">
       <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralEvent.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralEventOnTrigger.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

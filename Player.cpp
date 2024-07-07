@@ -126,6 +126,15 @@ void Player::Update()
 	}
 	if (fadeEffect->GetFading())
 		fadeEffect->Update();
+	if (walkRestricted)
+	{
+
+		std::wstring str = Map::get_instance().GetEventNameByCoord(eventCoord);
+		if (str.compare(0, 5, L"Arrow") != 0)
+		{
+			ResetWalkable();
+		}
+	}
 
 	cleanUpCompletedCoroutines();
 }
@@ -144,7 +153,7 @@ void Player::AddItem(ItemID itemID)
 {
 	if (items.find(itemID) == items.end())
 	{
-		mApp.ShowItemGetDialogue(static_cast<int>(itemID));
+		mApp.ShowMessageDialogue(static_cast<int>(itemID));
 	}
 		
 	items[itemID]++;

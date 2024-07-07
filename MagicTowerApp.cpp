@@ -383,9 +383,9 @@ void MagicTowerApp::ReturnTitle()
     }
 }
 
-void MagicTowerApp::ShowItemGetDialogue(UINT itemID)
+void MagicTowerApp::ShowMessageDialogue(UINT itemID)
 {
-    Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::ITEMGET));
+    Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::MESSAGE));
     dynamic_cast<GameUIGO*>(mGOs[L"UIDialogueGO"].get())->SetDialogue(Database::itemGetText[itemID]);
 }
 

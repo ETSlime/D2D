@@ -1,5 +1,6 @@
 ﻿#include "Database.h"
 #include "ButtonOnClick.h"
+#include "GeneralEventOnTrigger.h"
 
 std::wstring Database::branch = DIALOGUE_BRANCH;
 
@@ -87,3 +88,9 @@ std::unordered_map<ItemID, std::function<void()>> Database::buttonFuncMap =
 {
 	{ItemID::SYMMETRIC_FLYER, ButtonOnClick::symmetricFlyer},
 };
+
+std::unordered_map<UINT, std::function<void()>> Database::generalEventFuncMap =
+{
+	{0, GeneralEventOnTrigger::triggerID001},
+};
+
