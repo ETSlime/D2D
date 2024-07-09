@@ -52,6 +52,13 @@ public:
 	// item buttons
 	
 	static void symmetricFlyer();
+
+	static void floorWarp();
+
+	static void warp(int floor);
+
+	static void warpFadeCallback(Coroutine& coro, int floorNum);
+
 };
 
 struct Button

@@ -199,7 +199,7 @@ void MagicTowerApp::Draw()
     if (enableShakeEffect)
     {
         EffectParameters effectParams;
-        effectParams.shakeIntensity = 0.01f; // Set shake intensity
+        effectParams.shakeIntensity = 1.0f; // Set shake intensity
         offScreenRenderer->SetEffectMode(OffScreenRenderMode::SHAKE);
         offScreenRenderer->SetEffectParameters(effectParams);
         OffScreenEffectRender();
@@ -345,9 +345,13 @@ void MagicTowerApp::SetValidGO(std::wstring name, bool valid)
 
 void MagicTowerApp::LoadFloor(int floorNumber)
 {
-    std::wstring floorGOName = L"FloorGO" + std::to_wstring(floorNumber);
-    pushQueue.push(floorGOName);
-    Push(L"MainGAMEUIGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::PLAYERSTATES));
+    std::wstring curFloorName = L"FloorGO" + std::to_wstring(Player::player->GetCurFloor());
+    MapStatic::eventFloor->clear();
+    DestroyGO(curFloorName);
+
+    std::wstring newFloorName = L"FloorGO" + std::to_wstring(floorNumber);
+    pushQueue.push(newFloorName);
+    Push(L"PlayerStatesUIGO", std::make_unique<GameUIGO>(&mD2DResource, &curWindowSize, GameUI::PLAYERSTATES));
 }
 
 void MagicTowerApp::SetGameMode(GameMode mode)

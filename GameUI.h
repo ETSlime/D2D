@@ -28,6 +28,7 @@
 #define DIALOGUE_ITEM_RECT_BOTTOM	(0.62f)
 #define DIALOGUE_RECT_TOP			(0.64f)
 #define DIALOGUE_RECT_BOTTOM		(0.82f)
+#define WARP_FLOOR_SPACING			(0.03f)
 
 enum class UIState 
 {
@@ -48,6 +49,7 @@ public:
 		LOADDATA,
 		DIALOGUE,
 		MESSAGE,
+		WARP,
 	};
 public:
 
@@ -76,26 +78,35 @@ private:
 			SAFE_DELETE(textureRect);
 		}
 
+		enum class Direction
+		{
+			UP,
+			DOWN,
+			LEFT,
+			RIGHT,
+			DEFAULT
+		};
+
 		CursorTextureRect* textureRect = nullptr;
 		DirectX::XMFLOAT3 position = {};
 		DirectX::XMFLOAT3 size = {};
 		float baseX = 0;
 		float baseY = 0;
 		int curIdx = 0;
-		bool moveDirection = 0;
+		Direction moveDirection = Cursor::Direction::DEFAULT;
 		bool isPressed = false;
 		bool enabled = true;
+		bool vertical = true;
 		float cursorMoveTimeInterval = 0.2f;
 		float spacing = 0.1f;
-		enum
-		{
-			UP,
-			DOWN
-		};
+
 
 		void Update(short curIdx)
 		{
-			position.y = (baseY - curIdx * spacing) * WinMaxHeight;
+			if (vertical)
+				position.y = (baseY - curIdx * spacing) * WinMaxHeight;
+			else
+				position.x = (baseX + curIdx * spacing) * WinMaxWidth;
 			textureRect->UpdatePosition(position);
 		}
 
@@ -142,7 +153,8 @@ private:
 	void InitItemCheck();
 	void InitSaveLoadData();
 	void InitDialogue();
-	void InitItemGet();
+	void InitMessage();
+	void InitWarp();
 
 	
 	// draw text
@@ -153,16 +165,18 @@ private:
 	DWRITE_TEXT_METRICS CalculateTextMetrics(const std::wstring& text, float maxWidth);
 
 	// cursor & button
-	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd, dialogueCursor;
+	Cursor startCursor, mainGameCursor_1st, mainGameCursor_2nd, dialogueCursor, warpCursor;
 	UINT itemCategoryIdx = 0;
 	UINT curSaveSlotPage = 0;
 	UINT totalSaveSlotPages = SAVE_SLOT_SIZE / SAVE_SLOTS_PER_PAGE;
 	std::wstring curItemCategory;
 	float curTime = 0, lastTime = 0;
 	std::vector<std::unique_ptr<Button>> startButtons, gameMenuButtons, itemCategoryButtons, saveDataButtons, dialogueButtons;
+	std::vector<std::unique_ptr<Button>> warpButtons;
 	std::unordered_map<std::wstring, std::vector<std::unique_ptr<ItemCategoryButton>>> itemButtons;
 	std::unordered_map<std::wstring, UINT> itemButtonIdx;
 	void UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
+	void UpdateWarpCursor(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
 	void UpdateMonsterCursor(Cursor& cursor);
 	void UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons);
 	void UpdateUIState();

@@ -124,6 +124,17 @@ std::unique_ptr<EventDescriptor> MapStatic::CreateEventDescriptor(EventType even
 		eventDescriptor = std::move(arrowDesc);
 		break;
 	}
+	case EventType::TERRAIN:
+	{
+		std::unique_ptr<TerrainEventDescriptor> terrainDesc = std::make_unique<TerrainEventDescriptor>();
+		terrainDesc.get()->coord = coord;
+		terrainDesc.get()->eventID = eventID++;
+		terrainDesc.get()->eventName = eventName;
+		terrainDesc.get()->eventType = eventType;
+		terrainDesc.get()->terrainType = static_cast<TerrainType>(ID);
+		eventDescriptor = std::move(terrainDesc);
+		break;
+	}
 	case EventType::DEFAULT:
 	{
 		bool triggerOnce = false;
@@ -184,6 +195,9 @@ void MapStatic::BuildFloor(int floorNum)
 		else if (auto arrowParams = dynamic_cast<ArrowParams*>(params.get())) {
 			eventFloor[floorNum].push_back(CreateEventDescriptor(arrowParams->type, arrowParams->coord, static_cast<UINT>(arrowParams->arrowDir), name));
 		}
+		else if (auto terrainParams = dynamic_cast<TerrainParams*>(params.get())) {
+			eventFloor[floorNum].push_back(CreateEventDescriptor(terrainParams->type, terrainParams->coord, static_cast<UINT>(terrainParams->terrainType), name));
+		}
 		else if (auto generalEventParams = dynamic_cast<GeneralEventParams*>(params.get())) {
 			eventFloor[floorNum].push_back(CreateEventDescriptor(generalEventParams->type, generalEventParams->coord, generalEventParams->triggerID, name, generalEventParams->triggerOnce, generalEventParams->colliderType));
 		}
@@ -204,24 +218,25 @@ eventParams = []
 			std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> tempEventParams;
 
 			// Using emplace to avoid copying std::unique_ptr, which is non-copyable.
-			//tempEventParams[0].emplace(L"NPC001", std::make_unique<NPCParams>(EventType::NPC, Coord{ 12, 1 }, 0, 2));
+			tempEventParams[0].emplace(L"NPC001", std::make_unique<NPCParams>(EventType::NPC, Coord{ 12, 1 }, 0, 2));
 			//tempEventParams[0].emplace(L"Monster001", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 5 }, 0));
-			tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::YELLOW_KEY));
-			tempEventParams[0].emplace(L"Item002", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 7 }, ItemID::SYMMETRIC_FLYER));
-			tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::RED_KEY));
+			tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::RED_POTION));
+			tempEventParams[0].emplace(L"Item002", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 7 }, ItemID::ATK_GEM));
+			tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::DEF_GEM));
 			//tempEventParams[0].emplace(L"Door001", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 6 }, DoorType::YELLOW));
 			tempEventParams[0].emplace(L"Item004", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 4, 10 }, ItemID::BOOK));
 			//tempEventParams[0].emplace(L"Door002", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 7 }, DoorType::BLUE));
 			//tempEventParams[0].emplace(L"Door003", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 8 }, DoorType::RED));
-			tempEventParams[0].emplace(L"Stair001", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::UP, Coord{ 1, 1 }));
+			tempEventParams[0].emplace(L"StairUp", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::UP, Coord{ 1, 1 }));
 			tempEventParams[0].emplace(L"General001", std::make_unique<GeneralEventParams>(EventType::DEFAULT, Coord{ 6, 6 }, 0, false, ColliderType::TRIGGER));
 			tempEventParams[0].emplace(L"Arrow001", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 6, 7 }, ArrowDirection::DOWN));
 			tempEventParams[0].emplace(L"Arrow002", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 7, 7 }, ArrowDirection::UP));
 			tempEventParams[0].emplace(L"Arrow003", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 8, 7 }, ArrowDirection::LEFT));
 			tempEventParams[0].emplace(L"Arrow004", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 9, 7 }, ArrowDirection::RIGHT));
+			tempEventParams[0].emplace(L"Terrain001", std::make_unique<TerrainParams>(EventType::TERRAIN, Coord{ 10, 7 }, TerrainType::BLOCK));
 
 			//tempEventParams[1].emplace(L"Door003", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 8 }, DoorType::RED));
-			tempEventParams[1].emplace(L"Stair001", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::DOWN, Coord{ 2, 2 }));
+			tempEventParams[1].emplace(L"StairDown", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::DOWN, Coord{ 2, 2 }));
 			return tempEventParams;
 		}();
 
@@ -230,7 +245,7 @@ mapTileIdx =
 		{	0,
 		{
 			{Coord(0,0), 11}, {Coord(0,1), 11}, {Coord(0,2), 11},{Coord(0,3), 11}, {Coord(0,4), 11}, {Coord(0,5), 11},{Coord(0,6), 11}, {Coord(0,7), 11}, {Coord(0,8), 11},{Coord(0,9), 11}, {Coord(0,10), 11}, {Coord(0,11), 11},{Coord(0,12), 11},
-			{Coord(1,0), 11}, {Coord(1,1), 57}, {Coord(1,2), 11},{Coord(1,3), 11}, {Coord(1,4), 11}, {Coord(1,5), 11},{Coord(1,6), 11}, {Coord(1,7), 11}, {Coord(1,8), 11},{Coord(1,9), 11}, {Coord(1,10), 11}, {Coord(1,11), 11},{Coord(1,12), 11},
+			{Coord(1,0), 11}, {Coord(1,1), 11}, {Coord(1,2), 11},{Coord(1,3), 11}, {Coord(1,4), 11}, {Coord(1,5), 11},{Coord(1,6), 11}, {Coord(1,7), 11}, {Coord(1,8), 11},{Coord(1,9), 11}, {Coord(1,10), 11}, {Coord(1,11), 11},{Coord(1,12), 11},
 			{Coord(2,0), 11}, {Coord(2,1), 11}, {Coord(2,2), 11},{Coord(2,3), 11}, {Coord(2,4), 11}, {Coord(2,5), 11},{Coord(2,6), 11}, {Coord(2,7), 11}, {Coord(2,8), 11},{Coord(2,9), 11}, {Coord(2,10), 11}, {Coord(2,11), 11},{Coord(2,12), 11},
 			{Coord(3,0), 11}, {Coord(3,1), 11}, {Coord(3,2), 11},{Coord(3,3), 11}, {Coord(3,4), 11}, {Coord(3,5), 11},{Coord(3,6), 11}, {Coord(3,7), 11}, {Coord(3,8), 11},{Coord(3,9), 11}, {Coord(3,10), 11}, {Coord(3,11), 11},{Coord(3,12), 11},
 			{Coord(4,0), 11}, {Coord(4,1), 11}, {Coord(4,2), 11},{Coord(4,3), 11}, {Coord(4,4), 11}, {Coord(4,5), 11},{Coord(4,6), 11}, {Coord(4,7), 11}, {Coord(4,8), 11},{Coord(4,9), 11}, {Coord(4,10), 11}, {Coord(4,11), 11},{Coord(4,12), 11},

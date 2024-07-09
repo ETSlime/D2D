@@ -64,7 +64,7 @@ private:
     bool enableFadeEffect = false;
     bool enableBlurEffect = false;
     float effectTimer = 0.0f;
-    float shakeDuration = 1.0f;
+    float shakeDuration = 0.5f;
     float fadeDuration = 1.0f;
     float blurDuration = 1.0f;
 

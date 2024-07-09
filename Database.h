@@ -49,7 +49,7 @@ enum class ItemID : UINT
 	BAGS,
 	PLACEHOLDER3,
 	PLACEHOLDER4,
-	ATT_GEM,
+	ATK_GEM,
 	DEF_GEM,
 	MATK_GEM,
 	MDEF_GEM,
@@ -108,8 +108,12 @@ public:
 	static std::wstring branch;
 
 	// item button function map
-	static std::unordered_map<ItemID, std::function<void()>> buttonFuncMap;
+	static std::unordered_map<ItemID, std::function<void()>> itemButtonFuncMap;
+
+	// direct item effect
+	static std::unordered_map<ItemID, std::function<void()>> directItemEffect;
 
 	// general event function pointer
 	static std::unordered_map<UINT, std::function<void()>> generalEventFuncMap;
+
 };

@@ -186,6 +186,9 @@
     <ClCompile Include="Arrow.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D2DApp.h">
@@ -366,6 +369,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Arrow.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

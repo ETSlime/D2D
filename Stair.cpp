@@ -14,11 +14,10 @@ void Stair::OnPlayerCollision(Coroutine& coro, StairType type)
 	}
 	if (coro.getState() == 1)
 	{
+		Player::player->SetFacingDirection(PlayerControl::Direction::Down);
 		Player::player->SetCoord(newPlayerCoord);
 		Player::player->UpdatePositionByCoord(newPlayerCoord);
-		std::wstring curFloorName = L"FloorGO" + std::to_wstring(floorNumber);
-		MapStatic::eventFloor->clear();
-		mApp.DestroyGO(curFloorName);
+
 		if (type == StairType::UP)
 			mApp.LoadFloor(floorNumber + 1);
 		else if (type == StairType::DOWN)

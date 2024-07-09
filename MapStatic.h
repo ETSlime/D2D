@@ -95,6 +95,18 @@ struct ArrowParams : public EventParams {
 };
 
 /*
+* Event type: Terrain
+* Coordinate
+* Terrain type
+*/
+struct TerrainParams : public EventParams {
+	TerrainType terrainType;
+
+	TerrainParams(EventType type, Coord coord, TerrainType terrainType)
+		: EventParams(type, coord), terrainType(terrainType) {}
+};
+
+/*
 * Event type: Default
 * Coordinate
 * Event trigger ID

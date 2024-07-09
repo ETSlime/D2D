@@ -66,7 +66,10 @@ void GameUI::InitGameUI(GameUI::UIRenderMode mode)
 		this->InitDialogue();
 		break;
 	case MESSAGE:
-		this->InitItemGet();
+		this->InitMessage();
+		break;
+	case WARP:
+		this->InitWarp();
 		break;
 	default:
 		break;
@@ -313,7 +316,7 @@ void GameUI::InitItemCheck()
 		itemIcon->SetSRV(itemIconTex->GetSRV());
 		itemButton.get()->itemIcon = std::move(itemIcon);
 		itemButton.get()->UpdateCount(item.second);
-		itemButton.get()->pOnClick = Database::buttonFuncMap[item.first];
+		itemButton.get()->pOnClick = Database::itemButtonFuncMap[item.first];
 		if (itemButton.get()->pOnClick == nullptr)
 		{
 			itemButton.get()->itemIcon->SetEnable(false);
@@ -405,7 +408,7 @@ void GameUI::InitDialogue()
 	nameBase->SetDialogue(true);
 }
 
-void GameUI::InitItemGet()
+void GameUI::InitMessage()
 {
 	// restrict player movement
 	Player::player->SetAllowControl(false);
@@ -415,6 +418,38 @@ void GameUI::InitItemGet()
 	DirectX::XMFLOAT3 size = DirectX::XMFLOAT3(WinMaxWidth * 0.745, WinMaxHeight * 0.35, 1);
 	dialogueBase = new UITextureRect(position, size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
 	dialogueBase->SetDialogue(true);
+}
+
+void GameUI::InitWarp()
+{
+	InitMessage();
+
+	if (warpCursor.textureRect == nullptr)
+		warpCursor.textureRect = new CursorTextureRect(warpCursor.position,
+			warpCursor.size, 0.0f, SkinsPath + L"WS-prefix100-original2.png");
+	warpCursor.baseX = 0.3f;
+	warpCursor.baseY = 0.545f;
+	warpCursor.position = DirectX::XMFLOAT3(warpCursor.baseX * curWinSize->width, warpCursor.baseY * curWinSize->height, 0.0f);
+	warpCursor.size = DirectX::XMFLOAT3(30, 46, 1.0f);
+	warpCursor.curIdx = 0;
+	warpCursor.vertical = false;
+	warpCursor.spacing = WARP_FLOOR_SPACING;
+	warpCursor.textureRect->UpdateSize(warpCursor.size);
+	warpCursor.Update(warpCursor.curIdx);
+
+	warpCursor.enabled = true;
+	warpCursor.textureRect->SetCursorEnable(true);
+	int curFloor = Player::player->GetCurFloor();
+	for (int i = 0; i < 3; i++)
+	{
+		
+		std::unique_ptr warpButton = std::make_unique<Button>(
+			std::to_wstring(curFloor % 10), DirectX::XMFLOAT3(0.29f + warpCursor.spacing * i, 0.425f, 0.0f), DirectX::XMFLOAT2(500, 200), curWinSize, nullptr, true);
+		curFloor /= 10;
+		warpButtons.push_back(std::move(warpButton));
+	}
+
+
 }
 
 // Render method to render UI based on the current render mode
@@ -478,7 +513,8 @@ void GameUI::Render()
 
 	case DIALOGUE:
 	{
-		nameBase->Render();
+		if (!dialogueName.empty())
+			nameBase->Render();
 		dialogueBase->Render();
 
 		D2D1_RECT_F TextRect = GetTextRect(DIALOGUE_RECT_LEFT, DIALOGUE_RECT_TOP, DIALOGUE_RECT_RIGHT, DIALOGUE_RECT_BOTTOM);
@@ -524,6 +560,39 @@ void GameUI::Render()
 			mD2DResource->pTextFormat,
 			TextRect,
 			mD2DResource->pSolidColorBrush);
+
+		break;
+	}
+	case WARP:
+	{
+		dialogueBase->Render();
+
+		D2D1_RECT_F TextRect = GetTextRect(DIALOGUE_RECT_LEFT, DIALOGUE_ITEM_RECT_TOP, DIALOGUE_RECT_RIGHT, DIALOGUE_ITEM_RECT_BOTTOM);
+
+		mD2DResource->pD2DRenderTarget->DrawText(
+			dialogueText.c_str(),
+			dialogueText.length(),
+			mD2DResource->pTextFormat,
+			TextRect,
+			mD2DResource->pSolidColorBrush);
+		int curFloor = Player::player->GetCurFloor();
+		for (int i = warpButtons.size() - 1; i >= 0; i--)
+		{
+			int digit = curFloor % 10;
+			curFloor /= 10;
+			warpButtons[i]->text = std::to_wstring(digit);
+		}
+		for (int i = 0; i < warpButtons.size(); i++)
+		{
+			mD2DResource->pD2DRenderTarget->DrawText(
+				warpButtons[i]->text.c_str(),
+				warpButtons[i]->text.size(),
+				mD2DResource->pTextFormat,
+				warpButtons[i]->textRect,
+				mD2DResource->pSolidColorBrush);
+		}
+		warpCursor.textureRect->Render();
+
 		break;
 	}
 
@@ -647,7 +716,8 @@ void GameUI::Update()
 	}
 
 	case DIALOGUE:
-		nameBase->Update();
+		if (!dialogueName.empty())
+			nameBase->Update();
 		dialogueBase->Update();
 
 		if (dialogueButtons.size() != 0) UpdateCursorAndButton(dialogueCursor, dialogueButtons);
@@ -679,6 +749,12 @@ void GameUI::Update()
 			Player::player->SetAllowControl(true);
 		}
 		break;
+	case WARP:
+	{
+		dialogueBase->Update();
+		UpdateWarpCursor(warpCursor, warpButtons);
+		break;
+	}
 	default:
 		break;
 	}
@@ -720,7 +796,7 @@ void GameUI::UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Bu
 		if (curTime - lastTime > cursor.cursorMoveTimeInterval)
 		{
 			lastTime = curTime;
-			if (cursor.moveDirection == Cursor::UP)
+			if (cursor.moveDirection == Cursor::Direction::UP)
 			{
 				cursor.MoveUp(buttons);
 			}
@@ -735,13 +811,13 @@ void GameUI::UpdateSaveSlotCursor(Cursor& cursor, std::vector<std::unique_ptr<Bu
 	else if (keyboard.Press(VK_UP))
 	{
 
-		cursor.moveDirection = Cursor::UP;
+		cursor.moveDirection = Cursor::Direction::UP;
 		cursor.isPressed = true;
 		lastTime = curTime;
 	}
 	else if (keyboard.Press(VK_DOWN))
 	{
-		cursor.moveDirection = Cursor::DOWN;
+		cursor.moveDirection = Cursor::Direction::DOWN;
 		cursor.isPressed = true;
 		lastTime = curTime;
 	}
@@ -805,7 +881,7 @@ void GameUI::UpdateMonsterCursor(Cursor& cursor)
 		if (curTime - lastTime > cursor.cursorMoveTimeInterval)
 		{
 			lastTime = curTime;
-			if (cursor.moveDirection == Cursor::UP)
+			if (cursor.moveDirection == Cursor::Direction::UP)
 			{
 				if (cursor.curIdx == 0)
 				{
@@ -846,13 +922,13 @@ void GameUI::UpdateMonsterCursor(Cursor& cursor)
 	else if (keyboard.Press(VK_UP))
 	{
 
-		cursor.moveDirection = Cursor::UP;
+		cursor.moveDirection = Cursor::Direction::UP;
 		cursor.isPressed = true;
 		lastTime = curTime;
 	}
 	else if (keyboard.Press(VK_DOWN))
 	{
-		cursor.moveDirection = Cursor::DOWN;
+		cursor.moveDirection = Cursor::Direction::DOWN;
 		cursor.isPressed = true;
 		lastTime = curTime;
 	}
@@ -909,6 +985,114 @@ void GameUI::UpdateUIState()
 	}
 }
 
+void GameUI::UpdateWarpCursor(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons)
+{
+	// disable button and cursor when changing game mode
+	if (gameModeOnChanging) return;
+
+	cursor.textureRect->Update();
+
+	curTime = Timer::TotalTime();
+	if (cursor.enabled)
+	{
+		if (cursor.isPressed)
+		{
+			// wait for key up
+			if (keyboard.Up(VK_LEFT))
+			{
+				cursor.MoveUp(buttons);
+				cursor.isPressed = false;
+			}
+			else if (keyboard.Up(VK_RIGHT))
+			{
+				cursor.MoveDown(buttons);
+				cursor.isPressed = false;
+			}
+			else if (keyboard.Up(VK_UP))
+			{
+				int num = std::stoi(buttons[cursor.curIdx].get()->text);
+				if (++num == 10)
+					num = 0;
+				buttons[cursor.curIdx].get()->text = std::to_wstring(num);
+				cursor.isPressed = false;
+			}
+			else if (keyboard.Up(VK_DOWN))
+			{
+				int num = std::stoi(buttons[cursor.curIdx].get()->text);
+				if (--num == -1)
+					num = 9;
+				buttons[cursor.curIdx].get()->text = std::to_wstring(num);
+				cursor.isPressed = false;
+			}
+
+			// if still pressed, move cursor
+			curTime = Timer::TotalTime();
+			if (curTime - lastTime > cursor.cursorMoveTimeInterval)
+			{
+				lastTime = curTime;
+				if (cursor.moveDirection == Cursor::Direction::LEFT)
+					cursor.MoveUp(buttons);
+				else if (cursor.moveDirection == Cursor::Direction::RIGHT)
+					cursor.MoveDown(buttons);
+				else if (cursor.moveDirection == Cursor::Direction::UP)
+				{
+					int num = std::stoi(buttons[cursor.curIdx].get()->text);
+					if (++num == 10)
+						num = 0;
+					buttons[cursor.curIdx].get()->text = std::to_wstring(num);
+				}
+				else if (cursor.moveDirection == Cursor::Direction::DOWN)
+				{
+					int num = std::stoi(buttons[cursor.curIdx].get()->text);
+					if (--num == -1)
+						num = 9;
+					buttons[cursor.curIdx].get()->text = std::to_wstring(num);
+				}
+			}
+		}
+		else if (keyboard.Press(VK_LEFT))
+		{
+			cursor.moveDirection = Cursor::Direction::LEFT;
+			cursor.isPressed = true;
+			lastTime = curTime;
+		}
+		else if (keyboard.Press(VK_RIGHT))
+		{
+			cursor.moveDirection = Cursor::Direction::RIGHT;
+			cursor.isPressed = true;
+			lastTime = curTime;
+		}
+		else if (keyboard.Press(VK_UP))
+		{
+			cursor.moveDirection = Cursor::Direction::UP;
+			cursor.isPressed = true;
+			lastTime = curTime;
+		}
+		else if (keyboard.Press(VK_DOWN))
+		{
+			cursor.moveDirection = Cursor::Direction::DOWN;
+			cursor.isPressed = true;
+			lastTime = curTime;
+		}
+
+		if (keyboard.Down('C') ||
+			keyboard.Down(VK_RETURN) ||
+			keyboard.Down(VK_SPACE))
+		{
+			int floor = 0, base = 1;
+			for (int i = buttons.size() - 1; i >= 0; i--)
+			{
+				floor  += std::stoi(buttons[i].get()->text) * base;
+				base *= 10;
+			}
+			for (int j = 0; j < buttons.size(); j++)
+				buttons[j].get()->overrideOnClick(ButtonOnClick::warp, floor);
+			mApp.DestroyGO(L"UIDialogueGO");
+			cursor.Execute(buttons);
+		}
+	}
+}
+
 void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<Button>>& buttons)
 {
 	// disable button and cursor when changing game mode
@@ -952,7 +1136,7 @@ void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<B
 			if (curTime - lastTime > cursor.cursorMoveTimeInterval)
 			{
 				lastTime = curTime;
-				if (cursor.moveDirection == Cursor::UP)
+				if (cursor.moveDirection == Cursor::Direction::UP)
 					cursor.MoveUp(buttons);
 				else
 					cursor.MoveDown(buttons);
@@ -960,13 +1144,13 @@ void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<B
 		}
 		else if (keyboard.Press(VK_UP))
 		{
-			cursor.moveDirection = Cursor::UP;
+			cursor.moveDirection = Cursor::Direction::UP;
 			cursor.isPressed = true;
 			lastTime = curTime;
 		}
 		else if (keyboard.Press(VK_DOWN))
 		{
-			cursor.moveDirection = Cursor::DOWN;
+			cursor.moveDirection = Cursor::Direction::DOWN;
 			cursor.isPressed = true;
 			lastTime = curTime;
 		}
@@ -978,8 +1162,6 @@ void GameUI::UpdateCursorAndButton(Cursor& cursor, std::vector<std::unique_ptr<B
 			cursor.Execute(buttons);
 		}
 	}
-
-
 }
 
 void GameUI::RenderInGameUI()

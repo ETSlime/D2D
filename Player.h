@@ -12,6 +12,14 @@ struct PlayerData
 	int HP, MP, atk, def, mdf, exp, gold, level;
 };
 
+struct VisitedFloorRange
+{
+	int Vmin;
+	int Vmax;
+
+	VisitedFloorRange(int Vmin, int Vmax) :Vmin(Vmin), Vmax(Vmax) {}
+};
+
 class Player : public GameEvent
 {
 public:
@@ -31,9 +39,10 @@ public:
 	void PlayFadeEffect(bool fade);
 	void SetAllowControl(bool allow) { allowControl = allow; }
 	bool GetAllowControl() { return allowControl; }
-	bool GetWalkable(PlayerControl::Direction dir) { return walkable[dir]; }
+	void SetFacingDirection(PlayerControl::Direction dir) { animRect->SetFacingWhere(dir); }
+	bool GetDirectionWalkable(PlayerControl::Direction dir) { return walkable[dir]; }
 	// left/right/up/down
-	void SewWalkable(std::array<bool, 4> buffer) { walkableBuffer = buffer; walkRestricted = true; }
+	void SetDirectionWalkable(std::array<bool, 4> buffer) { walkableBuffer = buffer; walkRestricted = true; }
 	void UpdateWalkable() { walkable = walkableBuffer; }
 	void ResetWalkable() { walkable = { true, true, true, true }; walkRestricted = false; }
 	bool GetWalkRestricted() { return walkRestricted; }
@@ -54,15 +63,24 @@ public:
 	void AddItem(ItemID itemID);
 	bool UseItem(ItemID itemID);
 	void VisitFloor(int curFloor) { visitedFloor.insert(curFloor); }
-	void ChangeHP(int amount) { playerData.HP += amount; }
+	void ChangeHP(int amount) { playerData.HP += amount; if (playerData.HP < 0) playerData.HP = 0; }
 	void ChangeAtk(int amount) { playerData.atk += amount; }
 	void ChangeDef(int amount) { playerData.def += amount; }
 	void ChangeMdf(int amount) { playerData.mdf += amount; }
 	void ChangeExp(int amount) { playerData.exp += amount; }
 	void ChangeGold(int amount) { playerData.gold += amount; }
 	const PlayerData GetBattleData() { return playerData; }
+
+	VisitedFloorRange GetVisitedFloorRange();
 	
 private:
+
+	// updates
+	void UpdateGameMode();
+	void UpdateAttackAnim();
+	void UpdateFadeEffect();
+	void UpdateWalkRestricted();
+	void UpdateShortCutButton();
 
 	// player attributes
 	PlayerData playerData;

@@ -12,7 +12,7 @@ void Arrow::OnPlayerCollision(Coroutine& coro, ArrowDirection dir, Coord coord)
 		else
 		{
 			SetupAnimRect(ColliderType::TRIGGER);
-			Player::player->SewWalkable({false, false, true, false});
+			Player::player->SetDirectionWalkable({false, false, true, false});
 		}
 		break;
 	case ArrowDirection::DOWN:
@@ -22,7 +22,7 @@ void Arrow::OnPlayerCollision(Coroutine& coro, ArrowDirection dir, Coord coord)
 		else
 		{
 			SetupAnimRect(ColliderType::TRIGGER);
-			Player::player->SewWalkable({ false, false, false, true });
+			Player::player->SetDirectionWalkable({ false, false, false, true });
 		}
 		break;
 	case ArrowDirection::LEFT:
@@ -32,7 +32,7 @@ void Arrow::OnPlayerCollision(Coroutine& coro, ArrowDirection dir, Coord coord)
 		else
 		{
 			SetupAnimRect(ColliderType::TRIGGER);
-			Player::player->SewWalkable({ true, false, false, false });
+			Player::player->SetDirectionWalkable({ true, false, false, false });
 		}
 		break;
 	case ArrowDirection::RIGHT:
@@ -42,7 +42,7 @@ void Arrow::OnPlayerCollision(Coroutine& coro, ArrowDirection dir, Coord coord)
 		else
 		{
 			SetupAnimRect(ColliderType::TRIGGER);
-			Player::player->SewWalkable({ false, true, false, false });
+			Player::player->SetDirectionWalkable({ false, true, false, false });
 		}
 		break;
 	default:

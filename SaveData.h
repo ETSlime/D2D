@@ -54,6 +54,7 @@ enum class EventTypeIdentifier
     StairParams,
     NPCParams,
     ArrowParams,
+    TerrainParams,
     GeneralEventParams
 };
 

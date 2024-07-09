@@ -294,6 +294,9 @@ void SaveData::SerializeEventParams(std::ofstream& ofs, const EventParams& param
     else if (dynamic_cast<const ArrowParams*>(&params)) {
         typeIdentifier = EventTypeIdentifier::ArrowParams;
     }
+    else if (dynamic_cast<const TerrainParams*>(&params)) {
+        typeIdentifier = EventTypeIdentifier::TerrainParams;
+    }
     else if (dynamic_cast<const GeneralEventParams*>(&params)) {
         typeIdentifier = EventTypeIdentifier::GeneralEventParams;
     }
@@ -340,6 +343,11 @@ void SaveData::SerializeEventParams(std::ofstream& ofs, const EventParams& param
     case EventTypeIdentifier::ArrowParams: {
         const ArrowParams& ap = static_cast<const ArrowParams&>(params);
         WriteHex(ofs, ap.arrowDir);
+        break;
+    }
+    case EventTypeIdentifier::TerrainParams: {
+        const TerrainParams& tp = static_cast<const TerrainParams&>(params);
+        WriteHex(ofs, tp.terrainType);
         break;
     }
     case EventTypeIdentifier::GeneralEventParams: {
@@ -400,6 +408,12 @@ std::unique_ptr<EventParams> SaveData::DeserializeEventParams(std::ifstream& ifs
         ArrowDirection arrowDir;
         ReadHex(ifs, arrowDir);
         return std::make_unique<ArrowParams>(type, coord, arrowDir);
+        break;
+    }
+    case EventTypeIdentifier::TerrainParams: {
+        TerrainType terrainType;
+        ReadHex(ifs, terrainType);
+        return std::make_unique<TerrainParams>(type, coord, terrainType);
         break;
     }
     case EventTypeIdentifier::GeneralEventParams: {

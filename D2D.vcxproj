@@ -175,6 +175,7 @@
     <ClCompile Include="Stair.cpp" />
     <ClCompile Include="States.cpp" />
     <ClCompile Include="String.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="GameUIGO.cpp" />
     <ClCompile Include="TextureRect.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="Stair.h" />
     <ClInclude Include="States.h" />
     <ClInclude Include="String.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Texture2D.h" />
     <ClInclude Include="GameUIGO.h" />
     <ClInclude Include="TextureRect.h" />

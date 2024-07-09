@@ -8,6 +8,7 @@
 #include "GameNPC.h"
 #include "Arrow.h"
 #include "GeneralEvent.h"
+#include "Terrain.h"
 
 class EventFactory 
 {
@@ -52,11 +53,11 @@ public:
             return std::make_shared<GeneralEvent>(generalEventDesc.coord, generalEventDesc.triggerID, 
                 generalEventDesc.colliderType, generalEventDesc.triggerOnce, generalEventDesc.eventName);
         }
-        //case EventType::TERRAIN: 
-        //{
-        //    const TerrainEventDescriptor& terrainDesc = static_cast<const TerrainEventDescriptor&>(descriptor);
-        //    return std::make_shared<Stair>(terrainDesc.coord, terrainDesc.stairType, terrainDesc.eventName);
-        //}
+        case EventType::TERRAIN: 
+        {
+            const TerrainEventDescriptor& terrainDesc = static_cast<const TerrainEventDescriptor&>(descriptor);
+            return std::make_shared<Terrain>(terrainDesc.coord, terrainDesc.terrainType, terrainDesc.eventName);
+        }
         default:
             return nullptr;
         }

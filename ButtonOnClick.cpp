@@ -56,7 +56,35 @@ void ButtonOnClick::returnTitleFadeCallback(Coroutine& coro)
 		mApp.startMenuGO.get()->SetIsValid(true);
 		coro.setComplete();
 	}
+}
 
+void ButtonOnClick::warpFadeCallback(Coroutine& coro, int floorNum)
+{
+	// start fade in
+	if (coro.getState() == 0)
+	{
+		Player::player->SetAllowControl(false);
+		Player::player->PlayFadeEffect(true);
+		coro.yield(Player::player->fadeEffect->GetFadeSpeed());
+	}
+	// start fade out, load new floor
+	if (coro.getState() == 1)
+	{
+		Coord newPlayerCoord{};
+		if (MapStatic::eventParams[floorNum][L"StairDown"].get())
+			newPlayerCoord = MapStatic::eventParams[floorNum][L"StairDown"].get()->coord;
+		else if (MapStatic::eventParams[floorNum][L"StairUp"].get())
+			newPlayerCoord = MapStatic::eventParams[floorNum][L"StairUp"].get()->coord;
+
+		Player::player->SetFacingDirection(PlayerControl::Direction::Down);
+		Player::player->SetCoord(newPlayerCoord);
+		Player::player->UpdatePositionByCoord(newPlayerCoord);
+		Player::player->PlayFadeEffect(false);
+		mApp.LoadFloor(floorNum);
+
+		Player::player->SetAllowControl(true);
+		coro.setComplete();
+	}
 }
 
 void ButtonOnClick::symmetricFlyerCallback(Coroutine& coro)
@@ -64,6 +92,7 @@ void ButtonOnClick::symmetricFlyerCallback(Coroutine& coro)
 	// start fade in
 	if (coro.getState() == 0)
 	{
+		Player::player->SetFacingDirection(PlayerControl::Direction::Down);
 		Player::player->UseItem(ItemID::SYMMETRIC_FLYER);
 		Player::player->SetAllowControl(false);
 		Player::player->animRect->StartFadeOut();
@@ -234,4 +263,30 @@ void ButtonOnClick::symmetricFlyer()
 	coro.get()->setCallback([](Coroutine& coro)
 		{ symmetricFlyerCallback(coro); });
 	(*coro.get())();
+}
+
+void ButtonOnClick::floorWarp()
+{
+	mApp.SetGameMode(GameMode::GAMEPLAY);
+	mApp.Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mApp.mD2DResource, &mApp.curWindowSize, GameUI::WARP, false));
+	VisitedFloorRange range = Player::player->GetVisitedFloorRange();
+	dynamic_cast<GameUIGO*>(mApp.mGOs[L"UIDialogueGO"].get())->SetDialogue(L"行きたいフロアを入力してください(" + std::to_wstring(range.Vmin) + L"~" + std::to_wstring(range.Vmax) + L"):");
+}
+
+void ButtonOnClick::warp(int floorNum)
+{
+	VisitedFloorRange range = Player::player->GetVisitedFloorRange();
+	if (floorNum > range.Vmax || floorNum < range.Vmin)
+	{
+		mApp.Push(L"UIDialogueGO", std::make_unique<GameUIGO>(&mApp.mD2DResource, &mApp.curWindowSize, GameUI::MESSAGE, false));
+		dynamic_cast<GameUIGO*>(mApp.mGOs[L"UIDialogueGO"].get())->SetDialogue(L"そのフロアには到達できません。");
+	}
+	else
+	{
+		coro = std::make_unique<Coroutine>();
+		coro.get()->setCallback([floorNum](Coroutine& coro)
+			{ warpFadeCallback(coro, floorNum); });
+		(*coro.get())();
+	}
+
 }

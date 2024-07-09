@@ -12,20 +12,21 @@ std::unordered_map<ItemID, std::tuple<std::wstring, std::wstring>> Database::ite
 	{ ItemID::BOOK,  std::make_tuple(L"工具類",L"本")},
 	{ ItemID::TELEWARP,  std::make_tuple(L"工具類",L"ワープ装置")},
 	{ ItemID::HOE,  std::make_tuple(L"重要類",L"壁破りのつるはし")},
+	{ ItemID::SYMMETRIC_FLYER,  std::make_tuple(L"重要類",L"中心対称飛行機")},
 	{ ItemID::CROSS,  std::make_tuple(L"工具類",L"聖十字架")},
 	{ ItemID::BOOMB,  std::make_tuple(L"重要類",L"爆弾")},
-	{ ItemID::SYMMETRIC_FLYER,  std::make_tuple(L"重要類",L"中心対称飛行機")},
 };
 
 std::unordered_map<UINT, std::wstring> Database::itemGetText =
 {
 	{static_cast<UINT>(ItemID::YELLOW_KEY), L"アイテム「黄の鍵」を手に入れました。\n\n黄色の扉を開けることができます。"},
 	{static_cast<UINT>(ItemID::BLUE_KEY), L"アイテム「紫の鍵」を手に入れました。\n\n紫色の扉を開けることができます。"},
+	{static_cast<UINT>(ItemID::BOOK),  L"アイテム「モンスターマニュアル」を手に入れました。\n\n所持するとモンスター情報を確認できます"},
 	{static_cast<UINT>(ItemID::TELEWARP), L"アイテム「ワープ装置」を手に入れました。\n\n訪れたことのあるフロア間を自由に行き来できます（ショートカットキーg）。"},
 	{static_cast<UINT>(ItemID::HOE), L"アイテム「壁破りのつるはし」を手に入れました。\n\n一つの壁を破壊することができます（消耗品）。"},
 	{static_cast<UINT>(ItemID::SYMMETRIC_FLYER), L"アイテム「中心対称飛行機」を手に入れました。\n\n勇者の現在位置の中心対称点まで飛ぶことができます（消耗品）。"},
 	{static_cast<UINT>(ItemID::CROSS), L"アイテム「聖十字架」を手に入れました。\n\n持っているとモンスターの無敵属性を無視できます。"},
-	{static_cast<UINT>(ItemID::BOOK),  L"アイテム「モンスターマニュアル」を手に入れました。\n\n所持するとモンスター情報を確認できます"},
+	{static_cast<UINT>(ItemID::BOOMB), L"アイテム「爆弾」を手に入れました。\n\nプレイヤーが向いている方向の単一の非ボスモンスターを消滅させることができます（消耗品）。"},
 };
 
 std::unordered_map<UINT, std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>> Database::dialogues =
@@ -84,9 +85,20 @@ std::unordered_map<UINT, MonsterData> Database::monsterDatabase =
 	},
 };
 
-std::unordered_map<ItemID, std::function<void()>> Database::buttonFuncMap =
+std::unordered_map<ItemID, std::function<void()>> Database::itemButtonFuncMap =
 {
 	{ItemID::SYMMETRIC_FLYER, ButtonOnClick::symmetricFlyer},
+	{ItemID::TELEWARP, ButtonOnClick::floorWarp},
+};
+
+std::unordered_map<ItemID, std::function<void()>> Database::directItemEffect =
+{
+	{ItemID::RED_POTION, GeneralEventOnTrigger::RedPotion},
+	{ItemID::BLUE_POTION, GeneralEventOnTrigger::BluePotion},
+	{ItemID::GREEN_POTION, GeneralEventOnTrigger::GreenPotion},
+	{ItemID::YELLOW_POTION, GeneralEventOnTrigger::YellowPotion},
+	{ItemID::ATK_GEM, GeneralEventOnTrigger::AtkGem},
+	{ItemID::DEF_GEM, GeneralEventOnTrigger::DefGem},
 };
 
 std::unordered_map<UINT, std::function<void()>> Database::generalEventFuncMap =

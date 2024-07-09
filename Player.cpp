@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "AnimationRect.h"
 #include "ChangeMapEffect.h"
+#include "ButtonOnClick.h"
 
 Player* Player::player = nullptr;
 
@@ -16,15 +17,11 @@ Player::Player(Coord coord, std::wstring playerTexture, DirectX::XMFLOAT3 size)
 	AnimationClip* IdleR = new AnimationClip(L"IdleR", playerTex, 1, DirectX::XMFLOAT2(0, texSize.y * 0.5f), DirectX::XMFLOAT2(texSize.x * 0.25f, texSize.y * 0.75f), 1.0f / 10.f);
 	AnimationClip* IdleU = new AnimationClip(L"IdleU", playerTex, 1, DirectX::XMFLOAT2(0, texSize.y * 0.75f), DirectX::XMFLOAT2(texSize.x * 0.25f, texSize.y), 1.0f / 10.0f);
 
-
-
 	// Walk anim
 	AnimationClip* WalkD = new AnimationClip(L"WalkD", playerTex, 4, DirectX::XMFLOAT2(0, 0), DirectX::XMFLOAT2(texSize.x, texSize.y * 0.25f), 1.0f / 10.0f);
 	AnimationClip* WalkL = new AnimationClip(L"WalkL", playerTex, 4, DirectX::XMFLOAT2(0, texSize.y * 0.25f), DirectX::XMFLOAT2(texSize.x, texSize.y * 0.5f), 1.0f / 10.0f);
 	AnimationClip* WalkR = new AnimationClip(L"WalkR", playerTex, 4, DirectX::XMFLOAT2(0, texSize.y * 0.5f), DirectX::XMFLOAT2(texSize.x, texSize.y * 0.75f), 1.0f / 10.0f);
 	AnimationClip* WalkU = new AnimationClip(L"WalkU", playerTex, 4, DirectX::XMFLOAT2(0, texSize.y * 0.75f), DirectX::XMFLOAT2(texSize.x, texSize.y), 1.0f / 10.0f);
-
-
 
 	//clip save
 	animator->SetAnim(WalkR);
@@ -35,7 +32,6 @@ Player::Player(Coord coord, std::wstring playerTexture, DirectX::XMFLOAT3 size)
 	animator->SetAnim(IdleL);
 	animator->SetAnim(IdleU);
 	animator->SetAnim(IdleD);
-
 
 	animator->SetCurrentAnimClip(L"IdleD");
 
@@ -88,7 +84,7 @@ Player::~Player()
 	cleanUpCompletedCoroutines();
 }
 
-void Player::Update()
+void Player::UpdateGameMode()
 {
 	if (!keyboard.Press('X'))
 		mApp.SetAllowSwitch(true);
@@ -101,8 +97,10 @@ void Player::Update()
 			mApp.SetGameMode(GameMode::DISPLAYMENU);
 		}
 	}
-	animator->Update();
-	animRect->Update();
+}
+
+void Player::UpdateAttackAnim()
+{
 	if (playAttackAnim)
 	{
 		DirectX::XMFLOAT3 attackPosition = *(animRect->GetPos());
@@ -115,7 +113,7 @@ void Player::Update()
 			attackPosition += DirectX::XMFLOAT3(0.0f, 0.0f - TileHeight, 0.0f);
 			break;
 		case PlayerControl::Left:
-			attackPosition += DirectX::XMFLOAT3(0.0f -TileWidth, 0.0f, 0.0f);
+			attackPosition += DirectX::XMFLOAT3(0.0f - TileWidth, 0.0f, 0.0f);
 			break;
 		case PlayerControl::Right:
 			attackPosition += DirectX::XMFLOAT3(TileWidth, 0.0f, 0.0f);
@@ -124,17 +122,44 @@ void Player::Update()
 		DirectX::XMFLOAT3 adjust = DirectX::XMFLOAT3(TileWidth / 2, TileHeight / 2, 0.0f);
 		sword->UpdateAttackEffect(attackPosition - adjust);
 	}
+}
+
+void Player::UpdateFadeEffect()
+{
 	if (fadeEffect->GetFading())
 		fadeEffect->Update();
+}
+
+void Player::UpdateWalkRestricted()
+{
 	if (walkRestricted)
 	{
-
 		std::wstring str = Map::get_instance().GetEventNameByCoord(eventCoord);
 		if (str.compare(0, 5, L"Arrow") != 0)
 		{
 			ResetWalkable();
 		}
 	}
+}
+
+void Player::UpdateShortCutButton()
+{
+	// telewarp
+	if (items.find(ItemID::TELEWARP) != items.end() && keyboard.Up('G'))
+		ButtonOnClick::floorWarp();
+}
+
+void Player::Update()
+{
+	UpdateGameMode();
+
+	animator->Update();
+	animRect->Update();
+
+	UpdateAttackAnim();
+	UpdateFadeEffect();
+	UpdateWalkRestricted();
+	UpdateShortCutButton();
 
 	cleanUpCompletedCoroutines();
 }
@@ -168,6 +193,19 @@ bool Player::UseItem(ItemID itemID)
 	}
 	else 
 		return false;
+}
+
+VisitedFloorRange Player::GetVisitedFloorRange()
+{
+	int max = INT_MIN, min = INT_MAX;
+	for (auto& floorNum : visitedFloor)
+	{
+		if (max < floorNum)
+			max = floorNum;
+		if (min > floorNum)
+			min = floorNum;
+	}
+	return VisitedFloorRange(min, max);
 }
 
 bool Player::CanMove(const DirectX::XMFLOAT3& move)

@@ -40,6 +40,12 @@ enum class ArrowDirection
 	RIGHT
 };
 
+enum class TerrainType
+{
+	HP,
+	BLOCK
+};
+
 struct EventDescriptor 
 {
 	UINT eventID = 0;
@@ -116,6 +122,16 @@ struct ArrowEventDescriptor : public EventDescriptor
 	ArrowEventDescriptor(ArrowDirection dir)
 	{
 		arrowDir = dir;
+	}
+};
+
+struct TerrainEventDescriptor : public EventDescriptor
+{
+	TerrainType terrainType;
+	TerrainEventDescriptor() = default;
+	TerrainEventDescriptor(TerrainType type)
+	{
+		terrainType = type;
 	}
 };
 
