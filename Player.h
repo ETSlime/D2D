@@ -3,9 +3,13 @@
 #include "GameEvent.h"
 #include "Weapon.h"
 #include <mutex>
+#include "MapStatic.h"
 
 class AnimationRect;
 class ChangeMapEffect;
+
+constexpr Coord PLAYER_INIT_POS = Coord(6, 4);
+constexpr int PLAYER_INIT_FLOOR = Floor::FLOOR_0;
 
 struct PlayerData
 {
@@ -40,13 +44,13 @@ public:
 	void SetAllowControl(bool allow) { allowControl = allow; }
 	bool GetAllowControl() { return allowControl; }
 	void SetFacingDirection(PlayerControl::Direction dir) { animRect->SetFacingWhere(dir); }
+	PlayerControl::Direction GetFacingDirection() { return animRect->GetDirection(); }
 	bool GetDirectionWalkable(PlayerControl::Direction dir) { return walkable[dir]; }
 	// left/right/up/down
 	void SetDirectionWalkable(std::array<bool, 4> buffer) { walkableBuffer = buffer; walkRestricted = true; }
 	void UpdateWalkable() { walkable = walkableBuffer; }
 	void ResetWalkable() { walkable = { true, true, true, true }; walkRestricted = false; }
 	bool GetWalkRestricted() { return walkRestricted; }
-	static Player* player;
 	
 	bool playAttackAnim = false;
 	
@@ -72,6 +76,9 @@ public:
 	const PlayerData GetBattleData() { return playerData; }
 
 	VisitedFloorRange GetVisitedFloorRange();
+
+	// pointer to player
+	static Player* player;
 	
 private:
 
@@ -87,7 +94,7 @@ private:
 	UINT walkingSteps = 0;
 	std::map<ItemID, UINT> items;
 	std::set<int> visitedFloor;
-	int curFloor = 0;
+	int curFloor = Floor::FLOOR_0;
 	bool allowControl = true;
 	bool walkRestricted = false;
 	// left/right/up/down

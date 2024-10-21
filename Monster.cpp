@@ -46,7 +46,7 @@ Monster::Monster(Coord coord, UINT monsterID, std::wstring eventName, DirectX::X
 		MonsterTexture += L"0";
 	MonsterTexture += std::to_wstring(1 + monsterID / 4);
 	MonsterTexture += L".png";
-	Texture2D* MonsterTex = new Texture2D(GameEventsPath + MonsterTexture);
+	Texture2D* MonsterTex = new Texture2D(GameEventsPath + MonsterTexture, READ_TEXTURE_NONREPEAT);
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(MonsterTex->GetWidth(), MonsterTex->GetHeight());
 
 	// idle Anim

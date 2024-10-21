@@ -56,7 +56,7 @@ public:
         case EventType::TERRAIN: 
         {
             const TerrainEventDescriptor& terrainDesc = static_cast<const TerrainEventDescriptor&>(descriptor);
-            return std::make_shared<Terrain>(terrainDesc.coord, terrainDesc.terrainType, terrainDesc.eventName);
+            return std::make_shared<Terrain>(terrainDesc.coord, terrainDesc.terrainType, terrainDesc.blocking, terrainDesc.eventName);
         }
         default:
             return nullptr;

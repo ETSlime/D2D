@@ -130,6 +130,7 @@ void Textures::Load(ID3D11Device* device, Texture2D* texture, bool repeat)
 	if (bExist == true && !repeat)
 	{
 		texture->srv = exist.srv;
+		texture->metaData = metaData;
 	}
 	else
 	{

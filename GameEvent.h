@@ -23,7 +23,12 @@ enum class DoorType
 	YELLOW,
 	BLUE,
 	RED,
-	SPECIAL
+	SPECIAL,
+
+	WALL_1,
+	WALL_2,
+	WALL_3,
+	FENCE,
 };
 
 enum class StairType
@@ -44,6 +49,14 @@ enum class TerrainType
 {
 	HP,
 	BLOCK
+};
+
+enum class NPCType : UINT
+{
+	ELDER,
+	TRADER,
+	THIEF,
+	ELF
 };
 
 struct EventDescriptor 
@@ -128,10 +141,12 @@ struct ArrowEventDescriptor : public EventDescriptor
 struct TerrainEventDescriptor : public EventDescriptor
 {
 	TerrainType terrainType;
+	bool blocking;
 	TerrainEventDescriptor() = default;
-	TerrainEventDescriptor(TerrainType type)
+	TerrainEventDescriptor(TerrainType type, bool isBlocking)
 	{
 		terrainType = type;
+		blocking = isBlocking;
 	}
 };
 

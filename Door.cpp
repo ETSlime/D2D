@@ -65,7 +65,7 @@ Door::Door(Coord coord, DoorType type, std::wstring eventName, DirectX::XMFLOAT3
 		DoorTexture += L"0";
 	DoorTexture += std::to_wstring(1 + static_cast<UINT>(doorType) / OPENDOOR_ANIM_FRAME);
 	DoorTexture += L".png";
-	Texture2D* DoorTex = new Texture2D(GameEventsPath + DoorTexture);
+	Texture2D* DoorTex = new Texture2D(GameEventsPath + DoorTexture, READ_TEXTURE_NONREPEAT);
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(DoorTex->GetWidth(), DoorTex->GetHeight());
 
 	// idle Anim

@@ -19,7 +19,7 @@ GameNPC::GameNPC(Coord coord, UINT GameNPCID, UINT dialogueID, std::wstring even
 		GameNPCTexture += L"0";
 	GameNPCTexture += std::to_wstring(1 + GameNPCID / 4);
 	GameNPCTexture += L".png";
-	Texture2D* GameNPCTex = new Texture2D(GameEventsPath + GameNPCTexture);
+	Texture2D* GameNPCTex = new Texture2D(GameEventsPath + GameNPCTexture, READ_TEXTURE_NONREPEAT);
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(GameNPCTex->GetWidth(), GameNPCTex->GetHeight());
 
 	// idle Anim

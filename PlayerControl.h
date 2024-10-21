@@ -32,17 +32,17 @@ public:
 	float stepDuration = 0.15f;
 	std::wstring clipName;
 
-	enum Direction
+	enum Direction : UINT
 	{
 		Left,
-		Right,
 		Up,
+		Right,
 		Down
 	};
 
 	DirectX::XMFLOAT3 Lerp(const DirectX::XMFLOAT3& startPoint, const DirectX::XMFLOAT3& endPoint, float t);
 
-	int GetFacingWhere() { return movingWhere; }
+	Direction GetFacingWhere() { return movingWhere; }
 	void SetFacingWhere(Direction facingWhere) { movingWhere = facingWhere; }
 
 	void collision(DirectX::XMFLOAT3* position, float speedx, float speedy);

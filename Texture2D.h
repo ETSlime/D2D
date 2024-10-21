@@ -3,6 +3,9 @@
 #include "Util.h"
 #include "MagicTowerApp.h"
 
+#define READ_TEXTURE_REPEAT		true
+#define READ_TEXTURE_NONREPEAT	false
+
 struct TextureDesc
 {
 	std::wstring filePath = L"";

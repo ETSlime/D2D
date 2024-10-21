@@ -16,7 +16,7 @@ void ButtonOnClick::startGameFadeCallback(Coroutine& coro)
 		if (mApp.startMenuGO) dynamic_cast<GameUIGO*>(mApp.startMenuGO.get())->SetChangeGameMode(true);
 		if (mApp.gameUI) dynamic_cast<GameUIGO*>(mApp.gameUI.get())->SetChangeGameMode(true);
 		// create player GO
-		mApp.Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(0, 0)));
+		mApp.Push(L"PlayerGO", std::make_unique<PlayerGO>(Coord(PLAYER_INIT_POS)));
 		Player::player->SetAllowControl(false);
 		Player::player->PlayFadeEffect(true);
 		// fade in effect
@@ -238,7 +238,7 @@ void ButtonOnClick::symmetricFlyer()
 	mApp.SetGameMode(GameMode::GAMEPLAY);
 
 	Coord oldCoord = Player::player->GetCoord();
-	Coord newCoord = Coord(MapStatic::gameWidth - oldCoord.x, MapStatic::gameHeight - oldCoord.y);
+	Coord newCoord = Coord(MapStatic::gameWidth - 1 - oldCoord.x, MapStatic::gameHeight - 1 - oldCoord.y);
 
 	// check target position tile walkable
 	if (!Map::get_instance().curMap[newCoord].get()->GetIsWalkable())

@@ -35,7 +35,7 @@ Stair::Stair(Coord coord, StairType type, Coord newCoord, std::wstring eventName
 	:GameEvent(coord, size, EventType::STAIR, eventName), stairType(type), newPlayerCoord(newCoord)
 {
 	std::wstring stairTexture = L"stair.png";
-	Texture2D* stairTex = new Texture2D(GameEventsPath + stairTexture);
+	Texture2D* stairTex = new Texture2D(GameEventsPath + stairTexture, READ_TEXTURE_NONREPEAT);
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(stairTex->GetWidth(), stairTex->GetHeight());
 	float texStartX = 0.0f;
 	if (stairType == StairType::UP)

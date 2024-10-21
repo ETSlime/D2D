@@ -12,7 +12,7 @@ void Arrow::OnPlayerCollision(Coroutine& coro, ArrowDirection dir, Coord coord)
 		else
 		{
 			SetupAnimRect(ColliderType::TRIGGER);
-			Player::player->SetDirectionWalkable({false, false, true, false});
+			Player::player->SetDirectionWalkable({false, true, false, false});
 		}
 		break;
 	case ArrowDirection::DOWN:
@@ -42,7 +42,7 @@ void Arrow::OnPlayerCollision(Coroutine& coro, ArrowDirection dir, Coord coord)
 		else
 		{
 			SetupAnimRect(ColliderType::TRIGGER);
-			Player::player->SetDirectionWalkable({ false, true, false, false });
+			Player::player->SetDirectionWalkable({ false, false, true, false });
 		}
 		break;
 	default:
@@ -57,7 +57,7 @@ Arrow::Arrow(Coord coord, ArrowDirection dir, std::wstring eventName, DirectX::X
 	:GameEvent(coord, size, EventType::ARROW, eventName), arrowDir(dir)
 {
 	std::wstring arrowTexture = L"arrow.png";
-	Texture2D* arrowTex = new Texture2D(GameEventsPath + arrowTexture);
+	Texture2D* arrowTex = new Texture2D(GameEventsPath + arrowTexture, READ_TEXTURE_NONREPEAT);
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(arrowTex->GetWidth(), arrowTex->GetHeight());
 
 	SetupAnimRect(ColliderType::TRIGGER);

@@ -13,6 +13,8 @@ struct EventParams {
 	Coord coord;
 
 	EventParams(EventType type, Coord coord) : type(type), coord(coord) {}
+
+	virtual std::wstring GetEventName() = 0;
 };
 
 
@@ -26,6 +28,11 @@ struct MonsterParams : public EventParams {
 
 	MonsterParams(EventType type, Coord coord, UINT monsterID)
 		: EventParams(type, coord), monsterID(monsterID) {}
+
+	std::wstring GetEventName() override
+	{
+		return L"Monster";
+	}
 };
 
 /*
@@ -40,6 +47,11 @@ struct ItemParams : public EventParams {
 		: EventParams(type, coord), itemID(itemID) {}
 
 	~ItemParams() {}
+
+	std::wstring GetEventName() override
+	{
+		return L"Item";
+	}
 };
 
 
@@ -53,6 +65,11 @@ struct DoorParams : public EventParams {
 
 	DoorParams(EventType type, Coord coord, DoorType doorType)
 		: EventParams(type, coord), doorType(doorType) {}
+
+	std::wstring GetEventName() override
+	{
+		return L"Door";
+	}
 };
 
 /*
@@ -67,6 +84,19 @@ struct StairParams : public EventParams {
 
 	StairParams(EventType type, Coord coord, StairType stairType, Coord newPlayerCoord)
 		: EventParams(type, coord), stairType(stairType), newPlayerCoord(newPlayerCoord) {}
+
+	std::wstring GetEventName() override
+	{
+		switch (stairType)
+		{
+		case StairType::UP:
+			return L"StairUp";
+		case StairType::DOWN:
+			return L"StarDown";
+		default:
+			return L"";
+		}
+	}
 };
 
 /*
@@ -80,6 +110,11 @@ struct NPCParams : public EventParams {
 	UINT dialogueID;
 	NPCParams(EventType type, Coord coord, UINT NPCID, UINT dialogueID)
 		: EventParams(type, coord), NPCID(NPCID), dialogueID(dialogueID) {}
+
+	std::wstring GetEventName() override
+	{
+		return L"NPC";
+	}
 };
 
 /*
@@ -92,18 +127,29 @@ struct ArrowParams : public EventParams {
 
 	ArrowParams(EventType type, Coord coord, ArrowDirection dir)
 		: EventParams(type, coord), arrowDir(dir) {}
+
+	std::wstring GetEventName() override
+	{
+		return L"Arrow";
+	}
 };
 
 /*
 * Event type: Terrain
 * Coordinate
 * Terrain type
+* Is blocking
 */
 struct TerrainParams : public EventParams {
 	TerrainType terrainType;
+	bool blocking;
+	TerrainParams(EventType type, Coord coord, TerrainType terrainType, bool isBlocking = false)
+		: EventParams(type, coord), terrainType(terrainType), blocking(isBlocking) {}
 
-	TerrainParams(EventType type, Coord coord, TerrainType terrainType)
-		: EventParams(type, coord), terrainType(terrainType) {}
+	std::wstring GetEventName() override
+	{
+		return L"Terrain";
+	}
 };
 
 /*
@@ -119,6 +165,11 @@ struct GeneralEventParams : public EventParams {
 	ColliderType colliderType;
 	GeneralEventParams(EventType type, Coord coord, UINT triggerID, bool triggerOnce, ColliderType colliderType)
 		: EventParams(type, coord), triggerID(triggerID), triggerOnce(triggerOnce), colliderType(colliderType) {}
+
+	std::wstring GetEventName() override
+	{
+		return L"General";
+	}
 };
 
 class MapStatic
@@ -132,7 +183,7 @@ public:
 	static const UINT numFloor = 100;
 
 	// static map data
-	static std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> eventParams;
+	static std::unordered_map<int, std::map<std::wstring, std::unique_ptr<EventParams>>> eventParams;
 	static std::unordered_map<int, std::unordered_map<Coord, UINT>> mapTileIdx;
 	static std::vector<std::unique_ptr<EventDescriptor>> eventFloor[numFloor];
 	static std::unordered_set<UINT> walkableTiles;
@@ -150,3 +201,13 @@ public:
 
 };
 
+enum Floor : UINT
+{
+	FLOOR_B3 = 0,
+	FLOOR_B2,
+	FLOOR_B1,
+	FLOOR_0,
+	FLOOR_1,
+	FLOOR_2,
+	FLOOR_3,
+};

@@ -147,6 +147,15 @@ void Player::UpdateShortCutButton()
 	// telewarp
 	if (items.find(ItemID::TELEWARP) != items.end() && keyboard.Up('G'))
 		ButtonOnClick::floorWarp();
+
+	// change facing direction
+	if (keyboard.Up('Z'))
+	{
+		PlayerControl::Direction curDir = GetFacingDirection();
+		curDir = static_cast<PlayerControl::Direction>((static_cast<int>(curDir) + 1) % 4);
+		SetFacingDirection(curDir);
+	}
+		
 }
 
 void Player::Update()

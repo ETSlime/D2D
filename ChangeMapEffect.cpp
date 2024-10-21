@@ -38,7 +38,6 @@ void ChangeMapEffect::SetIndices()
 
 void ChangeMapEffect::Update()
 {
-
 	if (isFadingIn)
 	{
 		float deltaTime = Timer::Delta();
@@ -77,12 +76,14 @@ void ChangeMapEffect::Render()
 void ChangeMapEffect::StartFadeOut()
 {
 	isFadingOut = true;
+	isFadingIn = false;
 	timeParameter = 0.0f;
 }
 
 void ChangeMapEffect::StartFadeIn()
 {
 	isFadingIn = true;
+	isFadingOut = false;
 	timeParameter = 1.0f;
 }
 

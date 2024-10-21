@@ -13,8 +13,11 @@ void EventGO::Init()
 
 void EventGO::Destroy()
 {
+	
 	if (this->event)
+	{
 		this->event.reset();
+	}
 }
 
 void EventGO::Update()

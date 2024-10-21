@@ -89,6 +89,11 @@ enum class DialogueButtonEvent
 	ADDMP
 };
 
+enum Dialogue : UINT
+{
+	DialogueID_001_1F_ELF,
+};
+
 class Database
 {
 public:

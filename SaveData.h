@@ -20,7 +20,7 @@ struct GameState
     std::set<int> visitedFloor;
 
     // events
-    std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> eventParams;
+    std::unordered_map<int, std::map<std::wstring, std::unique_ptr<EventParams>>> eventParams;
 
     // maps
     std::unordered_map<int, std::unordered_map<Coord, UINT>> mapTileIdx;
@@ -106,8 +106,8 @@ private:
     static std::unique_ptr<EventParams> DeserializeEventParams(std::ifstream& ifs);
 
     // serialize and deserialize EventParams unordered_map
-    static void SerializeEventParamsMap(std::ofstream& ofs, const std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>>& map);
-    static void DeserializeEventParamsMap(std::ifstream& ifs, std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>>& map);
+    static void SerializeEventParamsMap(std::ofstream& ofs, const std::unordered_map<int, std::map<std::wstring, std::unique_ptr<EventParams>>>& map);
+    static void DeserializeEventParamsMap(std::ifstream& ifs, std::unordered_map<int, std::map<std::wstring, std::unique_ptr<EventParams>>>& map);
 
     // serialize and deserialize tile maps
     static void SerializeMapTileIdx(std::ofstream& ofs, const std::unordered_map<int, std::unordered_map<Coord, UINT>>& mapTileIdx);

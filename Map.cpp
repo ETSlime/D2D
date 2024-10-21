@@ -46,7 +46,8 @@ void Map::GenerateEvent(int floor)
 {
 	for (auto& eventDesc : MapStatic::eventFloor[floor])
 	{
-		curEvents[eventDesc.get()->eventName] = std::move(EventFactory::CreateGameEvent(*(eventDesc.get())));
+		std::wstring eventName = eventDesc.get()->eventName + std::to_wstring(eventDesc.get()->eventID);
+		curEvents[eventName] = std::move(EventFactory::CreateGameEvent(*(eventDesc.get())));
 	}
 	//int size = MapStatic::eventFloor[floor].size();
 	//for (int i = size - 1; i >= 0; i--)

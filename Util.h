@@ -168,7 +168,7 @@ struct Coord
     int x;
     int y;
 
-    Coord(int x, int y) :x(x), y(y) {}
+    constexpr Coord(int x, int y) : x(x), y(y) {}
     Coord() { x = 0; y = 0; };
     bool operator==(const Coord& other) const {
         return x == other.x && y == other.y;

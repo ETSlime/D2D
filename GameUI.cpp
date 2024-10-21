@@ -188,7 +188,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 playerIonPosition = DirectX::XMFLOAT3(TileWidth - 20, WinMaxHeight - TileHeight * 2 + 20, 0);
 		DirectX::XMFLOAT3 playerIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* playerIconTex = new Texture2D(PicturesPath + L"1.png");
+		Texture2D* playerIconTex = new Texture2D(PicturesPath + L"1.png", READ_TEXTURE_NONREPEAT);
 		playerIcon = new TextureRect(playerIonPosition, playerIonSize, 0.0f);
 		playerIcon->SetSRV(playerIconTex->GetSRV());
 	}
@@ -198,7 +198,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 yellowKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 525, 0);
 		DirectX::XMFLOAT3 yellowKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* yellowKeyIconTex = new Texture2D(IconsPath + L"黄色の鍵.png");
+		Texture2D* yellowKeyIconTex = new Texture2D(IconsPath + L"黄色の鍵.png", READ_TEXTURE_NONREPEAT);
 		yellowKeyIcon = new TextureRect(yellowKeyIonPosition, yellowKeyIonSize, 0.0f);
 		yellowKeyIcon->SetSRV(yellowKeyIconTex->GetSRV());
 	}
@@ -209,7 +209,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 blueKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 575, 0);
 		DirectX::XMFLOAT3 blueKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* blueKeyIconTex = new Texture2D(IconsPath + L"紫の鍵.png");
+		Texture2D* blueKeyIconTex = new Texture2D(IconsPath + L"紫の鍵.png", READ_TEXTURE_NONREPEAT);
 		blueKeyIcon = new TextureRect(blueKeyIonPosition, blueKeyIonSize, 0.0f);
 		blueKeyIcon->SetSRV(blueKeyIconTex->GetSRV());
 	}
@@ -219,7 +219,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 redKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 625, 0);
 		DirectX::XMFLOAT3 redKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* redKeyIconTex = new Texture2D(IconsPath + L"赤い鍵.png");
+		Texture2D* redKeyIconTex = new Texture2D(IconsPath + L"赤い鍵.png", READ_TEXTURE_NONREPEAT);
 		redKeyIcon = new TextureRect(redKeyIonPosition, redKeyIonSize, 0.0f);
 		redKeyIcon->SetSRV(redKeyIconTex->GetSRV());
 	}
@@ -229,7 +229,7 @@ void GameUI::InitPlayerState()
 	{
 		DirectX::XMFLOAT3 greenKeyIonPosition = DirectX::XMFLOAT3(TileWidth - 15, WinMaxHeight - 675, 0);
 		DirectX::XMFLOAT3 greenKeyIonSize = DirectX::XMFLOAT3(TileWidth, TileHeight, 1);
-		Texture2D* greenKeyIconTex = new Texture2D(IconsPath + L"greenkey.png");
+		Texture2D* greenKeyIconTex = new Texture2D(IconsPath + L"greenkey.png", READ_TEXTURE_NONREPEAT);
 		greenKeyIcon = new TextureRect(greenKeyIonPosition, greenKeyIonSize, 0.0f);
 		greenKeyIcon->SetSRV(greenKeyIconTex->GetSRV());
 	}

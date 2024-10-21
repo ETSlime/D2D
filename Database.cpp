@@ -31,7 +31,7 @@ std::unordered_map<UINT, std::wstring> Database::itemGetText =
 
 std::unordered_map<UINT, std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>> Database::dialogues =
 {
-	{0, 
+	{Dialogue::DialogueID_001_1F_ELF,
 		std::vector<std::tuple<std::vector<DialogueButtonEvent>, std::wstring, std::wstring>>(
 			{std::make_tuple(std::vector<DialogueButtonEvent>(),
 				L"n1", L"a"),

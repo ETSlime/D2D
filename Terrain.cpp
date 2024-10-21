@@ -1,5 +1,6 @@
 #include "Terrain.h"
 #include "Player.h"
+#include "MapStatic.h"
 
 constexpr UINT IDLE_ANIM_FRAME = 4;
 constexpr float ANIM_PLAY_SPEED = 5.0f;
@@ -14,6 +15,8 @@ void Terrain::OnPlayerCollision(Coroutine& coro)
 		break;
 	case TerrainType::BLOCK:
 		SetBlocking();
+		MapStatic::eventParams[Player::player->GetCurFloor()][eventName] = std::make_unique<TerrainParams>(
+			EventType::TERRAIN, eventCoord, TerrainType::BLOCK, blocking);
 		break;
 	default:
 		break;
@@ -23,8 +26,8 @@ void Terrain::OnPlayerCollision(Coroutine& coro)
 	coro.setComplete();
 };
 
-Terrain::Terrain(Coord coord, TerrainType type, std::wstring eventName, DirectX::XMFLOAT3 size)
-	:GameEvent(coord, size, EventType::TERRAIN, eventName), terrainType(type)
+Terrain::Terrain(Coord coord, TerrainType type, bool isBlocking, std::wstring eventName, DirectX::XMFLOAT3 size)
+	:GameEvent(coord, size, EventType::TERRAIN, eventName), terrainType(type), blocking(isBlocking)
 {
 	std::wstring terrainTexture;
 	terrainTexture = L"terrain";
@@ -38,7 +41,7 @@ Terrain::Terrain(Coord coord, TerrainType type, std::wstring eventName, DirectX:
 		terrainTexture += L"Block.png";
 		std::wstring blockTexture;
 		blockTexture = L"Block.png";
-		Texture2D* blockTex = new Texture2D(GameEventsPath + blockTexture);
+		Texture2D* blockTex = new Texture2D(GameEventsPath + blockTexture, READ_TEXTURE_NONREPEAT);
 		DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(blockTex->GetWidth(), blockTex->GetHeight());
 		// idle Anim
 		AnimationClip* Block = new AnimationClip(L"Block", blockTex, 1,
@@ -49,7 +52,7 @@ Terrain::Terrain(Coord coord, TerrainType type, std::wstring eventName, DirectX:
 	default:
 		break;
 	}
-	Texture2D* terrainTex = new Texture2D(GameEventsPath + terrainTexture);
+	Texture2D* terrainTex = new Texture2D(GameEventsPath + terrainTexture, READ_TEXTURE_NONREPEAT);
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(terrainTex->GetWidth(), terrainTex->GetHeight());
 
 	// idle Anim

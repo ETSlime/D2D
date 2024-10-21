@@ -7,7 +7,7 @@
 class Terrain : public GameEvent
 {
 public:
-	Terrain(Coord coord, TerrainType type, std::wstring eventName = L"DefaultEventName",
+	Terrain(Coord coord, TerrainType type, bool isBlocking = false, std::wstring eventName = L"DefaultEventName",
 		DirectX::XMFLOAT3 size = { TileWidth, TileHeight, 1 });
 	~Terrain();
 
@@ -20,6 +20,6 @@ public:
 private:
 
 	TerrainType terrainType;
-	bool blocking = false;
+	bool blocking;
 	MagicTowerApp& mApp = MagicTowerApp::get_instance();
 };

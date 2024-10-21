@@ -126,12 +126,24 @@ std::unique_ptr<EventDescriptor> MapStatic::CreateEventDescriptor(EventType even
 	}
 	case EventType::TERRAIN:
 	{
+		bool isBlocking = false;
+		(void)std::initializer_list<int>{
+			([&](auto&& arg)
+				{
+					if constexpr (std::is_same_v<std::remove_cv_t<std::remove_reference_t<decltype(arg)>>, bool>)
+					{
+						isBlocking = arg;
+					}
+					return 0;
+				}(args), 0)...
+		};
 		std::unique_ptr<TerrainEventDescriptor> terrainDesc = std::make_unique<TerrainEventDescriptor>();
 		terrainDesc.get()->coord = coord;
 		terrainDesc.get()->eventID = eventID++;
 		terrainDesc.get()->eventName = eventName;
 		terrainDesc.get()->eventType = eventType;
 		terrainDesc.get()->terrainType = static_cast<TerrainType>(ID);
+		terrainDesc.get()->blocking = isBlocking;
 		eventDescriptor = std::move(terrainDesc);
 		break;
 	}
@@ -196,7 +208,7 @@ void MapStatic::BuildFloor(int floorNum)
 			eventFloor[floorNum].push_back(CreateEventDescriptor(arrowParams->type, arrowParams->coord, static_cast<UINT>(arrowParams->arrowDir), name));
 		}
 		else if (auto terrainParams = dynamic_cast<TerrainParams*>(params.get())) {
-			eventFloor[floorNum].push_back(CreateEventDescriptor(terrainParams->type, terrainParams->coord, static_cast<UINT>(terrainParams->terrainType), name));
+			eventFloor[floorNum].push_back(CreateEventDescriptor(terrainParams->type, terrainParams->coord, static_cast<UINT>(terrainParams->terrainType), name, terrainParams->blocking));
 		}
 		else if (auto generalEventParams = dynamic_cast<GeneralEventParams*>(params.get())) {
 			eventFloor[floorNum].push_back(CreateEventDescriptor(generalEventParams->type, generalEventParams->coord, generalEventParams->triggerID, name, generalEventParams->triggerOnce, generalEventParams->colliderType));
@@ -213,14 +225,41 @@ The static member variable 'eventParams' is initialized using a lambda function 
 This avoids copying 'std::unique_ptr', which is non-copyable. 'std::make_unique' is used to create 'unique_ptr' instances which are then moved
 into the map. This approach ensures that the initialization is done correctly and avoids potential issues with non-copyable objects.
 */
-eventParams = []
+	eventParams = []
 		{
-			std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> tempEventParams;
+			std::unordered_map<int, std::map<std::wstring, std::unique_ptr<EventParams>>> tempEventParams;
 
 			// Using emplace to avoid copying std::unique_ptr, which is non-copyable.
+			std::vector<std::tuple<UINT, std::unique_ptr<EventParams>>> eventParams;
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 5, 1 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 5, 2 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 5, 6 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 5, 7 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 5, 8 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 5, 9 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 6, 9 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 7, 1 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 7, 2 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 7, 6 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 7, 7 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 7, 8 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 7, 9 }, DoorType::FENCE)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<NPCParams>(EventType::NPC, Coord{ 6, 6}, NPCType::ELF, DialogueID_001_1F_ELF)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<DoorParams>(EventType::DOOR, Coord{ 6, 7}, DoorType::RED)));
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_0, std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 8 }, StairType::UP, Coord{ 2, 2 })));
+
+			eventParams.push_back(std::make_tuple(Floor::FLOOR_1, std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::DOWN, Coord{ 2, 2 })));
+
+			for (int i = 0; i < eventParams.size(); i++)
+			{
+				std::wstring eventName = std::get<1>(eventParams[i]).get()->GetEventName() + std::to_wstring(i);
+
+				tempEventParams[std::get<0>(eventParams[i])].emplace(eventName, std::move(std::get<1>(eventParams[i])));
+			}
+
 			tempEventParams[0].emplace(L"NPC001", std::make_unique<NPCParams>(EventType::NPC, Coord{ 12, 1 }, 0, 2));
 			//tempEventParams[0].emplace(L"Monster001", std::make_unique<MonsterParams>(EventType::MONSTER, Coord{ 12, 5 }, 0));
-			tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::RED_POTION));
+			tempEventParams[0].emplace(L"Item001", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 6 }, ItemID::SYMMETRIC_FLYER));
 			tempEventParams[0].emplace(L"Item002", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 7 }, ItemID::ATK_GEM));
 			tempEventParams[0].emplace(L"Item003", std::make_unique<ItemParams>(EventType::ITEM, Coord{ 3, 8 }, ItemID::DEF_GEM));
 			//tempEventParams[0].emplace(L"Door001", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 6 }, DoorType::YELLOW));
@@ -235,87 +274,82 @@ eventParams = []
 			tempEventParams[0].emplace(L"Arrow004", std::make_unique<ArrowParams>(EventType::ARROW, Coord{ 9, 7 }, ArrowDirection::RIGHT));
 			tempEventParams[0].emplace(L"Terrain001", std::make_unique<TerrainParams>(EventType::TERRAIN, Coord{ 10, 7 }, TerrainType::BLOCK));
 
-			//tempEventParams[1].emplace(L"Door003", std::make_unique<DoorParams>(EventType::DOOR, Coord{ 4, 8 }, DoorType::RED));
-			tempEventParams[1].emplace(L"StairDown", std::make_unique<StairParams>(EventType::STAIR, Coord{ 6, 5 }, StairType::DOWN, Coord{ 2, 2 }));
+			
 			return tempEventParams;
 		}();
 
-mapTileIdx =
+	for (int floor = 0; floor < 100; floor++)
 	{
-		{	0,
+		std::unordered_map<Coord, UINT> tiles;
+		for (int y = 0; y <= gameHeight - 1; y++)
 		{
-			{Coord(0,0), 11}, {Coord(0,1), 11}, {Coord(0,2), 11},{Coord(0,3), 11}, {Coord(0,4), 11}, {Coord(0,5), 11},{Coord(0,6), 11}, {Coord(0,7), 11}, {Coord(0,8), 11},{Coord(0,9), 11}, {Coord(0,10), 11}, {Coord(0,11), 11},{Coord(0,12), 11},
-			{Coord(1,0), 11}, {Coord(1,1), 11}, {Coord(1,2), 11},{Coord(1,3), 11}, {Coord(1,4), 11}, {Coord(1,5), 11},{Coord(1,6), 11}, {Coord(1,7), 11}, {Coord(1,8), 11},{Coord(1,9), 11}, {Coord(1,10), 11}, {Coord(1,11), 11},{Coord(1,12), 11},
-			{Coord(2,0), 11}, {Coord(2,1), 11}, {Coord(2,2), 11},{Coord(2,3), 11}, {Coord(2,4), 11}, {Coord(2,5), 11},{Coord(2,6), 11}, {Coord(2,7), 11}, {Coord(2,8), 11},{Coord(2,9), 11}, {Coord(2,10), 11}, {Coord(2,11), 11},{Coord(2,12), 11},
-			{Coord(3,0), 11}, {Coord(3,1), 11}, {Coord(3,2), 11},{Coord(3,3), 11}, {Coord(3,4), 11}, {Coord(3,5), 11},{Coord(3,6), 11}, {Coord(3,7), 11}, {Coord(3,8), 11},{Coord(3,9), 11}, {Coord(3,10), 11}, {Coord(3,11), 11},{Coord(3,12), 11},
-			{Coord(4,0), 11}, {Coord(4,1), 11}, {Coord(4,2), 11},{Coord(4,3), 11}, {Coord(4,4), 11}, {Coord(4,5), 11},{Coord(4,6), 11}, {Coord(4,7), 11}, {Coord(4,8), 11},{Coord(4,9), 11}, {Coord(4,10), 11}, {Coord(4,11), 11},{Coord(4,12), 11},
-			{Coord(5,0), 11}, {Coord(5,1), 11}, {Coord(5,2), 11},{Coord(5,3), 11}, {Coord(5,4), 11}, {Coord(5,5), 11},{Coord(5,6), 11}, {Coord(5,7), 11}, {Coord(5,8), 11},{Coord(5,9), 11}, {Coord(5,10), 11}, {Coord(5,11), 11},{Coord(5,12), 11},
-			{Coord(6,0), 11}, {Coord(6,1), 11}, {Coord(6,2), 11},{Coord(6,3), 11}, {Coord(6,4), 11}, {Coord(6,5), 11},{Coord(6,6), 11}, {Coord(6,7), 11}, {Coord(6,8), 11},{Coord(6,9), 11}, {Coord(6,10), 11}, {Coord(6,11), 11},{Coord(6,12), 11},
-			{Coord(7,0), 11}, {Coord(7,1), 11}, {Coord(7,2), 11},{Coord(7,3), 11}, {Coord(7,4), 11}, {Coord(7,5), 11},{Coord(7,6), 11}, {Coord(7,7), 11}, {Coord(7,8), 11},{Coord(7,9), 11}, {Coord(7,10), 11}, {Coord(7,11), 11},{Coord(7,12), 11},
-			{Coord(8,0), 11}, {Coord(8,1), 11}, {Coord(8,2), 11},{Coord(8,3), 11}, {Coord(8,4), 11}, {Coord(8,5), 11},{Coord(8,6), 11}, {Coord(8,7), 11}, {Coord(8,8), 11},{Coord(8,9), 11}, {Coord(8,10), 11}, {Coord(8,11), 11},{Coord(8,12), 11},
-			{Coord(9,0), 11}, {Coord(9,1), 11}, {Coord(9,2), 11},{Coord(9,3), 11}, {Coord(9,4), 11}, {Coord(9,5), 11},{Coord(9,6), 11}, {Coord(9,7), 11}, {Coord(9,8), 11},{Coord(9,9), 11}, {Coord(9,10), 11}, {Coord(9,11), 11},{Coord(9,12), 11},
-			{Coord(10,0), 11}, {Coord(10,1), 11}, {Coord(10,2), 11},{Coord(10,3), 11}, {Coord(10,4), 11}, {Coord(10,5), 11},{Coord(10,6), 11}, {Coord(10,7), 11}, {Coord(10,8), 11},{Coord(10,9), 11}, {Coord(10,10), 11}, {Coord(10,11), 11},{Coord(10,12), 11},
-			{Coord(11,0), 11}, {Coord(11,1), 11}, {Coord(11,2), 11},{Coord(11,3), 11}, {Coord(11,4), 11}, {Coord(11,5), 11},{Coord(11,6), 11}, {Coord(11,7), 11}, {Coord(11,8), 11},{Coord(11,9), 11}, {Coord(11,10), 11}, {Coord(11,11), 11},{Coord(11,12), 11},
-			{Coord(12,0), 11}, {Coord(12,1), 11}, {Coord(12,2), 11},{Coord(12,3), 11}, {Coord(12,4), 11}, {Coord(12,5), 11},{Coord(12,6), 11}, {Coord(12,7), 11}, {Coord(12,8), 11},{Coord(12,9), 11}, {Coord(12,10), 11}, {Coord(12,11), 11},{Coord(12,12), 11}
+			for (int x = 0; x <= gameWidth - 1; x++)
+			{
+				// wall of the map
+				if (y == 0)
+				{
+					tiles.insert({ Coord(x, y), 49 });
+				}
+				else if (x == 0)
+				{
+					tiles.insert({ Coord(x, y), 40 });
+				}
+				else if (x == gameWidth - 1)
+				{
+					tiles.insert({ Coord(x, y), 42 });
+				}
+				else if (y == gameHeight - 1)
+				{
+					tiles.insert({ Coord(x, y), 41 });
+				}
+				else
+					tiles.insert({ Coord(x, y), 11 });
+				// four corners are different tiles
+				tiles[Coord(0, 0)] = 48;
+				tiles[Coord(gameWidth - 1, 0)] = 50;
+				tiles[Coord(0, gameHeight - 1)] = 40;
+				tiles[Coord(gameWidth - 1, gameHeight - 1)] = 42;
+			}
+		}
+		mapTileIdx.insert({ floor, tiles });
+	}
+	std::unordered_map<int, std::unordered_map<Coord, UINT>> wallTiles =
+	{
+		{Floor::FLOOR_0,
+		{
+			{Coord(1,1), 15}, {Coord(1,2), 15}, {Coord(1,3), 15}, {Coord(1,4), 15},
+			{Coord(1,5), 15}, {Coord(1,6), 15}, {Coord(1,7), 15}, {Coord(1,8), 15},
+			{Coord(1,9), 15}, {Coord(1,10), 15}, {Coord(1,11), 15}, {Coord(2,1), 15},
+			{Coord(2,11), 15}, {Coord(3,1), 15}, {Coord(3,11), 15}, {Coord(4,1), 15},
+			{Coord(4,11), 15}, {Coord(5,11), 15}, {Coord(6,11), 15} , {Coord(7,11), 15} ,
+			{Coord(8,1), 15}, {Coord(8,11), 15}, {Coord(9,1), 15},
+			{Coord(9,11), 15}, {Coord(10,1), 15}, {Coord(10,11), 15}, {Coord(11,1), 15},
+			{Coord(11,2), 15}, {Coord(11,3), 15}, {Coord(11,4), 15}, {Coord(11,5), 15},
+			{Coord(11,6), 15}, {Coord(11,7), 15}, {Coord(11,8), 15}, {Coord(11,9), 15},
+			{Coord(11,10), 15}, {Coord(11,11), 15}
+
 		}
 		},
-
-		{	1,
+		{Floor::FLOOR_1,
 		{
-			{Coord(0,0), 11}, {Coord(0,1), 11}, {Coord(0,2), 11},{Coord(0,3), 11}, {Coord(0,4), 11}, {Coord(0,5), 11},{Coord(0,6), 11}, {Coord(0,7), 11}, {Coord(0,8), 11},{Coord(0,9), 11}, {Coord(0,10), 11}, {Coord(0,11), 11},{Coord(0,12), 11},
-			{Coord(1,0), 11}, {Coord(1,1), 11}, {Coord(1,2), 11},{Coord(1,3), 11}, {Coord(1,4), 11}, {Coord(1,5), 11},{Coord(1,6), 11}, {Coord(1,7), 11}, {Coord(1,8), 11},{Coord(1,9), 11}, {Coord(1,10), 11}, {Coord(1,11), 11},{Coord(1,12), 11},
-			{Coord(2,0), 11}, {Coord(2,1), 11}, {Coord(2,2), 11},{Coord(2,3), 11}, {Coord(2,4), 11}, {Coord(2,5), 11},{Coord(2,6), 11}, {Coord(2,7), 11}, {Coord(2,8), 11},{Coord(2,9), 11}, {Coord(2,10), 11}, {Coord(2,11), 11},{Coord(2,12), 11},
-			{Coord(3,0), 11}, {Coord(3,1), 11}, {Coord(3,2), 11},{Coord(3,3), 11}, {Coord(3,4), 11}, {Coord(3,5), 11},{Coord(3,6), 11}, {Coord(3,7), 11}, {Coord(3,8), 11},{Coord(3,9), 11}, {Coord(3,10), 11}, {Coord(3,11), 11},{Coord(3,12), 11},
-			{Coord(4,0), 11}, {Coord(4,1), 11}, {Coord(4,2), 11},{Coord(4,3), 11}, {Coord(4,4), 11}, {Coord(4,5), 11},{Coord(4,6), 11}, {Coord(4,7), 11}, {Coord(4,8), 11},{Coord(4,9), 11}, {Coord(4,10), 11}, {Coord(4,11), 11},{Coord(4,12), 11},
-			{Coord(5,0), 11}, {Coord(5,1), 11}, {Coord(5,2), 11},{Coord(5,3), 11}, {Coord(5,4), 11}, {Coord(5,5), 11},{Coord(5,6), 11}, {Coord(5,7), 11}, {Coord(5,8), 11},{Coord(5,9), 11}, {Coord(5,10), 11}, {Coord(5,11), 11},{Coord(5,12), 11},
-			{Coord(6,0), 11}, {Coord(6,1), 11}, {Coord(6,2), 11},{Coord(6,3), 50}, {Coord(6,4), 11}, {Coord(6,5), 11},{Coord(6,6), 11}, {Coord(6,7), 11}, {Coord(6,8), 11},{Coord(6,9), 11}, {Coord(6,10), 11}, {Coord(6,11), 11},{Coord(6,12), 11},
-			{Coord(7,0), 11}, {Coord(7,1), 11}, {Coord(7,2), 11},{Coord(7,3), 11}, {Coord(7,4), 11}, {Coord(7,5), 11},{Coord(7,6), 11}, {Coord(7,7), 11}, {Coord(7,8), 11},{Coord(7,9), 11}, {Coord(7,10), 11}, {Coord(7,11), 11},{Coord(7,12), 11},
-			{Coord(8,0), 11}, {Coord(8,1), 11}, {Coord(8,2), 11},{Coord(8,3), 11}, {Coord(8,4), 11}, {Coord(8,5), 11},{Coord(8,6), 11}, {Coord(8,7), 11}, {Coord(8,8), 11},{Coord(8,9), 11}, {Coord(8,10), 11}, {Coord(8,11), 11},{Coord(8,12), 11},
-			{Coord(9,0), 11}, {Coord(9,1), 11}, {Coord(9,2), 11},{Coord(9,3), 11}, {Coord(9,4), 11}, {Coord(9,5), 11},{Coord(9,6), 11}, {Coord(9,7), 11}, {Coord(9,8), 11},{Coord(9,9), 11}, {Coord(9,10), 11}, {Coord(9,11), 11},{Coord(9,12), 11},
-			{Coord(10,0), 11}, {Coord(10,1), 11}, {Coord(10,2), 11},{Coord(10,3), 11}, {Coord(10,4), 11}, {Coord(10,5), 11},{Coord(10,6), 11}, {Coord(10,7), 11}, {Coord(10,8), 11},{Coord(10,9), 11}, {Coord(10,10), 11}, {Coord(10,11), 11},{Coord(10,12), 11},
-			{Coord(11,0), 11}, {Coord(11,1), 11}, {Coord(11,2), 11},{Coord(11,3), 11}, {Coord(11,4), 11}, {Coord(11,5), 11},{Coord(11,6), 11}, {Coord(11,7), 11}, {Coord(11,8), 11},{Coord(11,9), 11}, {Coord(11,10), 11}, {Coord(11,11), 11},{Coord(11,12), 11},
-			{Coord(12,0), 11}, {Coord(12,1), 11}, {Coord(12,2), 11},{Coord(12,3), 11}, {Coord(12,4), 11}, {Coord(12,5), 11},{Coord(12,6), 11}, {Coord(12,7), 11}, {Coord(12,8), 11},{Coord(12,9), 11}, {Coord(12,10), 11}, {Coord(12,11), 11},{Coord(12,12), 11}
-		}
-		},
-
-		{	2,
-		{
-			{Coord(0,0), 11}, {Coord(0,1), 11}, {Coord(0,2), 11},{Coord(0,3), 11}, {Coord(0,4), 11}, {Coord(0,5), 11},{Coord(0,6), 11}, {Coord(0,7), 11}, {Coord(0,8), 11},{Coord(0,9), 11}, {Coord(0,10), 11}, {Coord(0,11), 11},{Coord(0,12), 11},
-			{Coord(1,0), 11}, {Coord(1,1), 11}, {Coord(1,2), 11},{Coord(1,3), 11}, {Coord(1,4), 11}, {Coord(1,5), 11},{Coord(1,6), 11}, {Coord(1,7), 11}, {Coord(1,8), 11},{Coord(1,9), 11}, {Coord(1,10), 11}, {Coord(1,11), 11},{Coord(1,12), 11},
-			{Coord(2,0), 11}, {Coord(2,1), 11}, {Coord(2,2), 11},{Coord(2,3), 11}, {Coord(2,4), 11}, {Coord(2,5), 11},{Coord(2,6), 11}, {Coord(2,7), 11}, {Coord(2,8), 11},{Coord(2,9), 11}, {Coord(2,10), 11}, {Coord(2,11), 11},{Coord(2,12), 11},
-			{Coord(3,0), 11}, {Coord(3,1), 11}, {Coord(3,2), 11},{Coord(3,3), 11}, {Coord(3,4), 11}, {Coord(3,5), 11},{Coord(3,6), 11}, {Coord(3,7), 11}, {Coord(3,8), 11},{Coord(3,9), 11}, {Coord(3,10), 11}, {Coord(3,11), 11},{Coord(3,12), 11},
-			{Coord(4,0), 11}, {Coord(4,1), 11}, {Coord(4,2), 11},{Coord(4,3), 11}, {Coord(4,4), 11}, {Coord(4,5), 11},{Coord(4,6), 11}, {Coord(4,7), 11}, {Coord(4,8), 11},{Coord(4,9), 11}, {Coord(4,10), 11}, {Coord(4,11), 11},{Coord(4,12), 11},
-			{Coord(5,0), 11}, {Coord(5,1), 11}, {Coord(5,2), 11},{Coord(5,3), 11}, {Coord(5,4), 11}, {Coord(5,5), 11},{Coord(5,6), 11}, {Coord(5,7), 11}, {Coord(5,8), 11},{Coord(5,9), 11}, {Coord(5,10), 11}, {Coord(5,11), 11},{Coord(5,12), 11},
-			{Coord(6,0), 11}, {Coord(6,1), 11}, {Coord(6,2), 11},{Coord(6,3), 11}, {Coord(6,4), 11}, {Coord(6,5), 11},{Coord(6,6), 11}, {Coord(6,7), 11}, {Coord(6,8), 11},{Coord(6,9), 11}, {Coord(6,10), 11}, {Coord(6,11), 11},{Coord(6,12), 11},
-			{Coord(7,0), 11}, {Coord(7,1), 11}, {Coord(7,2), 11},{Coord(7,3), 11}, {Coord(7,4), 11}, {Coord(7,5), 11},{Coord(7,6), 11}, {Coord(7,7), 11}, {Coord(7,8), 11},{Coord(7,9), 11}, {Coord(7,10), 11}, {Coord(7,11), 11},{Coord(7,12), 11},
-			{Coord(8,0), 11}, {Coord(8,1), 11}, {Coord(8,2), 11},{Coord(8,3), 11}, {Coord(8,4), 11}, {Coord(8,5), 11},{Coord(8,6), 11}, {Coord(8,7), 11}, {Coord(8,8), 11},{Coord(8,9), 11}, {Coord(8,10), 11}, {Coord(8,11), 11},{Coord(8,12), 11},
-			{Coord(9,0), 11}, {Coord(9,1), 11}, {Coord(9,2), 11},{Coord(9,3), 11}, {Coord(9,4), 11}, {Coord(9,5), 11},{Coord(9,6), 11}, {Coord(9,7), 11}, {Coord(9,8), 11},{Coord(9,9), 11}, {Coord(9,10), 11}, {Coord(9,11), 11},{Coord(9,12), 11},
-			{Coord(10,0), 11}, {Coord(10,1), 11}, {Coord(10,2), 11},{Coord(10,3), 11}, {Coord(10,4), 11}, {Coord(10,5), 11},{Coord(10,6), 11}, {Coord(10,7), 11}, {Coord(10,8), 11},{Coord(10,9), 11}, {Coord(10,10), 11}, {Coord(10,11), 11},{Coord(10,12), 11},
-			{Coord(11,0), 11}, {Coord(11,1), 11}, {Coord(11,2), 11},{Coord(11,3), 11}, {Coord(11,4), 11}, {Coord(11,5), 11},{Coord(11,6), 11}, {Coord(11,7), 11}, {Coord(11,8), 11},{Coord(11,9), 11}, {Coord(11,10), 11}, {Coord(11,11), 11},{Coord(11,12), 11},
-			{Coord(12,0), 11}, {Coord(12,1), 11}, {Coord(12,2), 11},{Coord(12,3), 11}, {Coord(12,4), 11}, {Coord(12,5), 11},{Coord(12,6), 11}, {Coord(12,7), 11}, {Coord(12,8), 11},{Coord(12,9), 11}, {Coord(12,10), 11}, {Coord(12,11), 11},{Coord(12,12), 11}
-		}
-		},
-
-		{	3,
-		{
-			{Coord(0,0), 11}, {Coord(0,1), 11}, {Coord(0,2), 11},{Coord(0,3), 11}, {Coord(0,4), 11}, {Coord(0,5), 11},{Coord(0,6), 11}, {Coord(0,7), 11}, {Coord(0,8), 11},{Coord(0,9), 11}, {Coord(0,10), 11}, {Coord(0,11), 11},{Coord(0,12), 11},
-			{Coord(1,0), 11}, {Coord(1,1), 11}, {Coord(1,2), 11},{Coord(1,3), 11}, {Coord(1,4), 11}, {Coord(1,5), 11},{Coord(1,6), 11}, {Coord(1,7), 11}, {Coord(1,8), 11},{Coord(1,9), 11}, {Coord(1,10), 11}, {Coord(1,11), 11},{Coord(1,12), 11},
-			{Coord(2,0), 11}, {Coord(2,1), 11}, {Coord(2,2), 11},{Coord(2,3), 11}, {Coord(2,4), 11}, {Coord(2,5), 11},{Coord(2,6), 11}, {Coord(2,7), 11}, {Coord(2,8), 11},{Coord(2,9), 11}, {Coord(2,10), 11}, {Coord(2,11), 11},{Coord(2,12), 11},
-			{Coord(3,0), 11}, {Coord(3,1), 11}, {Coord(3,2), 11},{Coord(3,3), 11}, {Coord(3,4), 11}, {Coord(3,5), 11},{Coord(3,6), 11}, {Coord(3,7), 11}, {Coord(3,8), 11},{Coord(3,9), 11}, {Coord(3,10), 11}, {Coord(3,11), 11},{Coord(3,12), 11},
-			{Coord(4,0), 11}, {Coord(4,1), 11}, {Coord(4,2), 11},{Coord(4,3), 11}, {Coord(4,4), 11}, {Coord(4,5), 11},{Coord(4,6), 11}, {Coord(4,7), 11}, {Coord(4,8), 11},{Coord(4,9), 11}, {Coord(4,10), 11}, {Coord(4,11), 11},{Coord(4,12), 11},
-			{Coord(5,0), 11}, {Coord(5,1), 11}, {Coord(5,2), 11},{Coord(5,3), 11}, {Coord(5,4), 11}, {Coord(5,5), 11},{Coord(5,6), 11}, {Coord(5,7), 11}, {Coord(5,8), 11},{Coord(5,9), 11}, {Coord(5,10), 11}, {Coord(5,11), 11},{Coord(5,12), 11},
-			{Coord(6,0), 11}, {Coord(6,1), 11}, {Coord(6,2), 11},{Coord(6,3), 11}, {Coord(6,4), 11}, {Coord(6,5), 11},{Coord(6,6), 11}, {Coord(6,7), 11}, {Coord(6,8), 11},{Coord(6,9), 11}, {Coord(6,10), 11}, {Coord(6,11), 11},{Coord(6,12), 11},
-			{Coord(7,0), 11}, {Coord(7,1), 11}, {Coord(7,2), 11},{Coord(7,3), 11}, {Coord(7,4), 11}, {Coord(7,5), 11},{Coord(7,6), 11}, {Coord(7,7), 11}, {Coord(7,8), 11},{Coord(7,9), 11}, {Coord(7,10), 11}, {Coord(7,11), 11},{Coord(7,12), 11},
-			{Coord(8,0), 11}, {Coord(8,1), 11}, {Coord(8,2), 11},{Coord(8,3), 11}, {Coord(8,4), 11}, {Coord(8,5), 11},{Coord(8,6), 11}, {Coord(8,7), 11}, {Coord(8,8), 11},{Coord(8,9), 11}, {Coord(8,10), 11}, {Coord(8,11), 11},{Coord(8,12), 11},
-			{Coord(9,0), 11}, {Coord(9,1), 11}, {Coord(9,2), 11},{Coord(9,3), 11}, {Coord(9,4), 11}, {Coord(9,5), 11},{Coord(9,6), 11}, {Coord(9,7), 11}, {Coord(9,8), 11},{Coord(9,9), 11}, {Coord(9,10), 11}, {Coord(9,11), 11},{Coord(9,12), 11},
-			{Coord(10,0), 11}, {Coord(10,1), 11}, {Coord(10,2), 11},{Coord(10,3), 11}, {Coord(10,4), 11}, {Coord(10,5), 11},{Coord(10,6), 11}, {Coord(10,7), 11}, {Coord(10,8), 11},{Coord(10,9), 11}, {Coord(10,10), 11}, {Coord(10,11), 11},{Coord(10,12), 11},
-			{Coord(11,0), 11}, {Coord(11,1), 11}, {Coord(11,2), 11},{Coord(11,3), 11}, {Coord(11,4), 11}, {Coord(11,5), 11},{Coord(11,6), 11}, {Coord(11,7), 11}, {Coord(11,8), 11},{Coord(11,9), 11}, {Coord(11,10), 11}, {Coord(11,11), 11},{Coord(11,12), 11},
-			{Coord(12,0), 11}, {Coord(12,1), 11}, {Coord(12,2), 11},{Coord(12,3), 11}, {Coord(12,4), 11}, {Coord(12,5), 11},{Coord(12,6), 11}, {Coord(12,7), 11}, {Coord(12,8), 11},{Coord(12,9), 11}, {Coord(12,10), 11}, {Coord(12,11), 11},{Coord(12,12), 11}
+			{Coord(1,4), 6}, {Coord(1,8), 6}, {Coord(3,4), 6}, {Coord(3,8), 6}, {Coord(4,4), 6},
+			{Coord(4,5), 6}, {Coord(4,6), 6}, {Coord(4,7), 6}, {Coord(4,8), 6}, {Coord(5,4), 6},
+			{Coord(5,8), 6}, {Coord(7,4), 6}, {Coord(7,8), 6}, {Coord(8,4), 6}, {Coord(8,5), 6},
+			{Coord(8,6), 6}, {Coord(8,7), 6}, {Coord(8,8), 6}, {Coord(9,4), 6}, {Coord(9,8), 6},
+			{Coord(11,4), 6}, {Coord(11,8), 6}
 		}
 		}
 	};
+	for (const auto& outer_kv : wallTiles)
+	{
+		auto& inner_map = mapTileIdx[outer_kv.first];
+		for (const auto& inner_kv : outer_kv.second)
+		{
+			inner_map[inner_kv.first] = inner_kv.second;  // update inner_map value
+		}
+	}
 }
 
 
-std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>> MapStatic::eventParams;
+std::unordered_map<int, std::map<std::wstring, std::unique_ptr<EventParams>>> MapStatic::eventParams;
 std::unordered_map<int, std::unordered_map<Coord, UINT>> MapStatic::mapTileIdx;

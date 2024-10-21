@@ -31,7 +31,7 @@ Item::Item(Coord coord, ItemID ID, std::wstring eventName, DirectX::XMFLOAT3 siz
 		itemTexture += L"0";
 	itemTexture += std::to_wstring(1 + static_cast<UINT>(itemID) / 16);
 	itemTexture += L".png";
-	Texture2D* itemTex = new Texture2D(GameEventsPath + itemTexture);
+	Texture2D* itemTex = new Texture2D(GameEventsPath + itemTexture, READ_TEXTURE_NONREPEAT);
 	DirectX::XMFLOAT2 texSize = DirectX::XMFLOAT2(itemTex->GetWidth(), itemTex->GetHeight());
 	float texStartX = static_cast<UINT>(itemID) % 4 * 0.25f * texSize.x;
 	float texStartY = static_cast<UINT>(itemID) / 4 % 4 * 0.25f * texSize.y;

@@ -348,6 +348,7 @@ void SaveData::SerializeEventParams(std::ofstream& ofs, const EventParams& param
     case EventTypeIdentifier::TerrainParams: {
         const TerrainParams& tp = static_cast<const TerrainParams&>(params);
         WriteHex(ofs, tp.terrainType);
+        WriteHex(ofs, tp.blocking);
         break;
     }
     case EventTypeIdentifier::GeneralEventParams: {
@@ -412,8 +413,10 @@ std::unique_ptr<EventParams> SaveData::DeserializeEventParams(std::ifstream& ifs
     }
     case EventTypeIdentifier::TerrainParams: {
         TerrainType terrainType;
+        bool blocking;
         ReadHex(ifs, terrainType);
-        return std::make_unique<TerrainParams>(type, coord, terrainType);
+        ReadHex(ifs, blocking);
+        return std::make_unique<TerrainParams>(type, coord, terrainType, blocking);
         break;
     }
     case EventTypeIdentifier::GeneralEventParams: {
@@ -431,7 +434,7 @@ std::unique_ptr<EventParams> SaveData::DeserializeEventParams(std::ifstream& ifs
     }
 }
 
-void SaveData::SerializeEventParamsMap(std::ofstream& ofs, const std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>>& map)
+void SaveData::SerializeEventParamsMap(std::ofstream& ofs, const std::unordered_map<int, std::map<std::wstring, std::unique_ptr<EventParams>>>& map)
 {   
     size_t outerSize = map.size();
     WriteHex(ofs, outerSize);
@@ -456,7 +459,7 @@ void SaveData::SerializeEventParamsMap(std::ofstream& ofs, const std::unordered_
     }
 }
 
-void SaveData::DeserializeEventParamsMap(std::ifstream& ifs, std::unordered_map<int, std::unordered_map<std::wstring, std::unique_ptr<EventParams>>>& map)
+void SaveData::DeserializeEventParamsMap(std::ifstream& ifs, std::unordered_map<int, std::map<std::wstring, std::unique_ptr<EventParams>>>& map)
 {
     size_t outerSize;
     ReadHex(ifs, outerSize);
@@ -468,7 +471,7 @@ void SaveData::DeserializeEventParamsMap(std::ifstream& ifs, std::unordered_map<
         size_t innerSize;
         ReadHex(ifs, innerSize);
 
-        std::unordered_map<std::wstring, std::unique_ptr<EventParams>> innerMap;
+        std::map<std::wstring, std::unique_ptr<EventParams>> innerMap;
         for (size_t j = 0; j < innerSize; ++j) {
             size_t keySize;
             ReadHex(ifs, keySize);

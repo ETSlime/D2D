@@ -29,7 +29,7 @@ public:
 	BoundingBox* GetBox() { return boundingBox; }
 	bool AABB(BoundingBox* other);
 
-	int GetDirection() { return control->GetFacingWhere(); }
+	PlayerControl::Direction GetDirection() { return control->GetFacingWhere(); }
 	void SetFacingWhere(PlayerControl::Direction dir) { control->SetFacingWhere(dir); }
 
 	void SetclipName(std::wstring clipname1, std::wstring clipname2);

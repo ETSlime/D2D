@@ -82,7 +82,7 @@ RectBase<VertexTexture>::~RectBase()
 	SAFE_DELETE(this->mPixelShader);
 	SAFE_DELETE(this->mInputLayout);
 	SAFE_DELETE(this->mWorldBuffer);
-	SafeRelease(&(this->srv));
+	//SafeRelease(&(this->srv));
 }
 
 void IRectBase::SetShader(std::wstring shaderPath)
